@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AplicacionConciertos</string>
+    <string name="titulo_aplicacion">TicketPremium</string>
+    <string name="concierto">Show</string>
+    <string name="SobreNosotrosVistaPrincipal">Here at TicketPremium, we offer to the fans the best show catalog.</string>
+</resources>
