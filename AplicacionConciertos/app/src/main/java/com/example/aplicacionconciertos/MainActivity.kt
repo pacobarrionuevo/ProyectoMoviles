@@ -52,8 +52,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AplicacionPrincipal(navController: NavController) {
 
-    val pulsado by rememberSaveable { mutableStateOf(false) }
-
     //Aqui va a ir la vista inicial de la página
     Column(
         modifier = Modifier
@@ -92,6 +90,8 @@ fun AplicacionPrincipal(navController: NavController) {
             color = MaterialTheme.colorScheme.onTertiaryContainer
         )
 
+        Spacer(modifier = Modifier.height(20.dp))
+
         Button(
             onClick = {
                 navController.navigate("sobre_nosotros")
@@ -109,6 +109,6 @@ fun ControladorNav() {
 
     NavHost(navController, startDestination = "home") {
         composable("home") { AplicacionPrincipal(navController) }
-        composable("sobre_nosotros") { SobreNosotrosScreen() }
+        composable("sobre_nosotros") { SobreNosotrosScreen(navController) }
     }
 }

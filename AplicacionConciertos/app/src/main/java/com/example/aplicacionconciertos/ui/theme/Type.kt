@@ -39,6 +39,9 @@ val baseline = Typography(
     ),
     bodyMedium = TextStyle(
         fontSize = 24.sp
+    ),
+    titleLarge = TextStyle(
+        fontSize = 60.sp
     )
 )
 

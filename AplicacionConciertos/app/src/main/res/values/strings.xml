@@ -3,4 +3,6 @@
     <string name="titulo_aplicacion">TicketPremium</string>
     <string name="concierto">Concierto</string>
     <string name="SobreNosotrosVistaPrincipal">Desde TicketPremium, nos dedicamos a ofrecer el mejor catálogo de shows para los espectadores</string>
+    <string name="SobreNosotrosTitulo">Sobre Nosotros</string>
+    <string name="SobreNosotrosText">TicketPremium es una empresa formada por Paco Barrionuevo y Jorge Salguero que es, básicamente, un portal de compra de entradas de conciertos que se organizan por toda España.</string>
 </resources>
