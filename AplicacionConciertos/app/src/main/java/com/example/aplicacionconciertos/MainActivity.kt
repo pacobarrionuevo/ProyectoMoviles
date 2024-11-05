@@ -99,6 +99,13 @@ fun AplicacionPrincipal(navController: NavController) {
         ) {
             Text(text = "Ir a Sobre Nosotros")
         }
+        Button(
+            onClick = {
+                navController.navigate("AcercaDe")
+            }
+        ) {
+            Text(text = "A Cerca De Nosotros")
+        }
 
     }
 }
@@ -110,5 +117,6 @@ fun ControladorNav() {
     NavHost(navController, startDestination = "home") {
         composable("home") { AplicacionPrincipal(navController) }
         composable("sobre_nosotros") { SobreNosotrosScreen(navController) }
+        composable("AcercaDe") { ACercaDeScreen(navController) }
     }
 }

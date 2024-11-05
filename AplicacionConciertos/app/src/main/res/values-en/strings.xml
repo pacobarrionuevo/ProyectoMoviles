@@ -6,4 +6,7 @@
     <string name="SobreNosotrosVistaPrincipal">Here at TicketPremium, we offer to the fans the best show catalog.</string>
     <string name="SobreNosotrosTitulo">About Us</string>
     <string name="SobreNosotrosText">TicketPremium is a busisness created by Paco Barrionuevo and Jorge Salguero that is, to sum it up quickly, a platform where you can boy tickets to any show in Spain.</string>
+    <string name="AcercaDeTitulo">"About "</string>
+    <string name="ACercaDeText">"Paco and Jorge are excited to create an app that revolutionizes the way music fans discover and organize concerts. They want to offer a vibrant and intuitive platform, where users can follow their favorite artists, find new events and connect with other concert fans. For them, this app is the perfect opportunity to merge technology and music, providing a unique experience for those who love live music."</string>
+
 </resources>
