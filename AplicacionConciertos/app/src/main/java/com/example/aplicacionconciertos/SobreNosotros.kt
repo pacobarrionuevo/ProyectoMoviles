@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
 @Composable
-fun SobreNosotrosScreen(navController: NavController) {
+fun SobreNosotros() {
     Column(
         modifier = androidx.compose.ui.Modifier
             .fillMaxSize()
@@ -48,13 +48,5 @@ fun SobreNosotrosScreen(navController: NavController) {
             )
 
             Spacer(modifier = Modifier.height(20.dp))
-
-            Button(
-                onClick = {
-                    navController.navigate("home")
-                }
-            ) {
-                Text(text = "Volver")
-            }
     }
 }
