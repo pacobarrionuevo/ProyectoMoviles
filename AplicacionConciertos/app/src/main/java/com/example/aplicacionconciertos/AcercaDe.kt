@@ -24,7 +24,7 @@ import androidx.navigation.NavController
 import androidx.compose.foundation.lazy.LazyColumn
 
 @Composable
-fun AcercaDe() {
+fun AcercaDe(navController: NavController) {
     //LazyColumn es para crear una columna en la cual se pueda scrollear hacia abajo
     LazyColumn(
         modifier = Modifier
@@ -78,6 +78,14 @@ fun AcercaDe() {
                     .width(150.dp)
             )
             Spacer(modifier = Modifier.height(20.dp))
+
         }
+        item {
+            Button(
+                onClick = {
+                    navController.navigate("home")
+                }
+            ) {
+                Text(text = "Ir a Pagina Principal")
     }
-}
+}}}

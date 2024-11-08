@@ -14,11 +14,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -37,9 +34,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.aplicacionconciertos.ui.theme.AppConciertosTheme
 
-
 @Composable
-fun AplicacionPrincipal() {
+fun AplicacionPrincipal(navController: NavController) {
+    val pulsado by rememberSaveable { mutableStateOf(false) }
 
     //Aqui va a ir la vista inicial de la página
     Column(
@@ -81,7 +78,34 @@ fun AplicacionPrincipal() {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        
 
+
+        Button(
+            onClick = {
+                navController.navigate("sobre_nosotros")
+            }
+        ) {
+            Text(text = "Ir a Sobre Nosotros")
+
+        }
+        Button(
+            onClick = {
+                navController.navigate("AcercaDe")
+            }
+        ) {
+            Text(text = "Ir a Acerca de")
+
+        }
     }
 }
+
+@Composable
+fun ControladorNav() {
+    val navController = rememberNavController()
+    NavHost(navController, startDestination = "home") {
+        composable("home") { AplicacionPrincipal(navController) }
+        composable("sobre_nosotros") { SobreNosotros(navController) }
+        composable("ACercaDe") { AcercaDe(navController) }
+    }
+}
+

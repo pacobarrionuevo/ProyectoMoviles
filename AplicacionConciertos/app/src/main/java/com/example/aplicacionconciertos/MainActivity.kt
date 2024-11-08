@@ -6,6 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.aplicacionconciertos.ui.theme.AppConciertosTheme
 
 class MainActivity : ComponentActivity() {
@@ -14,7 +17,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AppConciertosTheme {
-                SobreNosotros()
+                ControladorNav()
             }
         }
     }
@@ -24,7 +27,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun VistaPreviaModoClaro() {
     AppConciertosTheme(darkTheme = false) {
-        SobreNosotros()
+        SobreNosotros(navController = rememberNavController())
     }
 }
 
@@ -32,7 +35,7 @@ fun VistaPreviaModoClaro() {
 @Composable
 fun VistaPreviaModoOscuro() {
    AppConciertosTheme(darkTheme = true) {
-        SobreNosotros()
+        SobreNosotros(navController = rememberNavController())
         }
 }
 
