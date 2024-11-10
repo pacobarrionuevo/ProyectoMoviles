@@ -33,6 +33,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.aplicacionconciertos.ui.theme.AppConciertosTheme
+import com.example.miapp.Configuracion
 
 @Composable
 fun AplicacionPrincipal(navController: NavController) {
@@ -96,6 +97,14 @@ fun AplicacionPrincipal(navController: NavController) {
             Text(text = "Ir a Acerca de")
 
         }
+        Button(
+            onClick = {
+                navController.navigate("Configuracion")
+            }
+        ) {
+            Text(text = "Ir a Configuración")
+
+        }
     }
 }
 
@@ -106,6 +115,7 @@ fun ControladorNav() {
         composable("home") { AplicacionPrincipal(navController) }
         composable("sobre_nosotros") { SobreNosotros(navController) }
         composable("ACercaDe") { AcercaDe(navController) }
+        composable("Configuracion") { Configuracion(navController) }
     }
 }
 
