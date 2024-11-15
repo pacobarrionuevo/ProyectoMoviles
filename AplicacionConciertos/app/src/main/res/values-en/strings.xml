@@ -21,5 +21,11 @@
     <string name="years2010">2010s</string>
     <string name="years2020">2020s</string>
     <string name="epocaFavorita">Favourite time</string>
+    <string name="CantanteFavorito">Favourite Singer</string>
+    <string name="ArtistaFav1">Kendrick Lamar</string>
+    <string name="ArtistaFav2">D\'Angelo</string>
+    <string name="ArtistaFav3">Rauw Alejandro</string>
+    <string name="ArtistaFav4">Dire Straits</string>
+    <string name="TemaOscuro">Dark Theme</string>
 
 </resources>

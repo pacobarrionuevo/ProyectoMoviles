@@ -31,7 +31,7 @@ fun Configuracion(navController: NavController) {
 
     val generosSeleccionados = remember { mutableStateMapOf<String, Boolean>() }
     var temaOscuro by remember { mutableStateOf(false) }
-    var CantanteFavorito by remember { mutableStateOf("Kendrick Lamar") }
+    var cantanteFavorito by remember { mutableStateOf("Kendrick Lamar") }
     var epocaFavorita by remember { mutableStateOf("80s") }
     val epocas = listOf(
         R.string.years80,
@@ -93,15 +93,21 @@ fun Configuracion(navController: NavController) {
             }
 
             SeccionRadioButton(
-                titulo = "Cantante Favorito",
-                opciones = listOf("Kendrick Lamar", "Ed Sheeran", "Taylor Swift"),
-                seleccionado = CantanteFavorito,
-                onSeleccionChange = { CantanteFavorito = it }
+                titulo = stringResource(id = R.string.CantanteFavorito),
+                opciones = listOf(
+                    stringResource(id = R.string.ArtistaFav1),
+                    stringResource(id = R.string.ArtistaFav2),
+                    stringResource(id = R.string.ArtistaFav3),
+                    stringResource(id = R.string.ArtistaFav4)
+                ),
+                seleccionado = cantanteFavorito,
+                onSeleccionChange = { cantanteFavorito = it }
+
             )
         }
         item {
             SeccionSwitch(
-                titulo = "Tema Oscuro",
+                titulo = stringResource(id = R.string.TemaOscuro),
                 checked = temaOscuro,
                 onCheckedChange = { temaOscuro = it }
             )
