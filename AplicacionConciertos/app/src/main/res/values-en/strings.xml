@@ -10,5 +10,16 @@
     <string name="ACercaDeText">"Paco and Jorge are excited to create an app that revolutionizes the way music fans discover and organize concerts. They want to offer a vibrant and intuitive platform, where users can follow their favorite artists, find new events and connect with other concert fans. For them, this app is the perfect opportunity to merge technology and music, providing a unique experience for those who love live music."</string>
     <string name="ConfiguracionTituloBoton">Configuration</string>
     <string name="Volver">Go back to</string>
+    <string name="GenerosMusicales">Music genres</string>
+    <string name="GeneroMusical1">Reggaeton</string>
+    <string name="GeneroMusical2">Hip-Hop</string>
+    <string name="GeneroMusical3">RNB</string>
+    <string name="GeneroMusical4">Rock</string>
+    <string name="years80">80s</string>
+    <string name="years90">90s</string>
+    <string name="years2000">2000s</string>
+    <string name="years2010">2010s</string>
+    <string name="years2020">2020s</string>
+    <string name="epocaFavorita">Favourite time</string>
 
 </resources>

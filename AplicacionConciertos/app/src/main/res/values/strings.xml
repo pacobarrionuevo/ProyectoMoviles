@@ -9,4 +9,15 @@
     <string name="ACercaDeText">"Paco y Jorge están emocionados por crear una aplicación que revolucione la forma en que los fanáticos de la música descubren y organizan conciertos. Quieren ofrecer una plataforma vibrante e intuitiva, donde los usuarios puedan seguir a sus artistas favoritos, encontrar nuevos eventos y conectarse con otros apasionados de los conciertos. Para ellos, esta app es la oportunidad perfecta de fusionar tecnología y música, brindando una experiencia única para quienes aman la música en vivo."</string>
     <string name="ConfiguracionTituloBoton">Configuración</string>
     <string name="Volver">Volver</string>
+    <string name="GenerosMusicales">Géneros Musicales</string>
+    <string name="GeneroMusical1">Reggaetón</string>
+    <string name="GeneroMusical2">Hip-Hop</string>
+    <string name="GeneroMusical3">RNB</string>
+    <string name="GeneroMusical4">Rock</string>
+    <string name="years80">80s</string>
+    <string name="years90">90s</string>
+    <string name="years2000">2000s</string>
+    <string name="years2010">2010s</string>
+    <string name="years2020">2020s</string>
+    <string name="epocaFavorita">Época Favorita</string>
 </resources>

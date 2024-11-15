@@ -1,8 +1,9 @@
-package com.example.miapp
+package com.example.aplicacionconciertos
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -10,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -20,13 +22,27 @@ import com.example.aplicacionconciertos.R
 
 @Composable
 fun Configuracion(navController: NavController) {
-    var notificaciones by remember { mutableStateOf(true) }
+    val generos = listOf(
+        stringResource(id = R.string.GeneroMusical1),
+        stringResource(id = R.string.GeneroMusical2),
+        stringResource(id = R.string.GeneroMusical3),
+        stringResource(id = R.string.GeneroMusical4)
+    )
+
+    val generosSeleccionados = remember { mutableStateMapOf<String, Boolean>() }
     var temaOscuro by remember { mutableStateOf(false) }
     var CantanteFavorito by remember { mutableStateOf("Kendrick Lamar") }
-    var unidadMedida by remember { mutableStateOf("Metrico") }
+    var epocaFavorita by remember { mutableStateOf("80s") }
+    val epocas = listOf(
+        R.string.years80,
+        R.string.years90,
+        R.string.years2000,
+        R.string.years2010,
+        R.string.years2020
+    ).map { stringResource(id = it) }
     var expanded by remember { mutableStateOf(false) }
 
-    Column(
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.inversePrimary)
@@ -34,78 +50,93 @@ fun Configuracion(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+        item {
+            Image(
+                painter = painterResource(id = R.drawable.settings),
+                contentDescription = stringResource(id = R.string.ConfiguracionTituloBoton),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .width(250.dp)
+                    .clip(CircleShape)
+            )
 
-        Image(
-            painter = painterResource(id = R.drawable.settings),
-            contentDescription = stringResource(id = R.string.ConfiguracionTituloBoton),
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .width(250.dp)
-                .clip(CircleShape)
-        )
+            Spacer(modifier = Modifier.height(20.dp))
 
-        Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                text = stringResource(id = R.string.ConfiguracionTituloBoton),
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.surface
+            )
 
-        Text(
-            text = stringResource(id = R.string.ConfiguracionTituloBoton),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.surface
-        )
+            Spacer(modifier = Modifier.height(20.dp))
+        }
 
+        item {
+            Text(text = stringResource(id = R.string.GenerosMusicales))
 
-        Spacer(modifier = Modifier.height(40.dp))
-
-        SeccionCheckbox(
-            titulo = "Notificaciones",
-            checked = notificaciones,
-            onCheckedChange = { notificaciones = it }
-        )
-
-
-        SeccionSwitch(
-            titulo = "Tema Oscuro",
-            checked = temaOscuro,
-            onCheckedChange = { temaOscuro = it }
-        )
-
-
-        SeccionRadioButton(
-            titulo = "Cantante Favorito",
-            opciones = listOf("Kendrick Lamar", "Ed Sheeran", "Taylor Swift"),
-            seleccionado = CantanteFavorito,
-            onSeleccionChange = { CantanteFavorito = it }
-        )
-
-        Column {
-            Text(text = "Unidad de Medida")
-
-            Button(onClick = { expanded = true }) {
-                Text(text = unidadMedida)
+            generos.forEach { genero ->
+                if (generosSeleccionados[genero] == null) {
+                    generosSeleccionados[genero] = false
+                }
             }
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
-            ) {
-                listOf("Metrico", "Imperial").forEach { seleccion ->
-                    DropdownMenuItem(
-                        onClick = {
-                            unidadMedida = seleccion
-                            expanded = false
-                        },
 
-                        text = { Text(text = seleccion) }
+            Column {
+                generos.forEach { genero ->
+                    SeccionCheckbox(
+                        titulo = genero,
+                        checked = generosSeleccionados[genero] ?: false,
+                        onCheckedChange = { isChecked ->
+                            generosSeleccionados[genero] = isChecked
+                        }
                     )
                 }
             }
-            Button(
-                onClick = {
-                    navController.navigate("home")
-                }
-            ) {
-                Text(stringResource(id = R.string.Volver))
 
-            }
-        }}}
+            SeccionRadioButton(
+                titulo = "Cantante Favorito",
+                opciones = listOf("Kendrick Lamar", "Ed Sheeran", "Taylor Swift"),
+                seleccionado = CantanteFavorito,
+                onSeleccionChange = { CantanteFavorito = it }
+            )
+        }
+        item {
+            SeccionSwitch(
+                titulo = "Tema Oscuro",
+                checked = temaOscuro,
+                onCheckedChange = { temaOscuro = it }
+            )
+
+            Column {
+                Text(text = stringResource(id = R.string.epocaFavorita))
+
+                Button(onClick = { expanded = true }) {
+                    Text(text = epocaFavorita)
+                }
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    epocas.forEach { seleccion ->
+                        DropdownMenuItem(
+                            onClick = {
+                                epocaFavorita = seleccion
+                                expanded = false
+                            },
+                            text = { Text(text = seleccion) }
+                        )
+                    }
+                }
+                Button(
+                    onClick = {
+                        navController.navigate("home")
+                    }
+                ) {
+                    Text(stringResource(id = R.string.Volver))
+
+                }
+            }}
+        }
+}
 
 
 @Composable

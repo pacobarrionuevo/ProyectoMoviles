@@ -33,7 +33,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.aplicacionconciertos.ui.theme.AppConciertosTheme
-import com.example.miapp.Configuracion
+import com.example.aplicacionconciertos.Configuracion
 
 @Composable
 fun AplicacionPrincipal(navController: NavController) {
