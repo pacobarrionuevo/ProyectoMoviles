@@ -24,7 +24,7 @@ fun SobreNosotros(navController: NavController) {
     Column(
         modifier = androidx.compose.ui.Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.background)
+            .background(color = MaterialTheme.colorScheme.inversePrimary)
             .padding(50.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -41,19 +41,19 @@ fun SobreNosotros(navController: NavController) {
 
             Spacer(modifier = androidx.compose.ui.Modifier.height(20.dp))
         }
-            Text (
-                text = stringResource(id = R.string.SobreNosotrosText),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onTertiaryContainer
-            )
+        Text (
+            text = stringResource(id = R.string.SobreNosotrosText),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onTertiaryContainer
+        )
 
-            Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         Button(
             onClick = {
                 navController.navigate("home")
             }
         ) {
-            Text(text = "Ir a Pagina Principal")
+            Text(stringResource(id = R.string.Volver))
 
         }
     }
@@ -63,5 +63,5 @@ fun SobreNosotros(navController: NavController) {
 
 @Composable
 fun SobreNosotrosScreen() {
-    Text(text = "Bienvenidos a la sección Sobre Nosotros.")
+    Text(text = "Bienvenidos a la sección Sobre Nosotros.")
 }

@@ -37,13 +37,11 @@ import com.example.miapp.Configuracion
 
 @Composable
 fun AplicacionPrincipal(navController: NavController) {
-    val pulsado by rememberSaveable { mutableStateOf(false) }
 
-    //Aqui va a ir la vista inicial de la página
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.background)
+            .background(color = MaterialTheme.colorScheme.inversePrimary)
             .padding(20.dp),
         horizontalAlignment = Alignment.Start
     ) {
@@ -86,7 +84,7 @@ fun AplicacionPrincipal(navController: NavController) {
                 navController.navigate("sobre_nosotros")
             }
         ) {
-            Text(text = "Ir a Sobre Nosotros")
+            Text(stringResource(id = R.string.SobreNosotrosTitulo))
 
         }
         Button(
@@ -94,7 +92,7 @@ fun AplicacionPrincipal(navController: NavController) {
                 navController.navigate("AcercaDe")
             }
         ) {
-            Text(text = "Ir a Acerca de")
+            Text(stringResource(id = R.string.AcercaDeTitulo))
 
         }
         Button(
@@ -102,7 +100,7 @@ fun AplicacionPrincipal(navController: NavController) {
                 navController.navigate("Configuracion")
             }
         ) {
-            Text(text = "Ir a Configuración")
+            Text(stringResource(id = R.string.ConfiguracionTituloBoton))
 
         }
     }
@@ -115,7 +113,6 @@ fun ControladorNav() {
         composable("home") { AplicacionPrincipal(navController) }
         composable("sobre_nosotros") { SobreNosotros(navController) }
         composable("ACercaDe") { AcercaDe(navController) }
-        composable("Configuracion") { Configuracion(navController) }
+        composable("Configuracion") { Configuracion(navController)}
     }
 }
-

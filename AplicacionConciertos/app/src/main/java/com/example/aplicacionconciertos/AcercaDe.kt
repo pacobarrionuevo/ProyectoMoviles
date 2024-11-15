@@ -29,7 +29,7 @@ fun AcercaDe(navController: NavController) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.background)
+            .background(color = MaterialTheme.colorScheme.inversePrimary)
             .padding(50.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -86,6 +86,6 @@ fun AcercaDe(navController: NavController) {
                     navController.navigate("home")
                 }
             ) {
-                Text(text = "Ir a Pagina Principal")
-    }
-}}}
+                Text(stringResource(id = R.string.Volver))
+            }
+        }}}

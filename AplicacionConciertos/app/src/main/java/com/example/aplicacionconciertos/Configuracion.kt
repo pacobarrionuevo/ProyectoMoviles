@@ -1,6 +1,9 @@
 package com.example.miapp
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -8,7 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
+import com.example.aplicacionconciertos.R
 
 @Composable
 fun Configuracion(navController: NavController) {
@@ -21,10 +29,31 @@ fun Configuracion(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.inversePrimary)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
+
+        Image(
+            painter = painterResource(id = R.drawable.settings),
+            contentDescription = stringResource(id = R.string.ConfiguracionTituloBoton),
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .width(250.dp)
+                .clip(CircleShape)
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Text(
+            text = stringResource(id = R.string.ConfiguracionTituloBoton),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.surface
+        )
+
+
+        Spacer(modifier = Modifier.height(40.dp))
 
         SeccionCheckbox(
             titulo = "Notificaciones",
@@ -49,6 +78,7 @@ fun Configuracion(navController: NavController) {
 
         Column {
             Text(text = "Unidad de Medida")
+
             Button(onClick = { expanded = true }) {
                 Text(text = unidadMedida)
             }
@@ -72,7 +102,8 @@ fun Configuracion(navController: NavController) {
                     navController.navigate("home")
                 }
             ) {
-                Text(text = "Ir a Pagina Principal")
+                Text(stringResource(id = R.string.Volver))
+
             }
         }}}
 
