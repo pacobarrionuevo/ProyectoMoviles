@@ -1,5 +1,6 @@
 package com.example.aplicacionconciertos
 
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -7,19 +8,24 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
-import com.example.aplicacionconciertos.R
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Configuracion(navController: NavController) {
     val generos = listOf(
@@ -41,6 +47,43 @@ fun Configuracion(navController: NavController) {
         R.string.years2020
     ).map { stringResource(id = it) }
     var expanded by remember { mutableStateOf(false) }
+
+    // Obtener el contexto y el lifecycleOwner
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    // Crear una instancia de AjustesConfiguracion
+    val ajustesConfiguracion = remember { AjustesConfiguracion(context) }
+
+    // Lanzar un coroutine para observar los cambios en las preferencias
+    LaunchedEffect(Unit) {
+        ajustesConfiguracion.getDarkTheme.collect { isDarkTheme ->
+            temaOscuro = isDarkTheme
+        }
+        ajustesConfiguracion.getFavoriteSinger.collect { singer ->
+            cantanteFavorito = singer ?: "Kendrick Lamar"
+        }
+        ajustesConfiguracion.getFavoriteEpoch.collect { epoch ->
+            epocaFavorita = epoch ?: "80s"
+        }
+    }
+
+    // Observar los eventos del ciclo de vida para guardar las preferencias
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_STOP) {
+                lifecycleOwner.lifecycleScope.launch {
+                    ajustesConfiguracion.saveDarkTheme(temaOscuro)
+                    ajustesConfiguracion.saveFavoriteSinger(cantanteFavorito)
+                    ajustesConfiguracion.saveFavoriteEpoch(epocaFavorita)
+                }
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     LazyColumn(
         modifier = Modifier
@@ -101,7 +144,12 @@ fun Configuracion(navController: NavController) {
                     stringResource(id = R.string.ArtistaFav4)
                 ),
                 seleccionado = cantanteFavorito,
-                onSeleccionChange = { cantanteFavorito = it }
+                onSeleccionChange = { singer ->
+                    cantanteFavorito = singer
+                    lifecycleOwner.lifecycleScope.launch {
+                        ajustesConfiguracion.saveFavoriteSinger(singer)
+                    }
+                }
 
             )
         }
@@ -109,7 +157,12 @@ fun Configuracion(navController: NavController) {
             SeccionSwitch(
                 titulo = stringResource(id = R.string.TemaOscuro),
                 checked = temaOscuro,
-                onCheckedChange = { temaOscuro = it }
+                onCheckedChange = { isChecked ->
+                    temaOscuro = isChecked
+                    lifecycleOwner.lifecycleScope.launch {
+                        ajustesConfiguracion.saveDarkTheme(isChecked)
+                    }
+                }
             )
 
             Column {
@@ -127,23 +180,27 @@ fun Configuracion(navController: NavController) {
                             onClick = {
                                 epocaFavorita = seleccion
                                 expanded = false
+                                lifecycleOwner.lifecycleScope.launch {
+                                    ajustesConfiguracion.saveFavoriteEpoch(seleccion)
+                                }
                             },
                             text = { Text(text = seleccion) }
                         )
                     }
                 }
-                Button(
-                    onClick = {
-                        navController.navigate("home")
-                    }
-                ) {
-                    Text(stringResource(id = R.string.Volver))
-
-                }
-            }}
+            }
         }
-}
+        item{Button(
+            onClick = {
+                navController.navigate("home")
+            }
+        ) {
+            Text(stringResource(id = R.string.Volver))
 
+        }}
+
+    }
+}
 
 @Composable
 fun SeccionCheckbox(titulo: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
