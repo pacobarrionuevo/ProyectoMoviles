@@ -21,7 +21,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 
@@ -55,6 +54,9 @@ fun Configuracion(navController: NavController) {
     // Crear una instancia de AjustesConfiguracion
     val ajustesConfiguracion = remember { AjustesConfiguracion(context) }
 
+    // a coroutine scope
+    val scope = rememberCoroutineScope()
+
     // Lanzar un coroutine para observar los cambios en las preferencias
     LaunchedEffect(Unit) {
         ajustesConfiguracion.getDarkTheme.collect { isDarkTheme ->
@@ -68,11 +70,11 @@ fun Configuracion(navController: NavController) {
         }
     }
 
-    // Observar los eventos del ciclo de vida para guardar las preferencias
+    // Observar los eventos del ciclo de vida para guardar las preferencias (opcional)
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_STOP) {
-                lifecycleOwner.lifecycleScope.launch {
+                scope.launch {
                     ajustesConfiguracion.saveDarkTheme(temaOscuro)
                     ajustesConfiguracion.saveFavoriteSinger(cantanteFavorito)
                     ajustesConfiguracion.saveFavoriteEpoch(epocaFavorita)
@@ -146,7 +148,7 @@ fun Configuracion(navController: NavController) {
                 seleccionado = cantanteFavorito,
                 onSeleccionChange = { singer ->
                     cantanteFavorito = singer
-                    lifecycleOwner.lifecycleScope.launch {
+                    scope.launch {
                         ajustesConfiguracion.saveFavoriteSinger(singer)
                     }
                 }
@@ -159,7 +161,7 @@ fun Configuracion(navController: NavController) {
                 checked = temaOscuro,
                 onCheckedChange = { isChecked ->
                     temaOscuro = isChecked
-                    lifecycleOwner.lifecycleScope.launch {
+                    scope.launch {
                         ajustesConfiguracion.saveDarkTheme(isChecked)
                     }
                 }
@@ -180,7 +182,7 @@ fun Configuracion(navController: NavController) {
                             onClick = {
                                 epocaFavorita = seleccion
                                 expanded = false
-                                lifecycleOwner.lifecycleScope.launch {
+                                scope.launch {
                                     ajustesConfiguracion.saveFavoriteEpoch(seleccion)
                                 }
                             },
@@ -190,15 +192,15 @@ fun Configuracion(navController: NavController) {
                 }
             }
         }
-        item{Button(
-            onClick = {
-                navController.navigate("home")
+        item {
+            Button(
+                onClick = {
+                    navController.navigate("home")
+                }
+            ) {
+                Text(stringResource(id = R.string.Volver))
             }
-        ) {
-            Text(stringResource(id = R.string.Volver))
-
-        }}
-
+        }
     }
 }
 
