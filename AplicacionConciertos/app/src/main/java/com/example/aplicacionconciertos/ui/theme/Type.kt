@@ -5,6 +5,7 @@ import androidx.compose.material3.Typography
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 
 import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.text.googlefonts.Font
@@ -35,7 +36,8 @@ val displayFontFamily = FontFamily(
 // Default Material 3 typography values
 val baseline = Typography(
     bodyLarge = TextStyle(
-        fontSize = 32.sp
+        fontSize = 32.sp,
+        fontWeight = FontWeight.Bold
     ),
     bodyMedium = TextStyle(
         fontSize = 24.sp

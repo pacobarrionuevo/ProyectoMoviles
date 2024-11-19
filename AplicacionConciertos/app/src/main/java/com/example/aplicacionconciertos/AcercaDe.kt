@@ -24,12 +24,12 @@ import androidx.navigation.NavController
 import androidx.compose.foundation.lazy.LazyColumn
 
 @Composable
-fun ACercaDeScreen(navController: NavController) {
+fun AcercaDe(navController: NavController) {
     //LazyColumn es para crear una columna en la cual se pueda scrollear hacia abajo
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.background)
+            .background(color = MaterialTheme.colorScheme.inversePrimary)
             .padding(50.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -69,13 +69,23 @@ fun ACercaDeScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(20.dp))
         }
         item {
+            Image(
+                painter = painterResource(id = R.drawable.copyright),
+                contentDescription = stringResource(id = R.string.concierto),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .background(color = MaterialTheme.colorScheme.primaryContainer)
+                    .width(150.dp)
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+
+        }
+        item {
             Button(
                 onClick = {
                     navController.navigate("home")
                 }
             ) {
-                Text(text = "Volver")
+                Text(stringResource(id = R.string.Volver))
             }
-        }
-    }
-}
+        }}}

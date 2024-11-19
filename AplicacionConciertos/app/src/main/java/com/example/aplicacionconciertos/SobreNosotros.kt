@@ -20,11 +20,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
 @Composable
-fun SobreNosotrosScreen(navController: NavController) {
+fun SobreNosotros(navController: NavController) {
     Column(
         modifier = androidx.compose.ui.Modifier
             .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.background)
+            .background(color = MaterialTheme.colorScheme.inversePrimary)
             .padding(50.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -41,20 +41,27 @@ fun SobreNosotrosScreen(navController: NavController) {
 
             Spacer(modifier = androidx.compose.ui.Modifier.height(20.dp))
         }
-            Text (
-                text = stringResource(id = R.string.SobreNosotrosText),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onTertiaryContainer
-            )
+        Text (
+            text = stringResource(id = R.string.SobreNosotrosText),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onTertiaryContainer
+        )
 
-            Spacer(modifier = Modifier.height(20.dp))
-
-            Button(
-                onClick = {
-                    navController.navigate("home")
-                }
-            ) {
-                Text(text = "Volver")
+        Spacer(modifier = Modifier.height(20.dp))
+        Button(
+            onClick = {
+                navController.navigate("home")
             }
+        ) {
+            Text(stringResource(id = R.string.Volver))
+
+        }
     }
+
+}
+
+
+@Composable
+fun SobreNosotrosScreen() {
+    Text(text = "Bienvenidos a la sección Sobre Nosotros.")
 }
