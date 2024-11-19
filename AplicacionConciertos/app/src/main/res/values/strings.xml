@@ -26,4 +26,11 @@
     <string name="ArtistaFav3">Rauw Alejandro</string>
     <string name="ArtistaFav4">Dire Straits</string>
     <string name="TemaOscuro">Tema Oscuro</string>
+    <string name="Si">Si</string>
+    <string name="No">No</string>
+    <string name="ConfirmarSalida">¿Quieres salir de la aplicación?</string>
+    <string name="Guardar">Guardar</string>
+    <string name="Aceptar">Aceptar</string>
+    <string name="Cancelar">Cancelar</string>
+    <string name="Salir">Salir</string>
 </resources>
