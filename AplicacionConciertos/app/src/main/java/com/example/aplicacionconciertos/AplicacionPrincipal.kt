@@ -77,8 +77,6 @@ fun AplicacionPrincipal(navController: NavController) {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-
-
         Button(
             onClick = {
                 navController.navigate("sobre_nosotros")
@@ -87,6 +85,9 @@ fun AplicacionPrincipal(navController: NavController) {
             Text(stringResource(id = R.string.SobreNosotrosTitulo))
 
         }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
         Button(
             onClick = {
                 navController.navigate("AcercaDe")
@@ -95,6 +96,9 @@ fun AplicacionPrincipal(navController: NavController) {
             Text(stringResource(id = R.string.AcercaDeTitulo))
 
         }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
         Button(
             onClick = {
                 navController.navigate("Configuracion")

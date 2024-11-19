@@ -26,4 +26,5 @@
     <string name="ArtistaFav3">Rauw Alejandro</string>
     <string name="ArtistaFav4">Dire Straits</string>
     <string name="TemaOscuro">Tema Oscuro</string>
+    <string name="Guardar">Guardar</string>
 </resources>
