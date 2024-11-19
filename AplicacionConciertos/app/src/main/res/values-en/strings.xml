@@ -27,12 +27,10 @@
     <string name="ArtistaFav3">Rauw Alejandro</string>
     <string name="ArtistaFav4">Dire Straits</string>
     <string name="TemaOscuro">Dark Theme</string>
-    <string name="Si">Yes</string>
-    <string name="No">No</string>
-    <string name="ConfirmarSalida">Do you want to exit the application?</string>
-    <string name="Salir">Go out</string>
     <string name="Guardar">Save</string>
-    <string name="Aceptar">"Ok "</string>
     <string name="Cancelar">Cancel</string>
+    <string name="Aceptar">Accept</string>
+    <string name="Salir">Leave</string>
+    <string name="ConfirmarSalida">Confirm</string>
 
 </resources>

@@ -50,7 +50,7 @@ fun SobreNosotros(navController: NavController) {
         Spacer(modifier = Modifier.height(20.dp))
         Button(
             onClick = {
-                navController.navigate("home")
+                navController.navigate("AplicacionPrincipal")
             }
         ) {
             Text(stringResource(id = R.string.Volver))
@@ -63,5 +63,5 @@ fun SobreNosotros(navController: NavController) {
 
 @Composable
 fun SobreNosotrosScreen() {
-    Text(text = "Bienvenidos a la sección Sobre Nosotros.")
+    Text(text = "Bienvenidos a la sección SobreNosotros.")
 }

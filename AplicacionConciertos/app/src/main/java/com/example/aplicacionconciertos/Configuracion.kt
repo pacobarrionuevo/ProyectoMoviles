@@ -1,5 +1,6 @@
 package com.example.aplicacionconciertos
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -181,11 +182,37 @@ fun Configuracion(navController: NavController) {
             Button(
                 onClick = {
                     scope.launch {
+                        var cambios = 0
+                        if (epocaFavorita != dataStore.getFavoriteEpoch.first()) {
+                            dataStore.saveFavoriteEpoch(epocaFavorita)
+                            cambios++
+                        }
+                        if (cantanteFavorito != dataStore.getFavoriteSinger.first()) {
+                            dataStore.saveFavoriteSinger(cantanteFavorito)
+                            cambios++
+                        }
+                        if (temaOscuro != dataStore.getDarkTheme.first()) {
+                            dataStore.saveDarkTheme(temaOscuro)
+                            cambios++
+                        }
+
                         val generosSeleccionadosList = generosSeleccionados.filter { it.value }.keys.toList()
-                        dataStore.saveFavoriteEpoch(epocaFavorita)
-                        dataStore.saveDarkTheme(temaOscuro)
-                        dataStore.saveFavoriteSinger(cantanteFavorito)
-                        dataStore.saveSelectedGenres(generosSeleccionadosList)
+                        val generosGuardados = dataStore.getSelectedGenres.first()
+                        if (generosSeleccionadosList != generosGuardados) {
+                            dataStore.saveSelectedGenres(generosSeleccionadosList)
+                            cambios++
+                        }
+
+                        val text = "Guardando..."
+                        val duration = if (cambios < 2) {
+                            Toast.LENGTH_SHORT
+                        } else {
+                            Toast.LENGTH_LONG
+                        }
+
+                        Toast.makeText(context, text, duration).show()
+
+                        navController.navigate("AplicacionPrincipal")
                     }
                 }
             ) {
@@ -196,7 +223,7 @@ fun Configuracion(navController: NavController) {
         item {
             Button(
                 onClick = {
-                    navController.navigate("home")
+                    navController.navigate("AplicacionPrincipal")
                 }
             ) {
                 Text(stringResource(id = R.string.Volver))
