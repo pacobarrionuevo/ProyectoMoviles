@@ -8,11 +8,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DropdownMenu
@@ -20,6 +22,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,6 +43,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.aplicacionconciertos.datos.ConfigurationDataStore
+import com.example.aplicacionconciertos.ui.theme.AppShapes
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -113,7 +117,10 @@ fun Configuracion(navController: NavController) {
         }
 
         item {
-            Text(text = stringResource(id = R.string.GenerosMusicales))
+            Text(
+                text = stringResource(id = R.string.GenerosMusicales),
+                style = MaterialTheme.typography.displayMedium
+            )
 
             generos.forEach { genero ->
                 if (generosSeleccionados[genero] == null) {
@@ -154,14 +161,25 @@ fun Configuracion(navController: NavController) {
                 checked = temaOscuro,
                 onCheckedChange = { isChecked ->
                     temaOscuro = isChecked
-                }
+                },
+                shape = AppShapes.large
             )
 
             Column {
-                Text(text = stringResource(id = R.string.epocaFavorita))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Button(onClick = { expanded = true }) {
+                        Text(text = epocaFavorita)
+                    }
 
-                Button(onClick = { expanded = true }) {
-                    Text(text = epocaFavorita)
+                    Text(
+                        text = stringResource(id = R.string.epocaFavorita),
+                        style = MaterialTheme.typography.displayMedium,
+                        modifier = Modifier.weight(1f)
+                    )
+
                 }
                 DropdownMenu(
                     expanded = expanded,
@@ -242,13 +260,34 @@ fun SeccionCheckbox(titulo: String, checked: Boolean, onCheckedChange: (Boolean)
 }
 
 @Composable
-fun SeccionSwitch(titulo: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Switch(checked = checked, onCheckedChange = onCheckedChange)
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(text = titulo)
+fun SeccionSwitch(
+    titulo: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    shape: CornerBasedShape
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        shape = shape,
+        color = MaterialTheme.colorScheme.inversePrimary,
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Switch(checked = checked, onCheckedChange = onCheckedChange)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = titulo,
+                style = MaterialTheme.typography.displayMedium
+            )
+        }
     }
 }
+
 
 @Composable
 fun SeccionRadioButton(

@@ -117,9 +117,10 @@ fun AppConciertosTheme(
   }
 
   MaterialTheme(
-    colorScheme = colorScheme,
-    typography = AppTypography,
-    content = content
+      colorScheme = colorScheme,
+      typography = AppTypography,
+      content = content,
+      shapes = AppShapes
   )
 }
 
