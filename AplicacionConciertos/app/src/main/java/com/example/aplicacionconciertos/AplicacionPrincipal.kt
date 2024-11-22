@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -78,7 +79,12 @@ fun AplicacionPrincipal(navController: NavHostController) {
         Button(
             onClick = {
                 navController.navigate("SobreNosotros")
-            }
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            )
+
         ) {
             Text(stringResource(id = R.string.SobreNosotrosTitulo))
 
@@ -89,7 +95,11 @@ fun AplicacionPrincipal(navController: NavHostController) {
         Button(
             onClick = {
                 navController.navigate("AcercaDe")
-            }
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            )
         ) {
             Text(stringResource(id = R.string.AcercaDeTitulo))
 
@@ -100,13 +110,21 @@ fun AplicacionPrincipal(navController: NavHostController) {
         Button(
             onClick = {
                 navController.navigate("Configuracion")
-            }
+            },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            )
         ) {
             Text(stringResource(id = R.string.ConfiguracionTituloBoton))
 
         }
         Button(
-            onClick = { showDialog = true }
+            onClick = { showDialog = true },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            )
         ) {
             Text(stringResource(id = R.string.Salir))
         }
