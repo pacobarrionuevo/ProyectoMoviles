@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.aplicacionconciertos.model.RutasNavegacion
 
 @Composable
 fun SobreNosotros(navController: NavController) {
@@ -51,7 +52,7 @@ fun SobreNosotros(navController: NavController) {
         Spacer(modifier = Modifier.height(20.dp))
         Button(
             onClick = {
-                navController.navigate("AplicacionPrincipal")
+                navController.navigate(RutasNavegacion.Home.route)
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -65,10 +66,4 @@ fun SobreNosotros(navController: NavController) {
         }
     }
 
-}
-
-
-@Composable
-fun SobreNosotrosScreen() {
-    Text(text = "Bienvenidos a la sección SobreNosotros.")
 }

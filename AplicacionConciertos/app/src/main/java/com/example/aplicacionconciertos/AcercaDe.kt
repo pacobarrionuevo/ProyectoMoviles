@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ButtonDefaults
+import com.example.aplicacionconciertos.model.RutasNavegacion
 
 @Composable
 fun AcercaDe(navController: NavController) {
@@ -84,7 +85,7 @@ fun AcercaDe(navController: NavController) {
         item {
             Button(
                 onClick = {
-                    navController.navigate("AplicacionPrincipal")
+                    navController.navigate(RutasNavegacion.Home.route)
                 },
                 modifier = Modifier
                     .fillMaxWidth(),

@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.navigation.NavHostController
 import com.example.aplicacionconciertos.R
+import com.example.aplicacionconciertos.model.RutasNavegacion
 
 @Composable
 fun AplicacionPrincipal(navController: NavHostController) {
@@ -78,7 +79,7 @@ fun AplicacionPrincipal(navController: NavHostController) {
 
         Button(
             onClick = {
-                navController.navigate("SobreNosotros")
+                navController.navigate(RutasNavegacion.SobreNosotros.route)
             },
             modifier = Modifier
                 .fillMaxWidth(),
@@ -96,7 +97,7 @@ fun AplicacionPrincipal(navController: NavHostController) {
 
         Button(
             onClick = {
-                navController.navigate("AcercaDe")
+                navController.navigate(RutasNavegacion.AcercaDe.route)
             },
             modifier = Modifier
                 .fillMaxWidth(),
@@ -113,7 +114,7 @@ fun AplicacionPrincipal(navController: NavHostController) {
 
         Button(
             onClick = {
-                navController.navigate("Configuracion")
+                navController.navigate(RutasNavegacion.Configuracion.route)
             },
             modifier = Modifier
                 .fillMaxWidth(),

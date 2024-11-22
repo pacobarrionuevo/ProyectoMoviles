@@ -44,6 +44,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.aplicacionconciertos.datos.ConfigurationDataStore
+import com.example.aplicacionconciertos.model.RutasNavegacion
 import com.example.aplicacionconciertos.ui.theme.AppShapes
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -245,7 +246,7 @@ fun Configuracion(navController: NavController) {
 
                         Toast.makeText(context, text, duration).show()
 
-                        navController.navigate("AplicacionPrincipal")
+                        navController.navigate(RutasNavegacion.Home.route)
                     }
                 },
                 modifier = Modifier
@@ -265,7 +266,7 @@ fun Configuracion(navController: NavController) {
 
             Button(
                 onClick = {
-                    navController.navigate("AplicacionPrincipal")
+                    navController.navigate(RutasNavegacion.Home.route )
                 },
                 modifier = Modifier
                     .fillMaxWidth(),
