@@ -80,6 +80,8 @@ fun AplicacionPrincipal(navController: NavHostController) {
             onClick = {
                 navController.navigate("SobreNosotros")
             },
+            modifier = Modifier
+                .fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 contentColor = MaterialTheme.colorScheme.onPrimary
@@ -96,6 +98,8 @@ fun AplicacionPrincipal(navController: NavHostController) {
             onClick = {
                 navController.navigate("AcercaDe")
             },
+            modifier = Modifier
+                .fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 contentColor = MaterialTheme.colorScheme.onPrimary
@@ -111,6 +115,8 @@ fun AplicacionPrincipal(navController: NavHostController) {
             onClick = {
                 navController.navigate("Configuracion")
             },
+            modifier = Modifier
+                .fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 contentColor = MaterialTheme.colorScheme.onPrimary
@@ -119,10 +125,15 @@ fun AplicacionPrincipal(navController: NavHostController) {
             Text(stringResource(id = R.string.ConfiguracionTituloBoton))
 
         }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
         Button(
             onClick = { showDialog = true },
+            modifier = Modifier
+                .fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                containerColor = MaterialTheme.colorScheme.error,
                 contentColor = MaterialTheme.colorScheme.onPrimary
             )
         ) {
@@ -158,7 +169,6 @@ fun AplicacionPrincipal(navController: NavHostController) {
     }
 }
 
-// Función para salir de la aplicación
 fun exitApp(context: Context) {
     ActivityCompat.finishAffinity(context as android.app.Activity)
 }

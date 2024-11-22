@@ -56,7 +56,9 @@ fun SobreNosotros(navController: NavController) {
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 contentColor = MaterialTheme.colorScheme.onPrimary
-            )
+            ),
+            modifier = Modifier
+                    .fillMaxWidth(),
         ) {
             Text(stringResource(id = R.string.Volver))
 

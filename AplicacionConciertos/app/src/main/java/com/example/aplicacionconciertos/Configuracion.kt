@@ -8,11 +8,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
@@ -21,6 +23,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,6 +44,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.aplicacionconciertos.datos.ConfigurationDataStore
+import com.example.aplicacionconciertos.ui.theme.AppShapes
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -114,7 +118,13 @@ fun Configuracion(navController: NavController) {
         }
 
         item {
-            Text(text = stringResource(id = R.string.GenerosMusicales))
+            Text(
+                text = stringResource(id = R.string.GenerosMusicales),
+                style = MaterialTheme.typography.displayMedium,
+
+                modifier = Modifier
+                            .fillMaxWidth()
+            )
 
             generos.forEach { genero ->
                 if (generosSeleccionados[genero] == null) {
@@ -134,6 +144,8 @@ fun Configuracion(navController: NavController) {
                 }
             }
 
+            Spacer(modifier = Modifier.height(40.dp))
+
             SeccionRadioButton(
                 titulo = stringResource(id = R.string.CantanteFavorito),
                 opciones = listOf(
@@ -148,6 +160,8 @@ fun Configuracion(navController: NavController) {
                 }
 
             )
+
+            Spacer(modifier = Modifier.height(40.dp))
         }
         item {
             SeccionSwitch(
@@ -158,11 +172,27 @@ fun Configuracion(navController: NavController) {
                 }
             )
 
-            Column {
-                Text(text = stringResource(id = R.string.epocaFavorita))
+            Spacer(modifier = Modifier.height(40.dp))
 
-                Button(onClick = { expanded = true }) {
-                    Text(text = epocaFavorita)
+            Column {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth(),
+
+                )
+                    {
+                    Button(onClick = { expanded = true }) {
+                        Text(text = epocaFavorita)
+                    }
+
+                        Spacer(modifier = Modifier.width(15.dp))
+
+                    Text(
+                        text = stringResource(id = R.string.epocaFavorita),
+                        style = MaterialTheme.typography.displayMedium,
+                        modifier = Modifier.weight(1f)
+                    )
+
                 }
                 DropdownMenu(
                     expanded = expanded,
@@ -179,6 +209,8 @@ fun Configuracion(navController: NavController) {
                     }
                 }
             }
+
+            Spacer(modifier = Modifier.height(20.dp))
 
             Button(
                 onClick = {
@@ -216,6 +248,8 @@ fun Configuracion(navController: NavController) {
                         navController.navigate("AplicacionPrincipal")
                     }
                 },
+                modifier = Modifier
+                    .fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
                     contentColor = MaterialTheme.colorScheme.onPrimary
@@ -224,16 +258,22 @@ fun Configuracion(navController: NavController) {
                 Text(stringResource(id = R.string.Guardar))
             }
 
+
+
         }
         item {
+
             Button(
                 onClick = {
                     navController.navigate("AplicacionPrincipal")
                 },
+                modifier = Modifier
+                    .fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
                     contentColor = MaterialTheme.colorScheme.onPrimary
                 )
+
             ) {
                 Text(stringResource(id = R.string.Volver))
             }
@@ -243,7 +283,11 @@ fun Configuracion(navController: NavController) {
 
 @Composable
 fun SeccionCheckbox(titulo: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Checkbox(checked = checked, onCheckedChange = onCheckedChange)
         Spacer(modifier = Modifier.width(8.dp))
         Text(text = titulo)
@@ -251,13 +295,29 @@ fun SeccionCheckbox(titulo: String, checked: Boolean, onCheckedChange: (Boolean)
 }
 
 @Composable
-fun SeccionSwitch(titulo: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Switch(checked = checked, onCheckedChange = onCheckedChange)
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(text = titulo)
+fun SeccionSwitch(
+    titulo: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+) {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth(),
+        color = MaterialTheme.colorScheme.inversePrimary,
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Start,
+        ) {
+            Switch(checked = checked, onCheckedChange = onCheckedChange)
+            Spacer(modifier = Modifier.width(15.dp))
+            Text(
+                text = titulo,
+                style = MaterialTheme.typography.displayMedium
+            )
+        }
     }
 }
+
 
 @Composable
 fun SeccionRadioButton(
@@ -266,8 +326,14 @@ fun SeccionRadioButton(
     seleccionado: String,
     onSeleccionChange: (String) -> Unit
 ) {
-    Column {
-        Text(text = titulo)
+    Column (
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.Start
+    ) {
+        Text(
+            text = titulo,
+            style = MaterialTheme.typography.displayMedium
+        )
         opciones.forEach { opcion ->
             Row(verticalAlignment = Alignment.CenterVertically) {
                 RadioButton(
