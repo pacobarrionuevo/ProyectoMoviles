@@ -12,6 +12,7 @@ uiTextGoogleFonts = "1.7.4"
 navigationCompose = "2.8.3"
 foundationLayoutAndroid = "1.7.2"
 foundationAndroid = "1.7.5"
+runtimeLivedata = "1.7.5"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -32,6 +33,7 @@ androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 androidx-foundation-layout-android = { group = "androidx.compose.foundation", name = "foundation-layout-android", version.ref = "foundationLayoutAndroid" }
 androidx-foundation-android = { group = "androidx.compose.foundation", name = "foundation-android", version.ref = "foundationAndroid" }
+androidx-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata", version.ref = "runtimeLivedata" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -77,6 +77,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:5.0.0-alpha.14")
     implementation("io.coil-kt.coil3:coil-compose:3.0.2")
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.0.2")
+    implementation(libs.androidx.runtime.livedata)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
