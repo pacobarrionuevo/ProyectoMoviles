@@ -31,10 +31,7 @@ class MainActivity : ComponentActivity() {
                         composable(RutasNavegacion.SobreNosotros.route) { SobreNosotros(navController) }
                         composable(RutasNavegacion.AcercaDe.route) { AcercaDe(navController) }
                         composable(RutasNavegacion.Configuracion.route) { Configuracion(navController) }
-                        composable(RutasNavegacion.Artistas.route) {
-                            val viewModel = ViewModelArtistas()
-                                ColeccionArtistas(navController, viewModel)
-                        }
+                        composable(RutasNavegacion.Artistas.route) { ColeccionArtistas(viewModel = ViewModelArtistas(), navController)   }
                     }
                 }
             }

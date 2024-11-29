@@ -2,11 +2,11 @@ package com.example.aplicacionconciertos.model.artistas
 
 data class DatosArtistas (
     val id: String,
-    val nombre: String,
-    val generosMusicales: List<String>,
-    val urlImagen: String,
-    val birthYear: String,
-    val precioEntrada: String,
-    val lugarConciertos: List<String>,
-    val albumes: List<String>
+    val name: String,
+    val genres: List<String>,
+    val image_url: String,
+    val birth_year: String,
+    val precio_entrada: String,
+    val concert_locations: List<String>,
+    val albums: List<String>
 )

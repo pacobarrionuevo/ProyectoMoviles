@@ -14,14 +14,16 @@ class ViewModelArtistas : ViewModel() {
     private val _artistas = MutableLiveData<List<DatosArtistas>>()
     val artistas: LiveData<List<DatosArtistas>> = _artistas
 
+    private val _error = MutableLiveData<String>()
+    val error: LiveData<String> = _error
+
     fun fetchArtistas() {
         viewModelScope.launch {
             try {
-                val artistas = repository.getArtistsRepository()
+                val artistas = repository.getArtistRepository()
                 _artistas.value = artistas
             } catch (e: Exception) {
-                e.printStackTrace()
-                _artistas.value = emptyList()
+                _error.value = e.message ?: "Error desconocido"
             }
         }
     }

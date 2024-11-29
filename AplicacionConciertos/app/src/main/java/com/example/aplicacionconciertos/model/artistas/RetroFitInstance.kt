@@ -13,7 +13,7 @@ object RetroFitInstance {
             .build()
     }
 
-    val artistasApi: ClienteArtistas by lazy {
+    val artistasApiService: ClienteArtistas by lazy {
         retrofit.create(ClienteArtistas::class.java)
     }
 
