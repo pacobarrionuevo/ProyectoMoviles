@@ -24,7 +24,6 @@ fun ArtistScreen(viewModel: ViewModelArtistas) {
 
             Text(text = "Loading...")
         } else {
-
             LazyColumn {
                 items(artistas.value) { artista ->
                     Text(text = "ID: ${artista.id}")

@@ -4,6 +4,7 @@ class ArtistRepository {
     private val artistaService = RetroFitInstance.artistasApi
 
     suspend fun getArtistsRepository(): List<DatosArtistas> {
-        return artistaService.getArtistas()
+        val response =  artistaService.getArtistas()
+        return response.listaCantantes
     }
 }
