@@ -41,16 +41,11 @@ fun ColeccionArtistas(navController: NavHostController, viewModel: ViewModelArti
                 items(artistas.value) { artista ->
                     Column {
                         AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(artista.urlImagen.replace("http://", "https://"))
-                                .crossfade(true)
-                                .build(),
-                            placeholder = painterResource(R.drawable.placeholder),
-                            error = painterResource(R.drawable.placeholder),
+                            model = artista.urlImagen,
                             contentDescription = artista.nombre,
-                            contentScale = ContentScale.Fit,
-                            modifier = Modifier
-                                .weight(0.3f)
+                            modifier = Modifier.fillMaxWidth().height(200.dp).clip(
+                                RoundedCornerShape(8.dp)
+                            )
                         )
                     }
                     Text(text = "ID: ${artista.id}")

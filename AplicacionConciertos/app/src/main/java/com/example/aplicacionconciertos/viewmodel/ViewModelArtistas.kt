@@ -21,6 +21,7 @@ class ViewModelArtistas : ViewModel() {
                 _artistas.value = artistas
             } catch (e: Exception) {
                 e.printStackTrace()
+                _artistas.value = emptyList()
             }
         }
     }
