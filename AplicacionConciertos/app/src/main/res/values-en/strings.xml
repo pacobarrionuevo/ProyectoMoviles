@@ -33,5 +33,6 @@
     <string name="Salir">Leave</string>
     <string name="ConfirmarSalida">Confirm</string>
     <string name="TodosLosArtistas">All artists here</string>
+    <string name="Cargando">Loading...</string>
 
 </resources>

@@ -55,6 +55,10 @@ val baseline = Typography(
     labelSmall = TextStyle(
         fontSize = 15.sp,
         textDecoration = TextDecoration.Underline
+    ),
+    titleMedium = TextStyle(
+        fontSize = 24.sp,
+        fontWeight = FontWeight.Bold
     )
 )
 
