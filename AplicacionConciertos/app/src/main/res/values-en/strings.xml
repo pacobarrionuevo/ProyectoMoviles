@@ -32,5 +32,6 @@
     <string name="Aceptar">Accept</string>
     <string name="Salir">Leave</string>
     <string name="ConfirmarSalida">Confirm</string>
+    <string name="TodosLosArtistas">All artists here</string>
 
 </resources>

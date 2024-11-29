@@ -130,6 +130,24 @@ fun AplicacionPrincipal(navController: NavHostController) {
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(
+            onClick = {
+                navController.navigate(RutasNavegacion.Artistas.route)
+            },
+            modifier = Modifier
+                .fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            )
+        ) {
+            Text(stringResource(id = R.string.TodosLosArtistas))
+
+        }
+
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Button(
             onClick = { showDialog = true },
             modifier = Modifier
                 .fillMaxWidth(),

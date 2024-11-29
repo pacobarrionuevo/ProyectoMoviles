@@ -5,5 +5,5 @@ sealed class RutasNavegacion(val route: String) {
     object SobreNosotros :RutasNavegacion("SobreNosotros")
     object AcercaDe :RutasNavegacion("AcercaDe")
     object Configuracion :RutasNavegacion("Configuracion")
-
+    object Artistas :RutasNavegacion("Artistas")
 }

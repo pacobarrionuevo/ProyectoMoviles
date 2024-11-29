@@ -14,6 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.aplicacionconciertos.model.RutasNavegacion
 import com.example.aplicacionconciertos.ui.theme.AppConciertosTheme
+import com.example.aplicacionconciertos.viewmodel.ViewModelArtistas
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,6 +31,10 @@ class MainActivity : ComponentActivity() {
                         composable(RutasNavegacion.SobreNosotros.route) { SobreNosotros(navController) }
                         composable(RutasNavegacion.AcercaDe.route) { AcercaDe(navController) }
                         composable(RutasNavegacion.Configuracion.route) { Configuracion(navController) }
+                        composable(RutasNavegacion.Artistas.route) {
+                            val viewModel = ViewModelArtistas()
+                                ColeccionArtistas(navController, viewModel)
+                        }
                     }
                 }
             }

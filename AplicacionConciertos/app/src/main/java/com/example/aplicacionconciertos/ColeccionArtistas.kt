@@ -1,17 +1,25 @@
-package com.example.aplicacionconciertos.ui
+package com.example.aplicacionconciertos
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import coil3.compose.AsyncImage
 import com.example.aplicacionconciertos.viewmodel.ViewModelArtistas
 
 @Composable
-fun ArtistScreen(viewModel: ViewModelArtistas) {
+fun ColeccionArtistas(navController: NavHostController, viewModel: ViewModelArtistas) {
 
     val artistas = viewModel.artistas.observeAsState(emptyList())
 
@@ -26,6 +34,15 @@ fun ArtistScreen(viewModel: ViewModelArtistas) {
         } else {
             LazyColumn {
                 items(artistas.value) { artista ->
+                    Column {
+                        AsyncImage(
+                            model = artista.urlImagen,
+                            contentDescription = artista.nombre,
+                            modifier = Modifier.fillMaxWidth().height(200.dp).clip(
+                                RoundedCornerShape(8.dp)
+                            )
+                        )
+                    }
                     Text(text = "ID: ${artista.id}")
                     Text(text = "Nombre: ${artista.nombre}")
                     Text(text = "Géneros: ${artista.generosMusicales.joinToString(", ")}")
