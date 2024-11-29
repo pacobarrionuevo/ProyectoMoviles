@@ -21,7 +21,6 @@ class ViewModelArtistas : ViewModel() {
             try {
                 val artistas = repository.getArtistRepository()
                 _artistas.value = artistas
-                Log.d("ViewModelArtistas", "Artistas cargados: ${artistas.size}")
             } catch (e: Exception) {
                 println("Error: ${e.message}")
                 _artistas.value = emptyList()

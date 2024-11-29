@@ -34,5 +34,12 @@
     <string name="ConfirmarSalida">Confirm</string>
     <string name="TodosLosArtistas">All artists here</string>
     <string name="Cargando">Loading...</string>
+    <string name="Id">Id</string>
+    <string name="Nombre">Name</string>
+    <string name="anoNacimiento">Birth Year</string>
+    <string name="Generos">Musical Genres</string>
+    <string name="PrecioEntrada">Ticket Price</string>
+    <string name="LugaresConcierto">Places to go</string>
+    <string name="Discografia">Discography</string>
 
 </resources>

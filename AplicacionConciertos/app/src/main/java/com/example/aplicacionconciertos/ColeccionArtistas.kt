@@ -67,7 +67,6 @@ fun ColeccionArtistas(viewModel: ViewModelArtistas, navController: NavHostContro
                             .padding(20.dp),
                         horizontalAlignment = Alignment.Start
                     ) {
-
                         AsyncImage(
                             model = ImageRequest.Builder(LocalContext.current)
                                 .data(artista.image_url.replace("http://", "https://"))
@@ -78,7 +77,7 @@ fun ColeccionArtistas(viewModel: ViewModelArtistas, navController: NavHostContro
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(200.dp)
-                                .clip(RoundedCornerShape(8.dp)
+                                .clip(MaterialTheme.shapes.medium
                             )
                         )
 
@@ -90,43 +89,43 @@ fun ColeccionArtistas(viewModel: ViewModelArtistas, navController: NavHostContro
                             horizontalAlignment = Alignment.Start
                         ) {
                             Text(
-                                text = "· Id: ${artista.id}",
+                                text = "· ${stringResource(id = R.string.Id)}: ${artista.id}",
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.primary
                             )
                             Spacer(modifier = Modifier.height(5.dp))
                             Text(
-                                text = "· Nombre: ${artista.name}",
+                                text = "· ${stringResource(id = R.string.Nombre)}: ${artista.name}",
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.primary
                             )
                             Spacer(modifier = Modifier.height(5.dp))
                             Text(
-                                text = "· Géneros: ${artista.genres.joinToString(", ")}",
+                                text = "· ${stringResource(id = R.string.Generos)}: ${artista.genres.joinToString(", ")}",
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.primary
                             )
                             Spacer(modifier = Modifier.height(5.dp))
                             Text(
-                                text = "· Año de nacimiento: ${artista.birth_year}",
+                                text = "· ${stringResource(id = R.string.anoNacimiento)}: ${artista.birth_year}",
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.primary
                             )
                             Spacer(modifier = Modifier.height(5.dp))
                             Text(
-                                text = "· Precio de entrada: ${artista.precio_entrada}",
+                                text = "· ${stringResource(id = R.string.PrecioEntrada)}: ${artista.precio_entrada}",
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.primary
                             )
                             Spacer(modifier = Modifier.height(5.dp))
                             Text(
-                                text = "· Lugar de conciertos: ${artista.concert_locations.joinToString(", ")}",
+                                text = "· ${stringResource(id = R.string.LugaresConcierto)}: ${artista.concert_locations.joinToString(", ")}",
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.primary
                             )
                             Spacer(modifier = Modifier.height(5.dp))
                             Text(
-                                text = "· Álbumes: ${artista.albums.joinToString(", ")}",
+                                text = "· ${stringResource(id = R.string.Discografia)}: ${artista.albums.joinToString(", ")}",
                                 style = MaterialTheme.typography.titleMedium,
                                 color = MaterialTheme.colorScheme.primary
                             )
