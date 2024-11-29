@@ -13,9 +13,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import com.example.aplicacionconciertos.viewmodel.ViewModelArtistas
 
 @Composable
@@ -36,11 +41,16 @@ fun ColeccionArtistas(navController: NavHostController, viewModel: ViewModelArti
                 items(artistas.value) { artista ->
                     Column {
                         AsyncImage(
-                            model = artista.urlImagen,
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(artista.urlImagen.replace("http://", "https://"))
+                                .crossfade(true)
+                                .build(),
+                            placeholder = painterResource(R.drawable.placeholder),
+                            error = painterResource(R.drawable.placeholder),
                             contentDescription = artista.nombre,
-                            modifier = Modifier.fillMaxWidth().height(200.dp).clip(
-                                RoundedCornerShape(8.dp)
-                            )
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier
+                                .weight(0.3f)
                         )
                     }
                     Text(text = "ID: ${artista.id}")
