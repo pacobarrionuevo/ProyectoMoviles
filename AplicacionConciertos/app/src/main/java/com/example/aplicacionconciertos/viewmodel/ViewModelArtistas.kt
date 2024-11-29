@@ -1,5 +1,6 @@
 package com.example.aplicacionconciertos.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,16 +15,16 @@ class ViewModelArtistas : ViewModel() {
     private val _artistas = MutableLiveData<List<DatosArtistas>>()
     val artistas: LiveData<List<DatosArtistas>> = _artistas
 
-    private val _error = MutableLiveData<String>()
-    val error: LiveData<String> = _error
 
     fun fetchArtistas() {
         viewModelScope.launch {
             try {
                 val artistas = repository.getArtistRepository()
                 _artistas.value = artistas
+                Log.d("ViewModelArtistas", "Artistas cargados: ${artistas.size}")
             } catch (e: Exception) {
-                _error.value = e.message ?: "Error desconocido"
+                println("Error: ${e.message}")
+                _artistas.value = emptyList()
             }
         }
     }
