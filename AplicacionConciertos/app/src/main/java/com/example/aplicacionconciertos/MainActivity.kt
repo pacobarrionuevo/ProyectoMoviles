@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -13,8 +14,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.aplicacionconciertos.auth.InicioSesion
+import com.example.aplicacionconciertos.auth.Registro
 import com.example.aplicacionconciertos.model.RutasNavegacion
 import com.example.aplicacionconciertos.ui.theme.AppConciertosTheme
+import com.example.aplicacionconciertos.viewmodel.AuthViewModel
 import com.example.aplicacionconciertos.viewmodel.ViewModelArtistas
 
 class MainActivity : ComponentActivity() {
@@ -34,6 +37,7 @@ class MainActivity : ComponentActivity() {
                         composable(RutasNavegacion.Configuracion.route) { Configuracion(navController) }
                         composable(RutasNavegacion.Artistas.route) { ColeccionArtistas(viewModel = ViewModelArtistas(), navController)   }
                         composable(RutasNavegacion.InicioSesion.route) { InicioSesion(navController) }
+                        composable(RutasNavegacion.Registro.route) {Registro(viewModel = AuthViewModel()), navController }
                     }
                 }
             }

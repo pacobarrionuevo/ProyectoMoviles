@@ -38,38 +38,47 @@ import androidx.navigation.NavController
 @Composable
 fun InicioSesion(navController: NavController) {
     val showLoginForm = rememberSaveable{ mutableStateOf(true) }
-Surface (modifier = Modifier .fillMaxSize()){
-    Column (
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+    Surface (modifier = Modifier .fillMaxSize()){
+        Column (
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
 
-    ){if (showLoginForm.value){
-        Text(text = "Inicio de Sesión")
-        UserForm(isCreateAccount = false){ email,password->
-            Log.d("AplicacionConciertos","$email $password")
+        ) {
+            if (showLoginForm.value) {
+                Text(text = "Inicio de Sesión")
+                UserForm(isCreateAccount = false){ email,password->
+                    Log.d("AplicacionConciertos","$email $password")
+                }
+            } else {
+                Text(text = "Crear Cuenta")
+                UserForm(isCreateAccount = true){ email,password->
+                    Log.d("AplicacionConciertos","$email $password")
+                }
+            }
+
+            Spacer(modifier = Modifier.height(15.dp))
+
+            Row (horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically) {
+
+                val text1 = if (showLoginForm.value) "¿No tienes cuenta?"
+                    else "¿Ya tienes cuenta?"
+                val text2 = if (showLoginForm.value) "Registrate"
+                    else "Inicia Sesión"
+
+            Text(text = text1)
+            Text(
+                text = text2,
+                modifier = Modifier.clickable {
+                    showLoginForm.value = !showLoginForm.value}
+                    .padding(start = 5.dp),
+                color = MaterialTheme.colorScheme.secondary
+            )
+            }
         }
-}else {
-    Text(text = "Crear Cuenta")
-    UserForm(isCreateAccount = true){ email,password->
-        Log.d("AplicacionConciertos","$email $password")
     }
-    }
-Spacer(modifier = Modifier.height(15.dp))
-        Row (horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically){
-            val text1 = if (showLoginForm.value) "¿No tienes cuenta?"
-            else "¿Ya tienes cuenta?"
-           val text2 = if (showLoginForm.value) "Registrate"
-        else "Inicia Sesión"
-        Text(text = text1)
-        Text(text = text2,
-            modifier = Modifier.clickable {
-                showLoginForm.value = !showLoginForm.value}
-                .padding(start = 5.dp),
-            color = MaterialTheme.colorScheme.secondary)
-        }
 }
-}
-}
+
 @Composable
 fun PasswordVisibleIcon(
     passwordVisible: MutableState<Boolean>){
