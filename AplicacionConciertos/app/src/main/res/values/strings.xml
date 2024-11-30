@@ -40,4 +40,5 @@
     <string name="PrecioEntrada">Precio de una entrada</string>
     <string name="LugaresConcierto">Sitios que visitará</string>
     <string name="Discografia">Discografía</string>
+    <string name="InicioSesion">Iniciar Sesión</string>
 </resources>

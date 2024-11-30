@@ -12,6 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.aplicacionconciertos.auth.InicioSesion
 import com.example.aplicacionconciertos.model.RutasNavegacion
 import com.example.aplicacionconciertos.ui.theme.AppConciertosTheme
 import com.example.aplicacionconciertos.viewmodel.ViewModelArtistas
@@ -32,6 +33,7 @@ class MainActivity : ComponentActivity() {
                         composable(RutasNavegacion.AcercaDe.route) { AcercaDe(navController) }
                         composable(RutasNavegacion.Configuracion.route) { Configuracion(navController) }
                         composable(RutasNavegacion.Artistas.route) { ColeccionArtistas(viewModel = ViewModelArtistas(), navController)   }
+                        composable(RutasNavegacion.InicioSesion.route) { InicioSesion(navController) }
                     }
                 }
             }

@@ -41,5 +41,6 @@
     <string name="PrecioEntrada">Ticket Price</string>
     <string name="LugaresConcierto">Places to go</string>
     <string name="Discografia">Discography</string>
+    <string name="InicioSesion">Sign In</string>
 
 </resources>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "702427032476",
+    "project_id": "aplicacionconciertos",
+    "storage_bucket": "aplicacionconciertos.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:702427032476:android:34694f818d6b65c091f659",
+        "android_client_info": {
+          "package_name": "com.example.aplicacionconciertos"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqTwQ18MrhVxi2s3rd-znKXRWKqBOYZNQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
