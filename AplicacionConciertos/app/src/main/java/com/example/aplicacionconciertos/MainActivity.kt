@@ -10,6 +10,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -31,13 +32,13 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val navController = rememberNavController()
                     NavHost(navController = navController, startDestination = RutasNavegacion.Home.route) {
-                        composable(RutasNavegacion.Home.route) { AplicacionPrincipal(navController) }
+                        composable(RutasNavegacion.Home.route) { AplicacionPrincipal(navController, viewModel()) }
                         composable(RutasNavegacion.SobreNosotros.route) { SobreNosotros(navController) }
                         composable(RutasNavegacion.AcercaDe.route) { AcercaDe(navController) }
                         composable(RutasNavegacion.Configuracion.route) { Configuracion(navController) }
                         composable(RutasNavegacion.Artistas.route) { ColeccionArtistas(viewModel = ViewModelArtistas(), navController)   }
                         composable(RutasNavegacion.InicioSesion.route) { InicioSesion(navController) }
-                        composable(RutasNavegacion.Registro.route) {Registro(viewModel = AuthViewModel()), navController }
+                        composable(RutasNavegacion.Registro.route) {Registro(viewModel(), navController) }
                     }
                 }
             }

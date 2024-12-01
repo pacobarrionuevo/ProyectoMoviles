@@ -40,11 +40,9 @@ import com.example.aplicacionconciertos.viewmodel.ViewModelArtistas
 fun ColeccionArtistas(viewModel: ViewModelArtistas, navController: NavHostController) {
 
     val artistas by viewModel.artistas.observeAsState(emptyList())
-    Log.d("ColeccionArtistas", "Artistas observados: ${artistas}")
 
     LaunchedEffect(Unit) {
         viewModel.fetchArtistas()
-        Log.d("ColeccionArtistas", "Artistas cargados: ${artistas.size}")
     }
 
     Column (

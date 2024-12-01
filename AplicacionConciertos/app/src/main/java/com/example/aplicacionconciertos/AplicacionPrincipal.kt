@@ -17,7 +17,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -32,11 +34,22 @@ import androidx.core.app.ActivityCompat
 import androidx.navigation.NavHostController
 import com.example.aplicacionconciertos.R
 import com.example.aplicacionconciertos.model.RutasNavegacion
+import com.example.aplicacionconciertos.viewmodel.AuthState
+import com.example.aplicacionconciertos.viewmodel.AuthViewModel
 
 @Composable
-fun AplicacionPrincipal(navController: NavHostController) {
+fun AplicacionPrincipal(navController: NavHostController, authViewModel: AuthViewModel) {
     var showDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
+
+    val authState = authViewModel.authState.observeAsState()
+
+    LaunchedEffect(authState.value) {
+        when(authState.value) {
+            is AuthState.Unauthenticated -> navController.navigate(RutasNavegacion.Registro.route)
+            else -> Unit
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -74,6 +87,14 @@ fun AplicacionPrincipal(navController: NavHostController) {
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onTertiaryContainer
         )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        TextButton(onClick = {
+            authViewModel.signout()
+        }) {
+            Text(text = "Cerrar Sesión")
+        }
 
         Spacer(modifier = Modifier.height(20.dp))
 
