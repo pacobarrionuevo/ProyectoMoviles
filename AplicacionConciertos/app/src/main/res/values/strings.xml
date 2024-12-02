@@ -41,4 +41,9 @@
     <string name="LugaresConcierto">Sitios que visitará</string>
     <string name="Discografia">Discografía</string>
     <string name="InicioSesion">Iniciar Sesión</string>
+    <string name="Registrate">REGÍSTRATE AQUÍ</string>
+    <string name="Correo">Correo Electrónico</string>
+    <string name="Contrasena">Contraseña</string>
+    <string name="CrearCuenta">CREAR CUENTA</string>
+    <string name="MensajeRegistro">Si ya tienes una cuenta... ¡Inicia Sesión!</string>
 </resources>

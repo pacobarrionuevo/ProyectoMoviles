@@ -23,8 +23,10 @@ import androidx.navigation.NavController
 import com.example.aplicacionconciertos.viewmodel.AuthViewModel
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.aplicacionconciertos.R
 import com.example.aplicacionconciertos.model.RutasNavegacion
 import com.example.aplicacionconciertos.viewmodel.AuthState
 
@@ -51,7 +53,7 @@ fun Registro(authViewModel: AuthViewModel, navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "REGISTRATE AQUÍ",
+            text = (stringResource(id = R.string.Registrate)),
             style = MaterialTheme.typography.displayMedium
         )
 
@@ -63,7 +65,7 @@ fun Registro(authViewModel: AuthViewModel, navController: NavController) {
                 email = it
             },
             label = {
-                Text(text = "Email")
+                Text(text = (stringResource(id = R.string.Correo)))
             }
         )
 
@@ -75,7 +77,7 @@ fun Registro(authViewModel: AuthViewModel, navController: NavController) {
                 password = it
             },
             label = {
-                Text(text = "Password")
+                Text(text = (stringResource(id = R.string.Contrasena)))
             }
         )
 
@@ -86,7 +88,7 @@ fun Registro(authViewModel: AuthViewModel, navController: NavController) {
         },
             enabled = authState.value != AuthState.Loading
             ) {
-            Text(text = "Registro")
+            Text(text = (stringResource(id = R.string.CrearCuenta)))
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -94,7 +96,7 @@ fun Registro(authViewModel: AuthViewModel, navController: NavController) {
         TextButton(onClick = {
             navController.navigate(RutasNavegacion.InicioSesion.route)
         }) {
-            Text(text = "Si ya tienes una cuenta... ¡Inicia Sesión!")
+            Text(text = stringResource(id = R.string.MensajeRegistro))
         }
     }
 }

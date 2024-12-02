@@ -42,5 +42,10 @@
     <string name="LugaresConcierto">Places to go</string>
     <string name="Discografia">Discography</string>
     <string name="InicioSesion">Sign In</string>
+    <string name="Registrate">SIGN UP HERE</string>
+    <string name="Correo">E-Mail</string>
+    <string name="Contrasena">Password</string>
+    <string name="CrearCuenta">CREATE ACCOUNT</string>
+    <string name="MensajeRegistro">If you already have an account... ¡sign in!</string>
 
 </resources>
