@@ -7,8 +7,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -26,6 +31,8 @@ import com.example.aplicacionconciertos.viewmodel.AuthViewModel
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.aplicacionconciertos.R
@@ -37,6 +44,7 @@ fun Registro(authViewModel: AuthViewModel, navController: NavController) {
 
     var email by remember {mutableStateOf("")}
     var password by remember {mutableStateOf("")}
+    var passwordVisible by remember { mutableStateOf(false) }
 
     val authState = authViewModel.authState.observeAsState()
     val context = LocalContext.current
@@ -80,6 +88,19 @@ fun Registro(authViewModel: AuthViewModel, navController: NavController) {
             },
             label = {
                 Text(text = (stringResource(id = R.string.Contrasena)))
+            },
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = {
+                val image = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
+                val description = if (passwordVisible) {
+                    stringResource(id = R.string.MostrarContrasena)
+                } else {
+                    stringResource(id = R.string.EsconderContrasena)
+                }
+
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(imageVector = image, contentDescription = description)
+                }
             }
         )
 
@@ -89,8 +110,6 @@ fun Registro(authViewModel: AuthViewModel, navController: NavController) {
             authViewModel.registro(email, password)
         },
             enabled = authState.value != AuthState.Loading,
-            modifier = Modifier
-                .fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 contentColor = MaterialTheme.colorScheme.onPrimary

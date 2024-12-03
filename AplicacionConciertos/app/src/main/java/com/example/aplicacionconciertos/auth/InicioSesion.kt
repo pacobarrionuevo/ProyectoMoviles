@@ -114,8 +114,6 @@ fun InicioSesion(authViewModel: AuthViewModel, navController: NavController) {
             authViewModel.inicioSesion(email, password)
         },
             enabled = authState.value != AuthState.Loading,
-            modifier = Modifier
-                .fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 contentColor = MaterialTheme.colorScheme.onPrimary
