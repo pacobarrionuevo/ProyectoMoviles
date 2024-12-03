@@ -51,4 +51,7 @@
     <string name="MensajeLogin">Si no tienes una cuenta... ¡Regístrate aquí!</string>
     <string name="MensajeEmailVacio">El email y/o la contraseña no pueden ser vacíos.</string>
     <string name="Mal">Algo ha ido mal.</string>
+    <string name="MostrarContrasena">Mostrar contraseña</string>
+    <string name="EsconderContrasena">EsconderContrasena</string>
+    <string name="CierraSesion">CIERRA SESIÓN</string>
 </resources>

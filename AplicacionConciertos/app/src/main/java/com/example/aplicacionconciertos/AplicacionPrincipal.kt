@@ -2,6 +2,7 @@
 import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,9 +11,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -87,14 +93,6 @@ fun AplicacionPrincipal(navController: NavHostController, authViewModel: AuthVie
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onTertiaryContainer
         )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        TextButton(onClick = {
-            authViewModel.signout()
-        }) {
-            Text(text = "Cerrar Sesión")
-        }
 
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -205,9 +203,38 @@ fun AplicacionPrincipal(navController: NavHostController, authViewModel: AuthVie
                 }
             )
         }
+
+        UserActionButton(navController, authViewModel)
     }
 }
 
 fun exitApp(context: Context) {
     ActivityCompat.finishAffinity(context as android.app.Activity)
+}
+
+@Composable
+fun UserActionButton(navController: NavHostController, authViewModel: AuthViewModel) {
+    val authState by authViewModel.authState.observeAsState()
+
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        IconButton(
+            onClick = {
+                if (authState is AuthState.Authenticated) {
+                    authViewModel.signout()
+                } else {
+                    navController.navigate(RutasNavegacion.InicioSesion.route)
+                }
+            },
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(16.dp)
+        ) {
+            Icon(
+                imageVector = if (authState is AuthState.Authenticated) Icons.Default.ExitToApp else Icons.Default.AccountCircle,
+                contentDescription = if (authState is AuthState.Authenticated) stringResource(R.string.CierraSesion) else stringResource(R.string.IniciaSesion)
+            )
+        }
+    }
 }

@@ -1,11 +1,8 @@
 package com.example.aplicacionconciertos.auth
 
-import android.util.Log
 import android.widget.Toast
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,11 +14,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -51,6 +48,7 @@ import com.example.aplicacionconciertos.viewmodel.AuthViewModel
 fun InicioSesion(authViewModel: AuthViewModel, navController: NavController) {
     var email by remember {mutableStateOf("")}
     var password by remember {mutableStateOf("")}
+    var passwordVisible by remember { mutableStateOf(false) }
 
     val authState = authViewModel.authState.observeAsState()
     val context = LocalContext.current
@@ -93,7 +91,20 @@ fun InicioSesion(authViewModel: AuthViewModel, navController: NavController) {
                 password = it
             },
             label = {
-                Text(text = (stringResource(id = R.string.Contrasena)))
+                Text(text = stringResource(id = R.string.Contrasena))
+            },
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = {
+                val image = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
+                val description = if (passwordVisible) {
+                    stringResource(id = R.string.MostrarContrasena)
+                } else {
+                    stringResource(id = R.string.EsconderContrasena)
+                }
+
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(imageVector = image, contentDescription = description)
+                }
             }
         )
 
@@ -102,7 +113,13 @@ fun InicioSesion(authViewModel: AuthViewModel, navController: NavController) {
         Button (onClick = {
             authViewModel.inicioSesion(email, password)
         },
-            enabled = authState.value != AuthState.Loading
+            enabled = authState.value != AuthState.Loading,
+            modifier = Modifier
+                .fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            )
         ) {
             Text(text = (stringResource(id = R.string.IniciaSesionBoton)))
         }
@@ -115,102 +132,4 @@ fun InicioSesion(authViewModel: AuthViewModel, navController: NavController) {
             Text(text = stringResource(id = R.string.MensajeLogin))
         }
     }
-}
-
-@Composable
-fun PasswordVisibleIcon(
-    passwordVisible: MutableState<Boolean>){
-val image = if (passwordVisible.value)
-    Icons.Default.VisibilityOff
-    else Icons.Default.Visibility
-    IconButton(onClick = {
-        passwordVisible.value = !passwordVisible.value
-    }){
-        Icon(imageVector = image, contentDescription = "")
-    }
-}
-
-@Composable
-fun PasswordInput(
-    passwordState: MutableState<String>,
-    labelId: String,
-    passwordVisible: MutableState<Boolean>) {
-    val visualTransformation = if (passwordVisible.value)
-        VisualTransformation.None
-    else PasswordVisualTransformation()
-    OutlinedTextField(
-    value = passwordState.value,
-        onValueChange = {passwordState.value = it},
-        label = { Text(text = labelId)},
-    singleLine=true,
-    keyboardOptions = KeyboardOptions(
-        keyboardType = KeyboardType.Password
-    ),
-        modifier = Modifier
-            .padding(bottom = 10.dp, start = 10.dp, end = 10.dp)
-            .fillMaxWidth(),
-        visualTransformation = visualTransformation,
-        trailingIcon = {if (passwordState.value.isNotBlank()){
-            PasswordVisibleIcon(passwordVisible)
-        } else null}
-    )
-}
-
-@Composable
-fun UserForm(isCreateAccount: Boolean=false, onDone:(String,String)->Unit= {email,pwd->} ){
-val email = rememberSaveable {
-    mutableStateOf("")
-}
-    val password = rememberSaveable {
-        mutableStateOf("")
-    }
-    val passwordVisible = rememberSaveable {
-        mutableStateOf(false)
-    }
-    val valido = remember(email.value, password.value){
-        email.value.trim().isNotEmpty() && password.value.trim().isNotEmpty()
-    }
-    Column(horizontalAlignment = Alignment.CenterHorizontally){
-    EmailInput(emailState = email)
-    }
-    PasswordInput(passwordState = password,
-        labelId = "Contraseña",
-        passwordVisible = passwordVisible)
-    SubmitButton(textId = if (isCreateAccount) "Crear Cuenta" else "Iniciar Sesión",
-        inputValido= valido){
-        onDone(email.value.trim(),password.value.trim())
-    }
-
-}
-
-@Composable
-fun SubmitButton(textId: String, inputValido: Boolean, onClic: () -> Unit) {
-Button(onClick = {onClic},
-    modifier = Modifier.padding(3.dp).fillMaxWidth(),
-    shape = CircleShape,enabled = inputValido) {
-    Text(text = textId,
-        modifier = Modifier.padding(5.dp))
-}
-}
-
-@Composable
-fun EmailInput(emailState: MutableState<String>, labelId: String = "Email") {
-InputField(
-    valueState = emailState,
-    labelId = labelId,
-    keyboardType = KeyboardType.Email,
-)
-}
-
-@Composable
-fun InputField(valueState: MutableState<String>,isSingleLine:Boolean=true, labelId: String, keyboardType: KeyboardType) {
-OutlinedTextField(
-    value = valueState.value,
-    onValueChange = {valueState.value = it},
-    label = { Text(text = labelId)},
-    singleLine = isSingleLine,
-    modifier = Modifier.padding(bottom = 10.dp, start = 10.dp, end = 10.dp)
-        .fillMaxWidth(),
-    keyboardOptions = KeyboardOptions(keyboardType = keyboardType)
-    )
 }

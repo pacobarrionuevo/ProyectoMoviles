@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -86,7 +88,13 @@ fun Registro(authViewModel: AuthViewModel, navController: NavController) {
         Button (onClick = {
             authViewModel.registro(email, password)
         },
-            enabled = authState.value != AuthState.Loading
+            enabled = authState.value != AuthState.Loading,
+            modifier = Modifier
+                .fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            )
             ) {
             Text(text = (stringResource(id = R.string.CrearCuenta)))
         }
