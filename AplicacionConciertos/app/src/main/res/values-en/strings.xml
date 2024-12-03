@@ -50,5 +50,7 @@
     <string name="IniciaSesion">LOGIN HERE</string>
     <string name="IniciaSesionBoton">LOGIN</string>
     <string name="MensajeLogin">If you don\'t have an account... Sign Up here!</string>
+    <string name="MensajeEmailVacio">Neither e-mail or password can be null</string>
+    <string name="Mal">Something went wrong.</string>
 
 </resources>

@@ -93,12 +93,10 @@ fun Registro(authViewModel: AuthViewModel, navController: NavController) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-
-    }
-
-    TextButton(onClick = {
-        navController.navigate(RutasNavegacion.InicioSesion.route)
-    }) {
-        Text(text = stringResource(id = R.string.MensajeRegistro))
+        TextButton(onClick = {
+            navController.navigate(RutasNavegacion.InicioSesion.route)
+        }) {
+            Text(text = stringResource(id = R.string.MensajeRegistro))
+        }
     }
 }
