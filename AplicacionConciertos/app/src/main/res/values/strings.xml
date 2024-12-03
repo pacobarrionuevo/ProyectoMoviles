@@ -46,4 +46,7 @@
     <string name="Contrasena">Contraseña</string>
     <string name="CrearCuenta">CREAR CUENTA</string>
     <string name="MensajeRegistro">Si ya tienes una cuenta... ¡Inicia Sesión!</string>
+    <string name="IniciaSesion">INICIA SESIÓN AQUÍ</string>
+    <string name="IniciaSesionBoton">INICIA SESIÓN</string>
+    <string name="MensajeLogin">Si no tienes una cuenta... ¡Regístrate aquí!</string>
 </resources>

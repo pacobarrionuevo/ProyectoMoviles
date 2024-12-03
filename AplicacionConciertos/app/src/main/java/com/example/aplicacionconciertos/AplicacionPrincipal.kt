@@ -46,7 +46,7 @@ fun AplicacionPrincipal(navController: NavHostController, authViewModel: AuthVie
 
     LaunchedEffect(authState.value) {
         when(authState.value) {
-            is AuthState.Unauthenticated -> navController.navigate(RutasNavegacion.Registro.route)
+            is AuthState.Unauthenticated -> navController.navigate(RutasNavegacion.InicioSesion.route)
             else -> Unit
         }
     }
@@ -164,21 +164,6 @@ fun AplicacionPrincipal(navController: NavHostController, authViewModel: AuthVie
             Text(stringResource(id = R.string.TodosLosArtistas))
 
         }
-        Button(
-            onClick = {
-                navController.navigate(RutasNavegacion.InicioSesion.route)
-            },
-            modifier = Modifier
-                .fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimary
-            )
-        ) {
-            Text(stringResource(id=R.string.InicioSesion))
-
-        }
-
 
         Spacer(modifier = Modifier.height(20.dp))
 

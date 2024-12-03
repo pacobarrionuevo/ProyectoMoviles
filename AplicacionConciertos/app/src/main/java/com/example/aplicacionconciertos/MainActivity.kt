@@ -31,13 +31,13 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = RutasNavegacion.Home.route) {
+                    NavHost(navController = navController, startDestination = RutasNavegacion.InicioSesion.route) {
                         composable(RutasNavegacion.Home.route) { AplicacionPrincipal(navController, viewModel()) }
                         composable(RutasNavegacion.SobreNosotros.route) { SobreNosotros(navController) }
                         composable(RutasNavegacion.AcercaDe.route) { AcercaDe(navController) }
                         composable(RutasNavegacion.Configuracion.route) { Configuracion(navController) }
                         composable(RutasNavegacion.Artistas.route) { ColeccionArtistas(viewModel = ViewModelArtistas(), navController)   }
-                        composable(RutasNavegacion.InicioSesion.route) { InicioSesion(navController) }
+                        composable(RutasNavegacion.InicioSesion.route) { InicioSesion(viewModel(), navController) }
                         composable(RutasNavegacion.Registro.route) {Registro(viewModel(), navController) }
                     }
                 }
