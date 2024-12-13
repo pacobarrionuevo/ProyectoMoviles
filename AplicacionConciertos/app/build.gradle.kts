@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     //id("com.android.application")
     id("com.google.gms.google-services")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -79,9 +80,10 @@ dependencies {
     implementation("io.coil-kt.coil3:coil-network-okhttp:3.0.2")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation("androidx.compose.material:material-icons-extended:1.3.1")
-    implementation("libs.androidx.room.runtime")
-    implementation("libs.androidx.room.ktx")
-    implementation("libs.androidx.lifecycle.viewmodel.compose")
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.firebase.auth)
     implementation(libs.androidx.espresso.core)
