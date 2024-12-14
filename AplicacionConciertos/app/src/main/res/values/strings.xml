@@ -54,4 +54,6 @@
     <string name="MostrarContrasena">Mostrar contraseña</string>
     <string name="EsconderContrasena">EsconderContrasena</string>
     <string name="CierraSesion">CIERRA SESIÓN</string>
+    <string name="Registro">Registro</string>
+    <string name="MenuPrincipal">Menú Principal</string>
 </resources>

@@ -55,5 +55,7 @@
     <string name="MostrarContrasena">Show Password</string>
     <string name="EsconderContrasena">Hide Password</string>
     <string name="CierraSesion">CLOSE SESSION</string>
+    <string name="Registro">Register</string>
+    <string name="MenuPrincipal">Home Page</string>
 
 </resources>
