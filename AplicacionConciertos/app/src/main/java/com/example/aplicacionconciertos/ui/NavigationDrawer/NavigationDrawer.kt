@@ -40,47 +40,56 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.aplicacionconciertos.R
+import com.example.aplicacionconciertos.model.RutasNavegacion
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NavigationDrawer() {
+fun NavigationDrawer(navController: NavHostController) {
     val items = listOf(
         NavigationItems(
             title = stringResource(id = R.string.MenuPrincipal),
             selectedIcon = Icons.Filled.Home,
-            unselectedIcon = Icons.Outlined.Home
+            unselectedIcon = Icons.Outlined.Home,
+            route = RutasNavegacion.Home.route
         ),
         NavigationItems(
             title = stringResource(id = R.string.TodosLosArtistas),
             selectedIcon = Icons.Filled.LibraryMusic,
-            unselectedIcon = Icons.Outlined.LibraryMusic
+            unselectedIcon = Icons.Outlined.LibraryMusic,
+            route = RutasNavegacion.Artistas.route
         ),
         NavigationItems(
             title = stringResource(id = R.string.InicioSesion),
             selectedIcon = Icons.Filled.Person,
-            unselectedIcon = Icons.Outlined.Person
+            unselectedIcon = Icons.Outlined.Person,
+            route = RutasNavegacion.InicioSesion.route
         ),
         NavigationItems(
             title = stringResource(id = R.string.Registro),
             selectedIcon = Icons.Filled.PersonAdd,
-            unselectedIcon = Icons.Outlined.PersonAdd
+            unselectedIcon = Icons.Outlined.PersonAdd,
+            route = RutasNavegacion.Registro.route
         ),
         NavigationItems(
             title = stringResource(id = R.string.ConfiguracionTituloBoton),
             selectedIcon = Icons.Filled.Settings,
-            unselectedIcon = Icons.Outlined.Settings
+            unselectedIcon = Icons.Outlined.Settings,
+            route = RutasNavegacion.Configuracion.route
         ),
         NavigationItems(
             title = stringResource(id = R.string.SobreNosotrosTitulo),
             selectedIcon = Icons.Filled.Info,
-            unselectedIcon = Icons.Outlined.Info
+            unselectedIcon = Icons.Outlined.Info,
+            route = RutasNavegacion.SobreNosotros.route
         ),
         NavigationItems(
             title = stringResource(id = R.string.AcercaDeTitulo),
             selectedIcon = Icons.Filled.QuestionMark,
-            unselectedIcon = Icons.Outlined.QuestionMark
+            unselectedIcon = Icons.Outlined.QuestionMark,
+            route = RutasNavegacion.AcercaDe.route
         )
     )
 
@@ -99,9 +108,13 @@ fun NavigationDrawer() {
                         label = { Text(text = item.title) },
                         selected = index == selectedItemIndex,
                         onClick = {
-                            //  navController.navigate(item.route)
-
                             selectedItemIndex = index
+
+                            navController.navigate(item.route) {
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+
                             scope.launch {
                                 drawerState.close()
                             }
