@@ -1,14 +1,14 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    //id("com.android.application")
+    alias(libs.plugins.compose.compiler)
     id("com.google.gms.google-services")
     id("com.google.devtools.ksp")
 }
 
 android {
     namespace = "com.example.aplicacionconciertos"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.aplicacionconciertos"
