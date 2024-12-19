@@ -82,6 +82,7 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.3.1")
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.firebase.vertexai)
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.runtime.livedata)

@@ -1,4 +1,3 @@
-
 import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,6 +19,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -44,10 +44,12 @@ import com.example.aplicacionconciertos.viewmodel.AuthState
 import com.example.aplicacionconciertos.viewmodel.AuthViewModel
 
 @Composable
-fun AplicacionPrincipal(navController: NavHostController, authViewModel: AuthViewModel) {
+fun AplicacionPrincipal(
+    navController: NavHostController,
+    authViewModel: AuthViewModel
+) {
     var showDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
-
     val authState = authViewModel.authState.observeAsState()
 
     LaunchedEffect(authState.value) {
@@ -57,159 +59,116 @@ fun AplicacionPrincipal(navController: NavHostController, authViewModel: AuthVie
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.inversePrimary)
-            .padding(20.dp),
-        horizontalAlignment = Alignment.Start
-    ) {
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.onPrimaryContainer)
+
+    Scaffold { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.inversePrimary)
+                .padding(paddingValues)
+                .padding(20.dp),
+            horizontalAlignment = Alignment.Start
         ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = MaterialTheme.colorScheme.onPrimaryContainer)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.titulo_aplicacion),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.surface
+                )
+            }
+
+            Spacer(modifier = Modifier.height(40.dp))
+
+            Image(
+                painter = painterResource(id = R.drawable.concierto),
+                contentDescription = stringResource(id = R.string.concierto),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .background(color = MaterialTheme.colorScheme.primaryContainer)
+                    .width(400.dp)
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
             Text(
-                text = stringResource(id = R.string.titulo_aplicacion),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.surface
-            )
-        }
-
-        Spacer(modifier = Modifier.height(40.dp))
-
-        Image(
-            painter = painterResource(id = R.drawable.concierto),
-            contentDescription = stringResource(id = R.string.concierto),
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .background(color = MaterialTheme.colorScheme.primaryContainer)
-                .width(400.dp)
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Text(
-            text = stringResource(id = R.string.SobreNosotrosVistaPrincipal),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onTertiaryContainer
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Button(
-            onClick = {
-                navController.navigate(RutasNavegacion.SobreNosotros.route)
-            },
-            modifier = Modifier
-                .fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimary
+                text = stringResource(id = R.string.SobreNosotrosVistaPrincipal),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onTertiaryContainer
             )
 
-        ) {
-            Text(stringResource(id = R.string.SobreNosotrosTitulo))
+            Spacer(modifier = Modifier.height(20.dp))
 
-        }
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Button(
-            onClick = {
-                navController.navigate(RutasNavegacion.AcercaDe.route)
-            },
-            modifier = Modifier
-                .fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimary
+            NavigationButton(
+                text = stringResource(id = R.string.Tareas),
+                onClick = { navController.navigate(RutasNavegacion.Tareas.route) }
             )
-        ) {
-            Text(stringResource(id = R.string.AcercaDeTitulo))
 
-        }
+            // Botón de salida con diálogo
+            Button(
+                onClick = { showDialog = true },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.error,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
+            ) {
+                Text(stringResource(id = R.string.Salir))
+            }
 
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Button(
-            onClick = {
-                navController.navigate(RutasNavegacion.Configuracion.route)
-            },
-            modifier = Modifier
-                .fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimary
-            )
-        ) {
-            Text(stringResource(id = R.string.ConfiguracionTituloBoton))
-
-        }
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Button(
-            onClick = {
-                navController.navigate(RutasNavegacion.Artistas.route)
-            },
-            modifier = Modifier
-                .fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimary
-            )
-        ) {
-            Text(stringResource(id = R.string.TodosLosArtistas))
-
-        }
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Button(
-            onClick = { showDialog = true },
-            modifier = Modifier
-                .fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.error,
-                contentColor = MaterialTheme.colorScheme.onPrimary
-            )
-        ) {
-            Text(stringResource(id = R.string.Salir))
-        }
-
-        if (showDialog) {
-            AlertDialog(
-                onDismissRequest = { showDialog = false },
-                title = { Text(text = stringResource(id = R.string.ConfirmarSalida)) },
-                text = { Text(text = stringResource(id = R.string.Salir)) },
-                confirmButton = {
-                    TextButton(
-                        onClick = {
-                            showDialog = false
-                            exitApp(context)
+            if (showDialog) {
+                AlertDialog(
+                    onDismissRequest = { showDialog = false },
+                    title = { Text(text = stringResource(id = R.string.ConfirmarSalida)) },
+                    text = { Text(text = stringResource(id = R.string.Salir)) },
+                    confirmButton = {
+                        TextButton(
+                            onClick = {
+                                showDialog = false
+                                exitApp(context)
+                            }
+                        ) {
+                            Text(stringResource(id = R.string.Aceptar))
                         }
-                    ) {
-                        Text(stringResource(id = R.string.Aceptar))
-                    }
-                },
-                dismissButton = {
-                    TextButton(
-                        onClick = {
-                            showDialog = false
+                    },
+                    dismissButton = {
+                        TextButton(
+                            onClick = { showDialog = false }
+                        ) {
+                            Text(stringResource(id = R.string.Cancelar))
                         }
-                    ) {
-                        Text(stringResource(id = R.string.Cancelar))
                     }
-                }
-            )
-        }
+                )
+            }
 
-        UserActionButton(navController, authViewModel)
+            UserActionButton(navController, authViewModel)
+        }
+    }
+}
+
+@Composable
+fun NavigationButton(text: String, onClick: () -> Unit) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+        )
+    ) {
+        Text(text)
     }
 }
 
 fun exitApp(context: Context) {
-    ActivityCompat.finishAffinity(context as android.app.Activity)
+    if (context is android.app.Activity) {
+        ActivityCompat.finishAffinity(context)
+    }
 }
 
 @Composable
@@ -232,8 +191,14 @@ fun UserActionButton(navController: NavHostController, authViewModel: AuthViewMo
                 .padding(16.dp)
         ) {
             Icon(
-                imageVector = if (authState is AuthState.Authenticated) Icons.Default.ExitToApp else Icons.Default.AccountCircle,
-                contentDescription = if (authState is AuthState.Authenticated) stringResource(R.string.CierraSesion) else stringResource(R.string.IniciaSesion)
+                imageVector = if (authState is AuthState.Authenticated)
+                    Icons.Default.ExitToApp
+                else
+                    Icons.Default.AccountCircle,
+                contentDescription = if (authState is AuthState.Authenticated)
+                    stringResource(R.string.CierraSesion)
+                else
+                    stringResource(R.string.IniciaSesion)
             )
         }
     }

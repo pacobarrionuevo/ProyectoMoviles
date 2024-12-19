@@ -57,5 +57,6 @@
     <string name="CierraSesion">CLOSE SESSION</string>
     <string name="Registro">Register</string>
     <string name="MenuPrincipal">Home Page</string>
+    <string name="Tareas">Tasks</string>
 
 </resources>

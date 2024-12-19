@@ -1,5 +1,6 @@
 package com.example.aplicacionconciertos.ui.NavigationDrawer
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -12,6 +13,7 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material.icons.filled.QuestionMark
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Task
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.LibraryMusic
@@ -19,6 +21,7 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PersonAdd
 import androidx.compose.material.icons.outlined.QuestionMark
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Task
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -47,7 +50,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NavigationDrawer(navController: NavHostController) {
+fun NavigationDrawer(navController: NavHostController, content: @Composable (paddingValues: PaddingValues) -> Unit) {
     val items = listOf(
         NavigationItems(
             title = stringResource(id = R.string.MenuPrincipal),
@@ -90,6 +93,12 @@ fun NavigationDrawer(navController: NavHostController) {
             selectedIcon = Icons.Filled.QuestionMark,
             unselectedIcon = Icons.Outlined.QuestionMark,
             route = RutasNavegacion.AcercaDe.route
+        ),
+        NavigationItems(
+            title = stringResource(id = R.string.Tareas),
+            selectedIcon = Icons.Filled.Task,
+            unselectedIcon = Icons.Outlined.Task,
+            route = RutasNavegacion.Tareas.route
         )
     )
 
@@ -102,7 +111,7 @@ fun NavigationDrawer(navController: NavHostController) {
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet {
-                Spacer(modifier = Modifier.height(16.dp)) //space (margin) from top
+                Spacer(modifier = Modifier.height(16.dp))
                 items.forEachIndexed { index, item ->
                     NavigationDrawerItem(
                         label = { Text(text = item.title) },
@@ -142,11 +151,12 @@ fun NavigationDrawer(navController: NavHostController) {
         gesturesEnabled = true
     ) {
         Scaffold(
-            topBar = { //TopBar to show title
+            topBar = {
                 TopAppBar(
                     title = {
-                        Text(text = "Navigation Drawer Example")
-                    },
+                        Text(
+                            text = stringResource(id = R.string.titulo_aplicacion)
+                        ) },
                     navigationIcon = {
                         IconButton(onClick = {
                             scope.launch {
@@ -155,7 +165,7 @@ fun NavigationDrawer(navController: NavHostController) {
                                 }
                             }
                         }) {
-                            Icon(  //Show Menu Icon on TopBar
+                            Icon(
                                 imageVector = Icons.Default.Menu,
                                 contentDescription = "Menu"
                             )
@@ -164,7 +174,7 @@ fun NavigationDrawer(navController: NavHostController) {
                 )
             }
         ) { paddingValues ->
-            Modifier.padding(paddingValues)
+            content(paddingValues)
         }
     }
 
