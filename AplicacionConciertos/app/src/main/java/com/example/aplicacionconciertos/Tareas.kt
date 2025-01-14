@@ -11,6 +11,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -18,14 +19,13 @@ import com.example.aplicacionconciertos.model.tareas.ContenedorMisTareas
 import com.example.aplicacionconciertos.model.tareas.MiTarea
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun Tareas(navController: NavController) {
     val context = LocalContext.current
     val contenedor = remember { ContenedorMisTareas(context) }
     val misTareas = remember { mutableStateListOf<MiTarea>() }
 
-    // Lanzar una corrutina para obtener las tareas del repositorio
     LaunchedEffect(Unit) {
         launch {
             contenedor.repositorioMisTareas.obtenerTodasLasTareas().collect { tareas ->
@@ -35,7 +35,6 @@ fun Tareas(navController: NavController) {
         }
     }
 
-    // Mostrar la lista de tareas en un LazyColumn
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -52,13 +51,15 @@ fun Tareas(navController: NavController) {
 
 @Composable
 fun TareaItem(tarea: MiTarea, contenedor: ContenedorMisTareas) {
-    val scope = rememberCoroutineScope() // Coroutine scope for delete operation
+    val scope = rememberCoroutineScope()
+
+    Spacer(modifier = Modifier.height(60.dp))
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .clickable { /* Acción al hacer clic en la tarea */ },
+            .clickable { },
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
@@ -79,26 +80,13 @@ fun TareaItem(tarea: MiTarea, contenedor: ContenedorMisTareas) {
                 overflow = TextOverflow.Ellipsis
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(
-                    checked = tarea.completada,
-                    onCheckedChange = { /* Acción al cambiar el estado de la tarea */ }
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = if (tarea.completada) "Completada" else "Pendiente",
-                    style = MaterialTheme.typography.bodySmall
-                )
-            }
 
             Button(onClick = {
                 scope.launch {
                     contenedor.repositorioMisTareas.eliminarTarea(tarea)
                 }
             }) {
-                Text("Borrar")
+                Text(stringResource(id = R.string.Borrar))
             }
         }
     }
@@ -110,8 +98,8 @@ fun TareaItem(tarea: MiTarea, contenedor: ContenedorMisTareas) {
 fun CrearTarea(contenedor: ContenedorMisTareas) {
     var titulo by remember { mutableStateOf("") }
     var descripcion by remember { mutableStateOf("") }
-    val scope = rememberCoroutineScope() // Coroutine scope for create operation
-
+    val scope = rememberCoroutineScope()
+    Spacer(modifier = Modifier.height(60.dp))
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -121,13 +109,13 @@ fun CrearTarea(contenedor: ContenedorMisTareas) {
         OutlinedTextField(
             value = titulo,
             onValueChange = { titulo = it },
-            label = { Text("Título") }
+            label = { Text(stringResource(id = R.string.Titulo)) }
         )
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
             value = descripcion,
             onValueChange = { descripcion = it },
-            label = { Text("Descripción") }
+            label = { Text(stringResource(id = R.string.Descripcion)) }
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = {
@@ -138,7 +126,7 @@ fun CrearTarea(contenedor: ContenedorMisTareas) {
             titulo = ""
             descripcion = ""
         }) {
-            Text("Crear Tarea")
+            Text(stringResource(id = R.string.CrearTarea))
         }
     }
 }

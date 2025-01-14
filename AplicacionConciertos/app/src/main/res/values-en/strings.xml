@@ -58,5 +58,11 @@
     <string name="Registro">Register</string>
     <string name="MenuPrincipal">Home Page</string>
     <string name="Tareas">Tasks</string>
+    <string name="Borrar">Delete</string>
+    <string name="Completada">Completed</string>
+    <string name="Pendiente">To do</string>
+    <string name="Titulo">Title</string>
+    <string name="Descripcion">Description</string>
+    <string name="CrearTarea">Create Task</string>
 
 </resources>

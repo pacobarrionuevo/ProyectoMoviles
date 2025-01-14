@@ -57,4 +57,10 @@
     <string name="Registro">Registro</string>
     <string name="MenuPrincipal">Menú Principal</string>
     <string name="Tareas">Tareas</string>
+    <string name="Borrar">Borrar</string>
+    <string name="Completada">Completada</string>
+    <string name="Pendiente">Pendiente</string>
+    <string name="Titulo">Titulo</string>
+    <string name="Descripcion">Descripción</string>
+    <string name="CrearTarea">Crear Tarea</string>
 </resources>
