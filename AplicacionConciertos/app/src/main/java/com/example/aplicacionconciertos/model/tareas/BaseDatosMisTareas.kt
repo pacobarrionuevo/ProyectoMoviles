@@ -9,7 +9,6 @@ abstract class BaseDatosMisTareas : RoomDatabase() {
     abstract fun daoMisTareas(): DaoMisTareas
 
     companion object {
-        @Volatile
         private var INSTANCE: BaseDatosMisTareas? = null
 
         fun obtenerBaseDatos(context: Context): BaseDatosMisTareas {

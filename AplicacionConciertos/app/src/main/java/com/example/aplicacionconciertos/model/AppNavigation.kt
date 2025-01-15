@@ -46,33 +46,31 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.TaskAlt
+import androidx.compose.material3.Badge
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalDrawerSheet
-
 
 @Composable
 fun AppNavigation(navController: NavHostController, authState: AuthState) {
-
     val authViewModel: AuthViewModel = viewModel()
     val context = LocalContext.current
     val contenedor = remember { ContenedorMisTareas(context) }
     val tareasViewModel: TareasViewModel = viewModel {
         TareasViewModel(contenedor.repositorioMisTareas)
     }
-
-
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-
-
     val tareasIncompletas by tareasViewModel.numeroTareasPendientes.collectAsState(initial = 0)
-    val showBadge = tareasIncompletas > 0
-
-
+    val enseñarBadge = tareasIncompletas > 0
+    Log.d("AppNavigation", "Tareas incompletas y badge: $tareasIncompletas, $enseñarBadge")
     val startDestination = when (authState) {
         is AuthState.Authenticated -> RutasNavegacion.Home.route
         else -> RutasNavegacion.InicioSesion.route
@@ -84,29 +82,32 @@ fun AppNavigation(navController: NavHostController, authState: AuthState) {
             ModalDrawerSheet {
                 Spacer(Modifier.height(16.dp))
 
-
                 NavigationDrawerItem(
                     label = {
                         Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.fillMaxWidth()
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Text("Lista de tareas", Modifier.weight(1f))
-                            if (showBadge) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(24.dp)
-                                        .clip(CircleShape)
-                                        .background(Color.Red),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        text = "$tareasIncompletas",
-                                        color = Color.White,
-                                        fontSize = 12.sp
-                                    )
-                                }
-                            }
+                            Icon(
+                                imageVector = Icons.Default.TaskAlt,
+                                contentDescription = "Tareas"
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text("Lista de tareas")
+
+
+                        }
+
+                    },
+                    badge = {
+
+                        if (tareasIncompletas > 0) {
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Badge(
+                                containerColor = Color.Red,
+                                contentColor = Color.White,
+                                content ={
+                                    Text(text = tareasIncompletas.toString())
+                                } )
                         }
                     },
                     selected = currentRoute == "tareas",
@@ -117,10 +118,8 @@ fun AppNavigation(navController: NavHostController, authState: AuthState) {
                             restoreState = true
                         }
                         scope.launch { drawerState.close() }
-                    },
-                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                    }
                 )
-
 
                 NavigationDrawerItem(
                     label = { Text("Conciertos") },
@@ -129,13 +128,10 @@ fun AppNavigation(navController: NavHostController, authState: AuthState) {
                         navController.navigate("conciertos") {
                             popUpTo(navController.graph.startDestinationId) { saveState = true }
                             launchSingleTop = true
-                            restoreState = true
-                        }
+                            restoreState = true }
                         scope.launch { drawerState.close() }
-                    },
-                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                    }
                 )
-
 
                 NavigationDrawerItem(
                     label = { Text("Configuración") },
@@ -147,8 +143,7 @@ fun AppNavigation(navController: NavHostController, authState: AuthState) {
                             restoreState = true
                         }
                         scope.launch { drawerState.close() }
-                    },
-                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                    }
                 )
             }
         }
