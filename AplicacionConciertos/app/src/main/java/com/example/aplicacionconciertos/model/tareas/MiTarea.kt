@@ -9,9 +9,9 @@ data class MiTarea(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     @ColumnInfo(name = "titulo")
-    val titulo: String = "", // Valor por defecto
+    val titulo: String = "",
     @ColumnInfo(name = "descripcion")
-    val descripcion: String = "", // Valor por defecto
+    val descripcion: String = "",
     @ColumnInfo(name = "completada")
     val completada: Boolean = false
 )

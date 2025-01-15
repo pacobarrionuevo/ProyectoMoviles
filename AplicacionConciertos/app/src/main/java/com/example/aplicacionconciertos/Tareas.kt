@@ -11,19 +11,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.aplicacionconciertos.model.tareas.ContenedorMisTareas
 import com.example.aplicacionconciertos.model.tareas.MiTarea
+import com.example.aplicacionconciertos.viewmodel.TareasViewModel
 import kotlinx.coroutines.launch
-
 
 @Composable
 fun Tareas(navController: NavController) {
     val context = LocalContext.current
     val contenedor = remember { ContenedorMisTareas(context) }
+    val viewModel: TareasViewModel = viewModel {
+        TareasViewModel(contenedor.repositorioMisTareas)
+    }
     val misTareas = remember { mutableStateListOf<MiTarea>() }
 
     LaunchedEffect(Unit) {
@@ -40,20 +43,19 @@ fun Tareas(navController: NavController) {
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        items(misTareas) { tarea ->
-            TareaItem(tarea, contenedor)
+        items(misTareas, key = { tarea -> tarea.id }) { tarea ->
+            TareaItem(tarea, viewModel)
         }
         item {
-            CrearTarea(contenedor)
+            CrearTarea(viewModel)
         }
     }
 }
 
 @Composable
-fun TareaItem(tarea: MiTarea, contenedor: ContenedorMisTareas) {
+fun TareaItem(tarea: MiTarea, viewModel: TareasViewModel) {
     val scope = rememberCoroutineScope()
-
-    Spacer(modifier = Modifier.height(60.dp))
+    var checkedState by remember { mutableStateOf(tarea.completada) }
 
     Card(
         modifier = Modifier
@@ -80,26 +82,40 @@ fun TareaItem(tarea: MiTarea, contenedor: ContenedorMisTareas) {
                 overflow = TextOverflow.Ellipsis
             )
             Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(
+                    checked = checkedState,
+                    onCheckedChange = { isChecked ->
+                        checkedState = isChecked
+                        viewModel.actualizarTarea(tarea.copy(completada = isChecked))
+                    }
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = if (checkedState) "Completada" else "Pendiente",
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
 
             Button(onClick = {
                 scope.launch {
-                    contenedor.repositorioMisTareas.eliminarTarea(tarea)
+                    viewModel.eliminarTarea(tarea)
                 }
             }) {
-                Text(stringResource(id = R.string.Borrar))
+                Text("Borrar")
             }
         }
     }
 }
 
-
-
 @Composable
-fun CrearTarea(contenedor: ContenedorMisTareas) {
+fun CrearTarea(viewModel: TareasViewModel) {
     var titulo by remember { mutableStateOf("") }
     var descripcion by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
-    Spacer(modifier = Modifier.height(60.dp))
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -109,24 +125,22 @@ fun CrearTarea(contenedor: ContenedorMisTareas) {
         OutlinedTextField(
             value = titulo,
             onValueChange = { titulo = it },
-            label = { Text(stringResource(id = R.string.Titulo)) }
+            label = { Text("Título") }
         )
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
             value = descripcion,
             onValueChange = { descripcion = it },
-            label = { Text(stringResource(id = R.string.Descripcion)) }
+            label = { Text("Descripción") }
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = {
             val nuevaTarea = MiTarea(titulo = titulo, descripcion = descripcion)
-            scope.launch {
-                contenedor.repositorioMisTareas.insertarTarea(nuevaTarea)
-            }
+            viewModel.insertarTarea(nuevaTarea)
             titulo = ""
             descripcion = ""
         }) {
-            Text(stringResource(id = R.string.CrearTarea))
+            Text("Crear Tarea")
         }
     }
 }

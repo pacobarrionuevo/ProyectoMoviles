@@ -42,11 +42,13 @@ import com.example.aplicacionconciertos.R
 import com.example.aplicacionconciertos.model.RutasNavegacion
 import com.example.aplicacionconciertos.viewmodel.AuthState
 import com.example.aplicacionconciertos.viewmodel.AuthViewModel
+import com.example.aplicacionconciertos.viewmodel.TareasViewModel
 
 @Composable
 fun AplicacionPrincipal(
     navController: NavHostController,
-    authViewModel: AuthViewModel
+    authViewModel: AuthViewModel,
+    tareasViewModel: TareasViewModel
 ) {
     var showDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current

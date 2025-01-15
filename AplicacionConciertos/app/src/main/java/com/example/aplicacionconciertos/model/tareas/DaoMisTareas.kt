@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface DaoMisTareas {
     @Query("SELECT COUNT(*) FROM mis_tareas WHERE completada = 0")
-    fun obtenerNumeroTareasPendientes(miTarea: MiTarea): Flow<Int>
+    fun obtenerNumeroTareasPendientes(): Flow<Int>
 
     @Query("SELECT * FROM mis_tareas")
     fun obtenerTodasLasTareas(): Flow<List<MiTarea>>

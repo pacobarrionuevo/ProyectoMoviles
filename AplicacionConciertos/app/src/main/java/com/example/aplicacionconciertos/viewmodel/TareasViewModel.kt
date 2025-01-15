@@ -13,7 +13,7 @@ class TareasViewModel(private val repositorioMisTareas: RepositorioMisTareas) : 
 
     // 1. Flujo de tareas pendientes (no completadas)
     val numeroTareasPendientes: StateFlow<Int> = repositorioMisTareas
-        .obtenerNumeroTareasPendientes(MiTarea()) // Pasamos una instancia de MiTarea (no se usa en la query)
+        .obtenerNumeroTareasPendientes()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),

@@ -9,5 +9,5 @@ class RepositorioMisTareas(private val daoMisTareas: DaoMisTareas) {
 
     suspend fun eliminarTarea(miTarea: MiTarea) = daoMisTareas.eliminarTarea(miTarea)
 
-    fun obtenerNumeroTareasPendientes(miTarea: MiTarea) = daoMisTareas.obtenerNumeroTareasPendientes(miTarea)
+    fun obtenerNumeroTareasPendientes() = daoMisTareas.obtenerNumeroTareasPendientes()
 }
