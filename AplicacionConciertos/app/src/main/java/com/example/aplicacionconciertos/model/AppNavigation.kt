@@ -4,7 +4,7 @@ import AplicacionPrincipal
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
@@ -34,7 +34,6 @@ import com.example.aplicacionconciertos.viewmodel.TareasViewModel
 import com.example.aplicacionconciertos.viewmodel.ViewModelArtistas
 import androidx.compose.ui.platform.LocalContext
 import com.example.aplicacionconciertos.model.tareas.ContenedorMisTareas
-import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.rememberCoroutineScope
@@ -44,10 +43,12 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ModalDrawerSheet
 
 
@@ -55,21 +56,22 @@ import androidx.compose.material3.ModalDrawerSheet
 fun AppNavigation(navController: NavHostController, authState: AuthState) {
 
     val authViewModel: AuthViewModel = viewModel()
-    val viewModelArtistas: ViewModelArtistas = viewModel()
     val context = LocalContext.current
     val contenedor = remember { ContenedorMisTareas(context) }
     val tareasViewModel: TareasViewModel = viewModel {
         TareasViewModel(contenedor.repositorioMisTareas)
     }
-    val drawerState = rememberDrawerState(initialValue = androidx.compose.material3.DrawerValue.Closed)
+
+
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    val tareasIncompletas by tareasViewModel.numeroTareasPendientes.collectAsState()
 
-    val showBadge by remember { derivedStateOf { tareasIncompletas > 0 } }
 
-    Log.d("AppNavigation", "Incomplete Task Count: $tareasIncompletas, Show Badge: $showBadge")
+    val tareasIncompletas by tareasViewModel.numeroTareasPendientes.collectAsState(initial = 0)
+    val showBadge = tareasIncompletas > 0
+
 
     val startDestination = when (authState) {
         is AuthState.Authenticated -> RutasNavegacion.Home.route
@@ -80,23 +82,26 @@ fun AppNavigation(navController: NavHostController, authState: AuthState) {
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet {
-                Spacer(Modifier.height(12.dp))
+                Spacer(Modifier.height(16.dp))
+
+
                 NavigationDrawerItem(
                     label = {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("Lista de tareas")
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text("Lista de tareas", Modifier.weight(1f))
                             if (showBadge) {
-                                Spacer(modifier = Modifier.width(4.dp))
-
                                 Box(
                                     modifier = Modifier
+                                        .size(24.dp)
                                         .clip(CircleShape)
-                                        .background(Color.Red)
-                                        .padding(horizontal = 6.dp, vertical = 2.dp),
+                                        .background(Color.Red),
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Text(
-                                        text = tareasIncompletas.toString(),
+                                        text = "$tareasIncompletas",
                                         color = Color.White,
                                         fontSize = 12.sp
                                     )
@@ -106,16 +111,41 @@ fun AppNavigation(navController: NavHostController, authState: AuthState) {
                     },
                     selected = currentRoute == "tareas",
                     onClick = {
-                        navController.navigate("tareas")
+                        navController.navigate("tareas") {
+                            popUpTo(navController.graph.startDestinationId) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
                         scope.launch { drawerState.close() }
                     },
-                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
+                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                 )
+
+
                 NavigationDrawerItem(
                     label = { Text("Conciertos") },
                     selected = currentRoute == "conciertos",
                     onClick = {
-                        navController.navigate("conciertos")
+                        navController.navigate("conciertos") {
+                            popUpTo(navController.graph.startDestinationId) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                        scope.launch { drawerState.close() }
+                    },
+                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                )
+
+
+                NavigationDrawerItem(
+                    label = { Text("Configuración") },
+                    selected = currentRoute == "configuracion",
+                    onClick = {
+                        navController.navigate("configuracion") {
+                            popUpTo(navController.graph.startDestinationId) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
                         scope.launch { drawerState.close() }
                     },
                     modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
@@ -127,14 +157,11 @@ fun AppNavigation(navController: NavHostController, authState: AuthState) {
             composable(RutasNavegacion.Home.route) {
                 AplicacionPrincipal(navController, authViewModel, tareasViewModel)
             }
-            composable(RutasNavegacion.AcercaDe.route) {
-                AcercaDe(navController)
-            }
-            composable(RutasNavegacion.SobreNosotros.route) {
-                SobreNosotros(navController)
+            composable(RutasNavegacion.Tareas.route) {
+                Tareas(navController)
             }
             composable(RutasNavegacion.Artistas.route) {
-                ColeccionArtistas(viewModelArtistas, navController)
+                ColeccionArtistas(viewModel(), navController)
             }
             composable(RutasNavegacion.Configuracion.route) {
                 Configuracion(navController)
@@ -144,9 +171,6 @@ fun AppNavigation(navController: NavHostController, authState: AuthState) {
             }
             composable(RutasNavegacion.Registro.route) {
                 Registro(authViewModel, navController)
-            }
-            composable(RutasNavegacion.Tareas.route) {
-                Tareas(navController)
             }
         }
     }
