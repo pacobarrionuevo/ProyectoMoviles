@@ -53,7 +53,7 @@ fun Tareas(navController: NavController) {
 fun TareaItem(tarea: MiTarea, viewModel: TareasViewModel) {
     val scope = rememberCoroutineScope()
     var checkedState by remember { mutableStateOf(tarea.completada) }
-    var isVisible by remember { mutableStateOf(true) } // Controla la visibilidad de la tarea
+    var isVisible by remember { mutableStateOf(true) }
 
     AnimatedVisibility(
         visible = isVisible,
@@ -104,9 +104,9 @@ fun TareaItem(tarea: MiTarea, viewModel: TareasViewModel) {
                 }
                 IconButton(onClick = {
                     scope.launch {
-                        isVisible = false // Oculta la tarea con animación
-                        kotlinx.coroutines.delay(300) // Espera para permitir que la animación termine
-                        viewModel.eliminarTarea(tarea) // Elimina la tarea del repositorio
+                        isVisible = false
+                        kotlinx.coroutines.delay(300)
+                        viewModel.eliminarTarea(tarea)
                     }
                 }) {
                     Icon(

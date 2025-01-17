@@ -40,7 +40,9 @@ import androidx.compose.material.icons.filled.TaskAlt
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalDrawerSheet
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -60,6 +62,7 @@ fun AppNavigation(navController: NavHostController, authState: AuthState) {
         is AuthState.Authenticated -> RutasNavegacion.Home.route
         else -> RutasNavegacion.InicioSesion.route
     }
+
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -117,6 +120,7 @@ fun AppNavigation(navController: NavHostController, authState: AuthState) {
                         scope.launch { drawerState.close() }
                     }
                 )
+
             }
         }
     ) {

@@ -104,11 +104,6 @@ fun AplicacionPrincipal(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            NavigationButton(
-                text = stringResource(id = R.string.Tareas),
-                onClick = { navController.navigate(RutasNavegacion.Tareas.route) }
-            )
-
             // Botón de salida con diálogo
             Button(
                 onClick = { showDialog = true },
