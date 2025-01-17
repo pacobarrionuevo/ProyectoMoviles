@@ -1,4 +1,4 @@
-package com.example.aplicacionconciertos.ui.NavigationDrawer
+package com.example.aplicacionconciertos.ui
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -22,6 +22,7 @@ import androidx.compose.material.icons.outlined.PersonAdd
 import androidx.compose.material.icons.outlined.QuestionMark
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Task
+import androidx.compose.material3.Badge
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -35,8 +36,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -46,12 +50,25 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.aplicacionconciertos.R
 import com.example.aplicacionconciertos.model.RutasNavegacion
+import com.example.aplicacionconciertos.viewmodel.TareasViewModel
 import kotlinx.coroutines.launch
+
+data class NavigationItems(
+    val title: String,
+    val selectedIcon: androidx.compose.ui.graphics.vector.ImageVector,
+    val unselectedIcon: androidx.compose.ui.graphics.vector.ImageVector,
+    val route: String,
+    var badgeCount: Int? = null
+)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NavigationDrawer(navController: NavHostController, content: @Composable (paddingValues: PaddingValues) -> Unit) {
-    val items = listOf(
+fun NavigationDrawer(
+    navController: NavHostController,
+    tareasViewModel: TareasViewModel,
+    content: @Composable (paddingValues: PaddingValues) -> Unit
+) {
+    val initialItems = listOf(
         NavigationItems(
             title = stringResource(id = R.string.MenuPrincipal),
             selectedIcon = Icons.Filled.Home,
@@ -102,10 +119,21 @@ fun NavigationDrawer(navController: NavHostController, content: @Composable (pad
         )
     )
 
-    var selectedItemIndex by rememberSaveable {mutableStateOf(0)}
+    var selectedItemIndex by rememberSaveable { mutableStateOf(0) }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-
     val scope = rememberCoroutineScope()
+    val incompleteTaskCount by tareasViewModel.numeroTareasPendientes.collectAsState(initial = 0)
+    var items by remember { mutableStateOf(initialItems) }
+
+    LaunchedEffect(incompleteTaskCount) {
+        items = items.map { item ->
+            if (item.route == RutasNavegacion.Tareas.route) {
+                item.copy(badgeCount = if (incompleteTaskCount > 0) incompleteTaskCount else null)
+            } else {
+                item
+            }
+        }
+    }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -118,12 +146,10 @@ fun NavigationDrawer(navController: NavHostController, content: @Composable (pad
                         selected = index == selectedItemIndex,
                         onClick = {
                             selectedItemIndex = index
-
                             navController.navigate(item.route) {
                                 launchSingleTop = true
                                 restoreState = true
                             }
-
                             scope.launch {
                                 drawerState.close()
                             }
@@ -136,16 +162,17 @@ fun NavigationDrawer(navController: NavHostController, content: @Composable (pad
                                 contentDescription = item.title
                             )
                         },
-                        badge = {  // Show Badge
+                        badge = {
                             item.badgeCount?.let {
-                                Text(text = item.badgeCount.toString())
+                                Badge {
+                                    Text(text = it.toString())
+                                }
                             }
                         },
                         modifier = Modifier
                             .padding(NavigationDrawerItemDefaults.ItemPadding)
                     )
                 }
-
             }
         },
         gesturesEnabled = true
@@ -156,7 +183,8 @@ fun NavigationDrawer(navController: NavHostController, content: @Composable (pad
                     title = {
                         Text(
                             text = stringResource(id = R.string.titulo_aplicacion)
-                        ) },
+                        )
+                    },
                     navigationIcon = {
                         IconButton(onClick = {
                             scope.launch {
@@ -177,6 +205,4 @@ fun NavigationDrawer(navController: NavHostController, content: @Composable (pad
             content(paddingValues)
         }
     }
-
 }
-

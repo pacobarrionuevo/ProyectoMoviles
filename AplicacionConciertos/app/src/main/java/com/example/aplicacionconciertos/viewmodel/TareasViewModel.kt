@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 
 class TareasViewModel(private val repositorioMisTareas: RepositorioMisTareas) : ViewModel() {
 
-    // 1. Flujo de tareas pendientes (no completadas)
+
     val numeroTareasPendientes: StateFlow<Int> = repositorioMisTareas
         .obtenerNumeroTareasPendientes()
         .stateIn(
@@ -20,21 +20,21 @@ class TareasViewModel(private val repositorioMisTareas: RepositorioMisTareas) : 
             initialValue = 0
         )
 
-    // 2. Función para actualizar una tarea (marcar/desmarcar como completada)
+
     fun actualizarTarea(tarea: MiTarea) {
         viewModelScope.launch {
             repositorioMisTareas.actualizarTarea(tarea)
         }
     }
 
-    // 3. Función para borrar una tarea
+
     fun eliminarTarea(tarea: MiTarea) {
         viewModelScope.launch {
             repositorioMisTareas.eliminarTarea(tarea)
         }
     }
 
-    // 4. Función para insertar una tarea
+
     fun insertarTarea(tarea: MiTarea) {
         viewModelScope.launch {
             repositorioMisTareas.insertarTarea(tarea)
