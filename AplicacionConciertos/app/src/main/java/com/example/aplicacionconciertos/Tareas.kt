@@ -1,5 +1,6 @@
 package com.example.aplicacionconciertos
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -49,7 +50,9 @@ fun Tareas(navController: NavController) {
             .padding(top = 56.dp)
     ) {
         items(misTareas, key = { tarea -> tarea.id }) { tarea ->
-            TareaItem(tarea, viewModel)
+            TareaItem(tarea, viewModel, onDelete = { tareaAEliminar ->
+                misTareas.remove(tareaAEliminar)
+            })
         }
         item {
             CrearTarea(viewModel)
@@ -58,68 +61,76 @@ fun Tareas(navController: NavController) {
 }
 
 @Composable
-fun TareaItem(tarea: MiTarea, viewModel: TareasViewModel) {
+fun TareaItem(tarea: MiTarea, viewModel: TareasViewModel, onDelete: (MiTarea) -> Unit) {
     val scope = rememberCoroutineScope()
     var checkedState by remember { mutableStateOf(tarea.completada) }
+    var isVisible by remember { mutableStateOf(true) } // Controla la visibilidad de la tarea
 
-    Spacer(modifier = Modifier.width(30.dp))
-
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    AnimatedVisibility(
+        visible = isVisible,
+        modifier = Modifier.fillMaxWidth()
     ) {
-        Row(
+        Card(
             modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
-            Checkbox(
-                checked = checkedState,
-                onCheckedChange = { isChecked ->
-                    checkedState = isChecked
-                    viewModel.actualizarTarea(tarea.copy(completada = isChecked))
-                }
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Column(
+            Row(
                 modifier = Modifier
-                    .weight(1f)
-                    .clickable {
-                        checkedState = !checkedState
-                        viewModel.actualizarTarea(tarea.copy(completada = checkedState))
-                    }
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = tarea.titulo,
-                    style = if (checkedState) MaterialTheme.typography.titleMedium.copy(textDecoration = TextDecoration.LineThrough)
-                    else MaterialTheme.typography.titleMedium,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                Checkbox(
+                    checked = checkedState,
+                    onCheckedChange = { isChecked ->
+                        checkedState = isChecked
+                        viewModel.actualizarTarea(tarea.copy(completada = isChecked))
+                    }
                 )
-                Text(
-                    text = tarea.descripcion,
-                    style = if (checkedState) MaterialTheme.typography.bodyMedium.copy(textDecoration = TextDecoration.LineThrough)
-                    else MaterialTheme.typography.bodyMedium,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
-            IconButton(onClick = {
-                scope.launch {
-                    viewModel.eliminarTarea(tarea)
+                Spacer(modifier = Modifier.width(8.dp))
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable {
+                            checkedState = !checkedState
+                            viewModel.actualizarTarea(tarea.copy(completada = checkedState))
+                        }
+                ) {
+                    Text(
+                        text = tarea.titulo,
+                        style = if (checkedState) MaterialTheme.typography.titleMedium.copy(textDecoration = TextDecoration.LineThrough)
+                        else MaterialTheme.typography.titleMedium,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    Text(
+                        text = tarea.descripcion,
+                        style = if (checkedState) MaterialTheme.typography.bodyMedium.copy(textDecoration = TextDecoration.LineThrough)
+                        else MaterialTheme.typography.bodyMedium,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 }
-            }) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    contentDescription = stringResource(id = R.string.BorrarTarea)
-                )
+                IconButton(onClick = {
+                    scope.launch {
+                        isVisible = false // Oculta la tarea con animación
+                        kotlinx.coroutines.delay(300) // Espera para permitir que la animación termine
+                        viewModel.eliminarTarea(tarea) // Elimina la tarea del repositorio
+                        onDelete(tarea) // Elimina la tarea de la lista local
+                    }
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = stringResource(id = R.string.BorrarTarea)
+                    )
+                }
             }
         }
     }
 }
+
 
 @Composable
 fun CrearTarea(viewModel: TareasViewModel) {
