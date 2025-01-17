@@ -70,9 +70,9 @@ fun AppNavigation(navController: NavHostController, authState: AuthState) {
     val scope = rememberCoroutineScope()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    val tareasIncompletas by tareasViewModel.numeroTareasPendientes.collectAsState(initial = 0)
-    val enseñarBadge = tareasIncompletas > 0
-    Log.d("AppNavigation", "Tareas incompletas y badge: $tareasIncompletas, $enseñarBadge")
+    val tareasPendientes by tareasViewModel.numeroTareasPendientes.collectAsState()
+    val enseñarBadge = tareasPendientes > 0
+    Log.d("AppNavigation", "Tareas incompletas y badge: $tareasPendientes, $enseñarBadge")
     val startDestination = when (authState) {
         is AuthState.Authenticated -> RutasNavegacion.Home.route
         else -> RutasNavegacion.InicioSesion.route
@@ -99,14 +99,14 @@ fun AppNavigation(navController: NavHostController, authState: AuthState) {
                             Box(
                                 modifier = Modifier.padding(start = 8.dp)
                             ) {
-                                if (tareasIncompletas > 0) {
+                                if (tareasPendientes > 0) {
                                     Badge(
                                         modifier = Modifier.size(24.dp),
                                         containerColor = MaterialTheme.colorScheme.secondary,
                                         contentColor = Color.White,
                                         content = {
                                             Text(
-                                                text = tareasIncompletas.toString(),
+                                                text = tareasPendientes.toString(),
                                                 style = MaterialTheme.typography.bodySmall.copy(color = Color.White)
                                             )
                                         }

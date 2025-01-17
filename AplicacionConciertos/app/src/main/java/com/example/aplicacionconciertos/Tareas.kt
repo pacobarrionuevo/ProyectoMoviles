@@ -32,16 +32,7 @@ fun Tareas(navController: NavController) {
     val viewModel: TareasViewModel = viewModel {
         TareasViewModel(contenedor.repositorioMisTareas)
     }
-    val misTareas = remember { mutableStateListOf<MiTarea>() }
-
-    LaunchedEffect(Unit) {
-        launch {
-            contenedor.repositorioMisTareas.obtenerTodasLasTareas().collect { tareas ->
-                misTareas.clear()
-                misTareas.addAll(tareas)
-            }
-        }
-    }
+    val misTareas by contenedor.repositorioMisTareas.obtenerTodasLasTareas().collectAsState(initial = emptyList())
 
     LazyColumn(
         modifier = Modifier
@@ -50,9 +41,7 @@ fun Tareas(navController: NavController) {
             .padding(top = 56.dp)
     ) {
         items(misTareas, key = { tarea -> tarea.id }) { tarea ->
-            TareaItem(tarea, viewModel, onDelete = { tareaAEliminar ->
-                misTareas.remove(tareaAEliminar)
-            })
+            TareaItem(tarea, viewModel)
         }
         item {
             CrearTarea(viewModel)
@@ -61,7 +50,7 @@ fun Tareas(navController: NavController) {
 }
 
 @Composable
-fun TareaItem(tarea: MiTarea, viewModel: TareasViewModel, onDelete: (MiTarea) -> Unit) {
+fun TareaItem(tarea: MiTarea, viewModel: TareasViewModel) {
     val scope = rememberCoroutineScope()
     var checkedState by remember { mutableStateOf(tarea.completada) }
     var isVisible by remember { mutableStateOf(true) } // Controla la visibilidad de la tarea
@@ -118,7 +107,6 @@ fun TareaItem(tarea: MiTarea, viewModel: TareasViewModel, onDelete: (MiTarea) ->
                         isVisible = false // Oculta la tarea con animación
                         kotlinx.coroutines.delay(300) // Espera para permitir que la animación termine
                         viewModel.eliminarTarea(tarea) // Elimina la tarea del repositorio
-                        onDelete(tarea) // Elimina la tarea de la lista local
                     }
                 }) {
                     Icon(

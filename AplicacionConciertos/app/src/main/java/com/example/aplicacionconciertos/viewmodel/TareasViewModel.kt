@@ -16,7 +16,7 @@ class TareasViewModel(private val repositorioMisTareas: RepositorioMisTareas) : 
         .obtenerNumeroTareasPendientes()
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
+            started = SharingStarted.Eagerly,
             initialValue = 0
         )
 
