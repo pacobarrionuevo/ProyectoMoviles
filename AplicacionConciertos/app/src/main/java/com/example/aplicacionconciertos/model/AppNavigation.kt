@@ -59,6 +59,7 @@ import androidx.compose.material3.ModalDrawerSheet
 @Composable
 fun AppNavigation(navController: NavHostController, authState: AuthState) {
     val authViewModel: AuthViewModel = viewModel()
+    val artistasViewModel: ViewModelArtistas = viewModel()
     val context = LocalContext.current
     val contenedor = remember { ContenedorMisTareas(context) }
     val tareasViewModel: TareasViewModel = viewModel {
@@ -145,12 +146,67 @@ fun AppNavigation(navController: NavHostController, authState: AuthState) {
                         scope.launch { drawerState.close() }
                     }
                 )
+
+                NavigationDrawerItem(
+                    label = { Text("InicioSesion") },
+                    selected = currentRoute == "InicioSesion",
+                    onClick = {
+                        navController.navigate("InicioSesion") {
+                            popUpTo(navController.graph.startDestinationId) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                        scope.launch { drawerState.close() }
+                    }
+                )
+
+                NavigationDrawerItem(
+                    label = { Text("Registro") },
+                    selected = currentRoute == "Registro",
+                    onClick = {
+                        navController.navigate("Registro") {
+                            popUpTo(navController.graph.startDestinationId) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                        scope.launch { drawerState.close() }
+                    }
+                )
+
+                NavigationDrawerItem(
+                    label = { Text("SobreNosotros") },
+                    selected = currentRoute == "SobreNosotros",
+                    onClick = {
+                        navController.navigate("SobreNosotros") {
+                            popUpTo(navController.graph.startDestinationId) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                        scope.launch { drawerState.close() }
+                    }
+                )
+
+                NavigationDrawerItem(
+                    label = { Text("AcercaDe") },
+                    selected = currentRoute == "AcercaDe",
+                    onClick = {
+                        navController.navigate("AcercaDe") {
+                            popUpTo(navController.graph.startDestinationId) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                        scope.launch { drawerState.close() }
+                    }
+                )
             }
         }
     ) {
         NavHost(navController = navController, startDestination = startDestination) {
             composable(RutasNavegacion.Home.route) {
                 AplicacionPrincipal(navController, authViewModel, tareasViewModel)
+            }
+            composable(RutasNavegacion.Artistas.route) {
+                ColeccionArtistas(artistasViewModel, navController)
             }
             composable(RutasNavegacion.Tareas.route) {
                 Tareas(navController)
@@ -166,6 +222,12 @@ fun AppNavigation(navController: NavHostController, authState: AuthState) {
             }
             composable(RutasNavegacion.Registro.route) {
                 Registro(authViewModel, navController)
+            }
+            composable(RutasNavegacion.SobreNosotros.route) {
+                SobreNosotros(navController)
+            }
+            composable(RutasNavegacion.AcercaDe.route) {
+                AcercaDe(navController)
             }
         }
     }
