@@ -64,5 +64,7 @@
     <string name="Titulo">Title</string>
     <string name="Descripcion">Description</string>
     <string name="CrearTarea">Create Task</string>
+    <string name="BorrarTarea">DeleteTask</string>
+    <string name="TituloTarea">Title</string>
 
 </resources>

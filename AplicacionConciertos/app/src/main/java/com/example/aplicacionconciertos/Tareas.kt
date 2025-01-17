@@ -4,6 +4,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
@@ -11,6 +13,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -42,6 +46,7 @@ fun Tareas(navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
+            .padding(top = 56.dp)
     ) {
         items(misTareas, key = { tarea -> tarea.id }) { tarea ->
             TareaItem(tarea, viewModel)
@@ -57,54 +62,60 @@ fun TareaItem(tarea: MiTarea, viewModel: TareasViewModel) {
     val scope = rememberCoroutineScope()
     var checkedState by remember { mutableStateOf(tarea.completada) }
 
+    Spacer(modifier = Modifier.width(30.dp))
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)
-            .clickable { },
+            .padding(vertical = 8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(
+        Row(
             modifier = Modifier
                 .padding(16.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = tarea.titulo,
-                style = MaterialTheme.typography.titleMedium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+            Checkbox(
+                checked = checkedState,
+                onCheckedChange = { isChecked ->
+                    checkedState = isChecked
+                    viewModel.actualizarTarea(tarea.copy(completada = isChecked))
+                }
             )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = tarea.descripcion,
-                style = MaterialTheme.typography.bodyMedium,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Checkbox(
-                    checked = checkedState,
-                    onCheckedChange = { isChecked ->
-                        checkedState = isChecked
-                        viewModel.actualizarTarea(tarea.copy(completada = isChecked))
+            Spacer(modifier = Modifier.width(8.dp))
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable {
+                        checkedState = !checkedState
+                        viewModel.actualizarTarea(tarea.copy(completada = checkedState))
                     }
-                )
-                Spacer(modifier = Modifier.width(8.dp))
+            ) {
                 Text(
-                    text = if (checkedState) "Completada" else "Pendiente",
-                    style = MaterialTheme.typography.bodySmall
+                    text = tarea.titulo,
+                    style = if (checkedState) MaterialTheme.typography.titleMedium.copy(textDecoration = TextDecoration.LineThrough)
+                    else MaterialTheme.typography.titleMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = tarea.descripcion,
+                    style = if (checkedState) MaterialTheme.typography.bodyMedium.copy(textDecoration = TextDecoration.LineThrough)
+                    else MaterialTheme.typography.bodyMedium,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
-
-            Button(onClick = {
+            IconButton(onClick = {
                 scope.launch {
                     viewModel.eliminarTarea(tarea)
                 }
             }) {
-                Text("Borrar")
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = stringResource(id = R.string.BorrarTarea)
+                )
             }
         }
     }
@@ -125,13 +136,13 @@ fun CrearTarea(viewModel: TareasViewModel) {
         OutlinedTextField(
             value = titulo,
             onValueChange = { titulo = it },
-            label = { Text("Título") }
+            label = { Text(stringResource(id = R.string.Titulo)) }
         )
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
             value = descripcion,
             onValueChange = { descripcion = it },
-            label = { Text("Descripción") }
+            label = { Text(stringResource(id = R.string.Descripcion))}
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = {
@@ -140,7 +151,7 @@ fun CrearTarea(viewModel: TareasViewModel) {
             titulo = ""
             descripcion = ""
         }) {
-            Text("Crear Tarea")
+            Text(stringResource(id = R.string.CrearTarea))
         }
     }
 }
