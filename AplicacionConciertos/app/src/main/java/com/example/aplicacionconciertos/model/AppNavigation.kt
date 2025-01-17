@@ -54,6 +54,7 @@ import androidx.compose.material.icons.filled.TaskAlt
 import androidx.compose.material3.Badge
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 
 @Composable
@@ -94,20 +95,23 @@ fun AppNavigation(navController: NavHostController, authState: AuthState) {
                             Spacer(Modifier.width(8.dp))
                             Text("Lista de tareas")
 
-
-                        }
-
-                    },
-                    badge = {
-
-                        if (tareasIncompletas > 0) {
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Badge(
-                                containerColor = Color.Red,
-                                contentColor = Color.White,
-                                content ={
-                                    Text(text = tareasIncompletas.toString())
-                                } )
+                            Box(
+                                modifier = Modifier.padding(start = 8.dp)
+                            ) {
+                                if (tareasIncompletas > 0) {
+                                    Badge(
+                                        modifier = Modifier.size(24.dp),
+                                        containerColor = MaterialTheme.colorScheme.secondary,
+                                        contentColor = Color.White,
+                                        content = {
+                                            Text(
+                                                text = tareasIncompletas.toString(),
+                                                style = MaterialTheme.typography.bodySmall.copy(color = Color.White)
+                                            )
+                                        }
+                                    )
+                                }
+                            }
                         }
                     },
                     selected = currentRoute == "tareas",
@@ -121,6 +125,7 @@ fun AppNavigation(navController: NavHostController, authState: AuthState) {
                     }
                 )
 
+
                 NavigationDrawerItem(
                     label = { Text("Conciertos") },
                     selected = currentRoute == "conciertos",
@@ -128,7 +133,8 @@ fun AppNavigation(navController: NavHostController, authState: AuthState) {
                         navController.navigate("conciertos") {
                             popUpTo(navController.graph.startDestinationId) { saveState = true }
                             launchSingleTop = true
-                            restoreState = true }
+                            restoreState = true
+                        }
                         scope.launch { drawerState.close() }
                     }
                 )
