@@ -60,12 +60,12 @@ import androidx.compose.material3.ModalDrawerSheet
 @Composable
 fun AppNavigation(navController: NavHostController, authState: AuthState) {
     val authViewModel: AuthViewModel = viewModel()
-    val artistasViewModel: ViewModelArtistas = viewModel()
     val context = LocalContext.current
     val contenedor = remember { ContenedorMisTareas(context) }
     val tareasViewModel: TareasViewModel = viewModel {
         TareasViewModel(contenedor.repositorioMisTareas)
     }
+    val artistasViewModel: ViewModelArtistas = viewModel()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -145,58 +145,6 @@ fun AppNavigation(navController: NavHostController, authState: AuthState) {
                     selected = currentRoute == "configuracion",
                     onClick = {
                         navController.navigate("configuracion") {
-                            popUpTo(navController.graph.startDestinationId) { saveState = true }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                        scope.launch { drawerState.close() }
-                    }
-                )
-
-                NavigationDrawerItem(
-                    label = { Text("InicioSesion") },
-                    selected = currentRoute == "InicioSesion",
-                    onClick = {
-                        navController.navigate("InicioSesion") {
-                            popUpTo(navController.graph.startDestinationId) { saveState = true }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                        scope.launch { drawerState.close() }
-                    }
-                )
-
-                NavigationDrawerItem(
-                    label = { Text("Registro") },
-                    selected = currentRoute == "Registro",
-                    onClick = {
-                        navController.navigate("Registro") {
-                            popUpTo(navController.graph.startDestinationId) { saveState = true }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                        scope.launch { drawerState.close() }
-                    }
-                )
-
-                NavigationDrawerItem(
-                    label = { Text("SobreNosotros") },
-                    selected = currentRoute == "SobreNosotros",
-                    onClick = {
-                        navController.navigate("SobreNosotros") {
-                            popUpTo(navController.graph.startDestinationId) { saveState = true }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                        scope.launch { drawerState.close() }
-                    }
-                )
-
-                NavigationDrawerItem(
-                    label = { Text("AcercaDe") },
-                    selected = currentRoute == "AcercaDe",
-                    onClick = {
-                        navController.navigate("AcercaDe") {
                             popUpTo(navController.graph.startDestinationId) { saveState = true }
                             launchSingleTop = true
                             restoreState = true
