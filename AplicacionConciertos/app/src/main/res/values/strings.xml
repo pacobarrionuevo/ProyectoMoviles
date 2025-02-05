@@ -65,4 +65,8 @@
     <string name="CrearTarea">Crear Tarea</string>
     <string name="BorrarTarea">Borrar Tarea</string>
     <string name="TituloTarea">Nose</string>
+    <string name="ErrorInicioSesion">Error al iniciar sesión. Verifica tus credenciales.</string>
+    <string name="ErrorRegistro">Error al registrarse. Inténtalo de nuevo.</string>
+    <string name="ErrorTokenRefresh">Error al refrescar el token. Inicia sesión nuevamente.</string>
+    <string name="ErrorUserData">Error al obtener los datos del usuario.</string>
 </resources>

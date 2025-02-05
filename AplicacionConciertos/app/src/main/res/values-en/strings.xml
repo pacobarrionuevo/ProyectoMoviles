@@ -66,5 +66,9 @@
     <string name="CrearTarea">Create Task</string>
     <string name="BorrarTarea">DeleteTask</string>
     <string name="TituloTarea">Title</string>
+    <string name="ErrorInicioSesion">Login failed. Please check your credentials.</string>
+    <string name="ErrorRegistro">Sign up failed. Please try again.</string>
+    <string name="ErrorTokenRefresh">Token refresh failed. Please log in again.</string>
+    <string name="ErrorUserData">Failed to retrieve user data.</string>
 
 </resources>

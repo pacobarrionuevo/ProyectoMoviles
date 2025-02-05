@@ -16,17 +16,18 @@ import com.example.aplicacionconciertos.ui.theme.AppConciertosTheme
 import com.example.aplicacionconciertos.viewmodel.AuthState
 import com.example.aplicacionconciertos.viewmodel.AuthViewModel
 import com.example.aplicacionconciertos.viewmodel.TareasViewModel
+import com.example.aplicacionconciertos.viewmodel.authentication.ViewModelAuth
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
-            val authViewModel = AuthViewModel()
+            val viewModelAuth = ViewModelAuth()
             val context = LocalContext.current
             val contenedor = ContenedorMisTareas(context)
             val tareasViewModel = TareasViewModel(contenedor.repositorioMisTareas)
-            val authState by authViewModel.authState.observeAsState(initial = AuthState.Unauthenticated)
+            val authState by viewModelAuth.authState.observeAsState(initial = AuthState.Unauthenticated)
             AppConciertosTheme {
                 NavigationDrawer(navController, tareasViewModel) {
                     AppNavigation(navController, authState)
