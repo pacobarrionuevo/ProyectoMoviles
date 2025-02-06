@@ -24,6 +24,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -41,33 +42,35 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.aplicacionconciertos.R
 import com.example.aplicacionconciertos.model.RutasNavegacion
-import com.example.aplicacionconciertos.viewmodel.AuthState
-import com.example.aplicacionconciertos.viewmodel.AuthViewModel
+import com.example.aplicacionconciertos.viewmodel.authentication.AuthState
+import com.example.aplicacionconciertos.viewmodel.authentication.ViewModelAuth
 
 @Composable
-fun InicioSesion(authViewModel: AuthViewModel, navController: NavController) {
-    var email by remember {mutableStateOf("")}
-    var password by remember {mutableStateOf("")}
+fun InicioSesion(viewModelAuth: ViewModelAuth, navController: NavController) {
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
-
-    val authState = authViewModel.authState.observeAsState()
+    val authState by viewModelAuth.authState.collectAsState()
     val context = LocalContext.current
 
-    LaunchedEffect(authState.value) {
-        when(authState.value) {
+    LaunchedEffect(authState) {
+        when (authState) {
             is AuthState.Authenticated -> navController.navigate(RutasNavegacion.Home.route)
-            is AuthState.Error -> Toast.makeText(context, (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT).show()
+            is AuthState.Error -> {
+                val errorMessage = context.getString((authState as AuthState.Error).errorMessageId)
+                Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+            }
             else -> Unit
         }
     }
 
-    Column (
+    Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = (stringResource(id = R.string.IniciaSesion)),
+            text = stringResource(id = R.string.IniciaSesion),
             style = MaterialTheme.typography.displayMedium
         )
 
@@ -75,24 +78,16 @@ fun InicioSesion(authViewModel: AuthViewModel, navController: NavController) {
 
         OutlinedTextField(
             value = email,
-            onValueChange = {
-                email = it
-            },
-            label = {
-                Text(text = (stringResource(id = R.string.Correo)))
-            }
+            onValueChange = { email = it },
+            label = { Text(text = stringResource(id = R.string.Correo)) }
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
             value = password,
-            onValueChange = {
-                password = it
-            },
-            label = {
-                Text(text = stringResource(id = R.string.Contrasena))
-            },
+            onValueChange = { password = it },
+            label = { Text(text = stringResource(id = R.string.Contrasena)) },
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
                 val image = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
@@ -110,23 +105,20 @@ fun InicioSesion(authViewModel: AuthViewModel, navController: NavController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button (onClick = {
-            authViewModel.inicioSesion(email, password)
-        },
-            enabled = authState.value != AuthState.Loading,
+        Button(
+            onClick = { viewModelAuth.login(email, password) },
+            enabled = authState != AuthState.Loading,
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
                 contentColor = MaterialTheme.colorScheme.onPrimary
             )
         ) {
-            Text(text = (stringResource(id = R.string.IniciaSesionBoton)))
+            Text(text = stringResource(id = R.string.IniciaSesionBoton))
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        TextButton(onClick = {
-            navController.navigate(RutasNavegacion.Registro.route)
-        }) {
+        TextButton(onClick = { navController.navigate(RutasNavegacion.Registro.route) }) {
             Text(text = stringResource(id = R.string.MensajeLogin))
         }
     }

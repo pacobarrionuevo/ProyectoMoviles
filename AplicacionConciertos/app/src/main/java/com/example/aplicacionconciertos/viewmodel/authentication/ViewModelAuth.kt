@@ -1,6 +1,7 @@
 package com.example.aplicacionconciertos.viewmodel.authentication
 
 import android.content.Context
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.aplicacionconciertos.R
@@ -26,13 +27,15 @@ class ViewModelAuth(
         viewModelScope.launch {
             // Crear un objeto AuthRequest con el email y la contraseña
             val authRequest = AuthRequest(email, password)
-            val result = authRepository.login(email, password) // Pasar el objeto AuthRequest
+            val result = authRepository.login(email, password)
             if (result.isSuccess) {
                 val loginResponse = result.getOrNull()!!
                 DataStoreManager.saveCredentials(context, loginResponse.accessToken, loginResponse.refreshToken, email)
                 _authState.value = AuthState.Authenticated(loginResponse.accessToken, loginResponse.refreshToken, email)
             } else {
                 _authState.value = AuthState.Error(R.string.ErrorInicioSesion)
+                // Mostrar Toast directamente desde el ViewModel
+                Toast.makeText(context, context.getString(R.string.ErrorInicioSesion), Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -43,11 +46,13 @@ class ViewModelAuth(
         viewModelScope.launch {
             // Crear un objeto AuthRequest con el email y la contraseña
             val authRequest = AuthRequest(email, password)
-            val result = authRepository.signUp(email, password) // Pasar el objeto AuthRequest
+            val result = authRepository.signUp(email, password)
             if (result.isSuccess) {
                 _authState.value = AuthState.Success("User registered successfully")
             } else {
                 _authState.value = AuthState.Error(R.string.ErrorRegistro)
+
+                Toast.makeText(context, context.getString(R.string.ErrorRegistro), Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -70,6 +75,8 @@ class ViewModelAuth(
                     _authState.value = AuthState.Success("User data retrieved")
                 } else {
                     _authState.value = AuthState.Error(R.string.ErrorUserData)
+                    // Mostrar Toast directamente desde el ViewModel
+                    Toast.makeText(context, context.getString(R.string.ErrorUserData), Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -87,6 +94,8 @@ class ViewModelAuth(
                     _authState.value = AuthState.Authenticated(newAccessToken, refreshToken, "")
                 } else {
                     _authState.value = AuthState.Error(R.string.ErrorTokenRefresh)
+                    // Mostrar Toast directamente desde el ViewModel
+                    Toast.makeText(context, context.getString(R.string.ErrorTokenRefresh), Toast.LENGTH_LONG).show()
                 }
             }
         }

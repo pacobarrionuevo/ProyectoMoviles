@@ -23,8 +23,8 @@ import com.example.aplicacionconciertos.SobreNosotros
 import com.example.aplicacionconciertos.Tareas
 import com.example.aplicacionconciertos.auth.InicioSesion
 import com.example.aplicacionconciertos.auth.Registro
-import com.example.aplicacionconciertos.viewmodel.AuthState
-import com.example.aplicacionconciertos.viewmodel.AuthViewModel
+import com.example.aplicacionconciertos.viewmodel.authentication.AuthState
+import com.example.aplicacionconciertos.viewmodel.authentication.ViewModelAuth
 import com.example.aplicacionconciertos.viewmodel.TareasViewModel
 import com.example.aplicacionconciertos.viewmodel.ViewModelArtistas
 import androidx.compose.ui.platform.LocalContext
@@ -47,7 +47,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun AppNavigation(navController: NavHostController, authState: AuthState) {
-    val authViewModel: AuthViewModel = viewModel()
+    val authViewModel: ViewModelAuth = viewModel()
     val context = LocalContext.current
     val contenedor = remember { ContenedorMisTareas(context) }
     val tareasViewModel: TareasViewModel = viewModel {

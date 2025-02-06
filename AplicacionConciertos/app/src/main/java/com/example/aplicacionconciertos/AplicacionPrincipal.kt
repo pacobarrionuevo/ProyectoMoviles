@@ -24,8 +24,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -40,26 +40,20 @@ import androidx.core.app.ActivityCompat
 import androidx.navigation.NavHostController
 import com.example.aplicacionconciertos.R
 import com.example.aplicacionconciertos.model.RutasNavegacion
-import com.example.aplicacionconciertos.viewmodel.AuthState
-import com.example.aplicacionconciertos.viewmodel.AuthViewModel
+import com.example.aplicacionconciertos.viewmodel.authentication.AuthState
+import com.example.aplicacionconciertos.viewmodel.authentication.ViewModelAuth
 import com.example.aplicacionconciertos.viewmodel.TareasViewModel
 
 @Composable
 fun AplicacionPrincipal(
     navController: NavHostController,
-    authViewModel: AuthViewModel,
+    authViewModel: ViewModelAuth,
     tareasViewModel: TareasViewModel
 ) {
     var showDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    val authState = authViewModel.authState.observeAsState()
+    val authState by authViewModel.authState.collectAsState() // Usar collectAsState para StateFlow
 
-    LaunchedEffect(authState.value) {
-        when(authState.value) {
-            is AuthState.Unauthenticated -> navController.navigate(RutasNavegacion.InicioSesion.route)
-            else -> Unit
-        }
-    }
 
 
     Scaffold { paddingValues ->
@@ -169,8 +163,8 @@ fun exitApp(context: Context) {
 }
 
 @Composable
-fun UserActionButton(navController: NavHostController, authViewModel: AuthViewModel) {
-    val authState by authViewModel.authState.observeAsState()
+fun UserActionButton(navController: NavHostController, authViewModel: ViewModelAuth) {
+    val authState by authViewModel.authState.collectAsState() // Usar collectAsState para StateFlow
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -178,9 +172,9 @@ fun UserActionButton(navController: NavHostController, authViewModel: AuthViewMo
         IconButton(
             onClick = {
                 if (authState is AuthState.Authenticated) {
-                    authViewModel.signout()
+                    authViewModel.signOut() // Cerrar sesión
                 } else {
-                    navController.navigate(RutasNavegacion.InicioSesion.route)
+                    navController.navigate(RutasNavegacion.InicioSesion.route) // Navegar a inicio de sesión
                 }
             },
             modifier = Modifier
