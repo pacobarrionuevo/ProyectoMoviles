@@ -46,7 +46,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun AppNavigation(navController: NavHostController, authState: AuthState) {
+fun AppNavigation(navController: NavHostController, authState: AuthState, authViewModel: ViewModelAuth) {
     val authViewModel: ViewModelAuth = viewModel()
     val context = LocalContext.current
     val contenedor = remember { ContenedorMisTareas(context) }
