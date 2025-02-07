@@ -52,12 +52,12 @@ fun Registro(viewModelAuth: ViewModelAuth, navController: NavController) {
         when (authState) {
             is AuthState.Authenticated -> navController.navigate(RutasNavegacion.Home.route)
             is AuthState.Error -> {
-                val errorMessage = context.getString((authState as AuthState.Error).errorMessageId)
-                Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, (authState as AuthState.Error).message, Toast.LENGTH_SHORT).show()
             }
             else -> Unit
         }
     }
+
 
     Column(
         modifier = Modifier.fillMaxSize(),

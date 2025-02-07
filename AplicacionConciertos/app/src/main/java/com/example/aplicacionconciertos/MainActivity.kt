@@ -6,19 +6,18 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.aplicacionconciertos.model.AppNavigation
 import com.example.aplicacionconciertos.model.authentication.AuthRepository
 import com.example.aplicacionconciertos.model.tareas.ContenedorMisTareas
 import com.example.aplicacionconciertos.ui.NavigationDrawer
 import com.example.aplicacionconciertos.ui.theme.AppConciertosTheme
-import com.example.aplicacionconciertos.viewmodel.authentication.AuthState
-import com.example.aplicacionconciertos.viewmodel.authentication.ViewModelAuth
 import com.example.aplicacionconciertos.viewmodel.TareasViewModel
+import com.example.aplicacionconciertos.viewmodel.authentication.ViewModelAuth
+import com.example.aplicacionconciertos.viewmodel.authentication.ViewModelAuthFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,17 +27,20 @@ class MainActivity : ComponentActivity() {
             val context = LocalContext.current
             val contenedor = ContenedorMisTareas(context)
             val tareasViewModel = TareasViewModel(contenedor.repositorioMisTareas)
-            val viewModelAuth = ViewModelAuth(AuthRepository(), context)
-            val authState by viewModelAuth.authState.collectAsState()
+
+            // Crear ViewModelAuth usando ViewModelProvider
+            val authViewModel: ViewModelAuth = viewModel(
+                factory = ViewModelAuthFactory(AuthRepository(), context)
+            )
 
             // Refrescar el token de acceso al iniciar la aplicación
             LaunchedEffect(Unit) {
-                viewModelAuth.refreshAndSaveToken()
+                authViewModel.refreshAndSaveToken()
             }
 
             AppConciertosTheme {
                 NavigationDrawer(navController, tareasViewModel) {
-                    AppNavigation(navController, authState)
+                    AppNavigation(navController, authViewModel.authState.collectAsState().value, authViewModel)
                 }
             }
         }
