@@ -105,7 +105,7 @@ fun Registro(viewModelAuth: ViewModelAuth, navController: NavController) {
             enabled = authState != AuthState.Loading,
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                contentColor = MaterialTheme.colorScheme.onPrimary
+                contentColor = MaterialTheme.colorScheme.primary
             )
         ) {
             Text(text = stringResource(id = R.string.CrearCuenta))

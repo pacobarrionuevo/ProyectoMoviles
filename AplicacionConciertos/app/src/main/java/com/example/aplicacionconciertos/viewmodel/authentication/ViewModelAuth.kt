@@ -2,14 +2,17 @@ package com.example.aplicacionconciertos.viewmodel.authentication
 
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.aplicacionconciertos.model.authentication.AuthRepository
 import com.example.aplicacionconciertos.model.authentication.AuthRequest
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ViewModelAuth(
     private val authRepository: AuthRepository,
@@ -39,12 +42,21 @@ class ViewModelAuth(
 
     fun signUp(email: String, password: String) {
         _authState.value = AuthState.Loading
-        viewModelScope.launch {
+        Log.d("Auth", "SignUp iniciado con email: $email")
+
+        viewModelScope.launch(Dispatchers.IO) {  // Ejecutar en hilo de fondo
             val result = authRepository.signUp(email, password)
-            if (result.isSuccess) {
-                _authState.value = AuthState.Success("User registered successfully.")
-            } else {
-                _authState.value = AuthState.Error(result.exceptionOrNull()?.message ?: "Registration failed.")
+            Log.d("Auth", "Resultado del signUp: $result")
+
+            withContext(Dispatchers.Main) { // Regresar al hilo principal para actualizar la UI
+                if (result.isSuccess) {
+                    Log.d("Auth", "Registro exitoso")
+                    _authState.value = AuthState.Success("User registered successfully.")
+                } else {
+                    val errorMessage = result.exceptionOrNull()?.message ?: "Registration failed."
+                    Log.e("Auth", "Error en signUp: $errorMessage")
+                    _authState.value = AuthState.Error(errorMessage)
+                }
             }
         }
     }
