@@ -22,7 +22,7 @@ class AuthRepository {
 
     suspend fun signUp(email: String, password: String): Result<SignUpResponse> {
         return try {
-            val response = authClient.signUp(AuthRequest(email, password)).execute()
+            val response = authClient.signUp(AuthRequest(email, password, "USER")).execute()
             if (response.isSuccessful) {
                 Result.success(response.body()!!)
             } else {

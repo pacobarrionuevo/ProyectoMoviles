@@ -44,11 +44,11 @@ class ViewModelAuth(
         _authState.value = AuthState.Loading
         Log.d("Auth", "SignUp iniciado con email: $email")
 
-        viewModelScope.launch(Dispatchers.IO) {  // Ejecutar en hilo de fondo
+        viewModelScope.launch(Dispatchers.IO) {
             val result = authRepository.signUp(email, password)
             Log.d("Auth", "Resultado del signUp: $result")
 
-            withContext(Dispatchers.Main) { // Regresar al hilo principal para actualizar la UI
+            withContext(Dispatchers.Main) {
                 if (result.isSuccess) {
                     Log.d("Auth", "Registro exitoso")
                     _authState.value = AuthState.Success("User registered successfully.")
