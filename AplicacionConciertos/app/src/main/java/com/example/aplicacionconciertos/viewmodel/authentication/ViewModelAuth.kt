@@ -24,21 +24,50 @@ class ViewModelAuth(
 
     fun login(email: String, password: String) {
         _authState.value = AuthState.Loading
-        viewModelScope.launch {
-            val result = authRepository.login(email, password)
-            if (result.isSuccess) {
-                val loginResponse = result.getOrNull()
-                if (loginResponse != null) {
-                    DataStoreManager.saveCredentials(context, loginResponse.accessToken, loginResponse.refreshToken, email)
-                    _authState.value = AuthState.Authenticated(loginResponse.accessToken, loginResponse.refreshToken, email)
-                } else {
-                    _authState.value = AuthState.Error("Unexpected response from server.")
+        Log.d("Auth", "Login iniciado con email: $email")
+
+        viewModelScope.launch(Dispatchers.IO) {  // Ejecuta en el hilo de fondo
+            try {
+                val result = authRepository.login(email, password)
+                Log.d("Auth", "Resultado del login: $result")
+
+                withContext(Dispatchers.Main) {
+                    if (result.isSuccess) {
+                        val loginResponse = result.getOrNull()
+                        if (loginResponse != null) {
+                            Log.d("Auth", "Login exitoso. AccessToken: ${loginResponse.accessToken}")
+                            DataStoreManager.saveCredentials(
+                                context,
+                                loginResponse.accessToken,
+                                loginResponse.refreshToken,
+                                email
+                            )
+                            _authState.value = AuthState.Authenticated(
+                                loginResponse.accessToken,
+                                loginResponse.refreshToken,
+                                email
+                            )
+                            Log.d("Auth", "Credenciales guardadas y usuario autenticado.")
+                        } else {
+                            Log.e("Auth", "Respuesta inesperada del servidor durante el login.")
+                            _authState.value = AuthState.Error("Unexpected response from server.")
+                        }
+                    } else {
+                        val errorMessage = result.exceptionOrNull()?.message ?: "Login failed."
+                        Log.e("Auth", "Error en login: $errorMessage")
+                        _authState.value = AuthState.Error(errorMessage)
+                    }
                 }
-            } else {
-                _authState.value = AuthState.Error(result.exceptionOrNull()?.message ?: "Login failed.")
+            } catch (e: Exception) {
+                Log.e("Auth", "Excepción durante el login: ${e.message}", e)
+                withContext(Dispatchers.Main) {
+                    _authState.value = AuthState.Error("An unexpected error occurred.")
+                }
             }
         }
     }
+
+
 
     fun signUp(email: String, password: String) {
         _authState.value = AuthState.Loading
