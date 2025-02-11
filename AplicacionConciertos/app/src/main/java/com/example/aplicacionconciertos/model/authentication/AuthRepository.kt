@@ -1,8 +1,5 @@
 package com.example.aplicacionconciertos.model.authentication
 
-import retrofit2.Call
-import retrofit2.Response
-
 class AuthRepository {
 
     private val authClient = RetrofitInstance.authClient
@@ -13,7 +10,7 @@ class AuthRepository {
             if (response.isSuccessful) {
                 Result.success(response.body()!!)
             } else {
-                Result.failure(Exception("Login failed: ${response.errorBody()?.string()}"))
+                Result.failure(Exception("Login fallido: ${response.errorBody()?.string()}"))
             }
         } catch (e: Exception) {
             Result.failure(e)
@@ -26,7 +23,7 @@ class AuthRepository {
             if (response.isSuccessful) {
                 Result.success(response.body()!!)
             } else {
-                Result.failure(Exception("Sign up failed: ${response.errorBody()?.string()}"))
+                Result.failure(Exception("Registro fallido: ${response.errorBody()?.string()}"))
             }
         } catch (e: Exception) {
             Result.failure(e)
@@ -39,7 +36,7 @@ class AuthRepository {
             if (response.isSuccessful) {
                 Result.success(response.body()!!)
             } else {
-                Result.failure(Exception("Token refresh failed: ${response.errorBody()?.string()}"))
+                Result.failure(Exception("Refresco del token fallido: ${response.errorBody()?.string()}"))
             }
         } catch (e: Exception) {
             Result.failure(e)
@@ -52,7 +49,7 @@ class AuthRepository {
             if (response.isSuccessful) {
                 Result.success(response.body()!!)
             } else {
-                Result.failure(Exception("Failed to get user details: ${response.errorBody()?.string()}"))
+                Result.failure(Exception("No se han podido obtener los datos del usuario: ${response.errorBody()?.string()}"))
             }
         } catch (e: Exception) {
             Result.failure(e)

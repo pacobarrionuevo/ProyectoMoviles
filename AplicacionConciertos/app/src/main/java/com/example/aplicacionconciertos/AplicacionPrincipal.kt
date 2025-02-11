@@ -52,7 +52,7 @@ fun AplicacionPrincipal(
 ) {
     var showDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    val authState by authViewModel.authState.collectAsState() // Usar collectAsState para StateFlow
+    val authState by authViewModel.authState.collectAsState()
 
 
 
@@ -98,7 +98,7 @@ fun AplicacionPrincipal(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Botón de salida con diálogo
+
             Button(
                 onClick = { showDialog = true },
                 modifier = Modifier.fillMaxWidth(),
@@ -164,7 +164,7 @@ fun exitApp(context: Context) {
 
 @Composable
 fun UserActionButton(navController: NavHostController, authViewModel: ViewModelAuth) {
-    val authState by authViewModel.authState.collectAsState() // Usar collectAsState para StateFlow
+    val authState by authViewModel.authState.collectAsState()
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -172,9 +172,9 @@ fun UserActionButton(navController: NavHostController, authViewModel: ViewModelA
         IconButton(
             onClick = {
                 if (authState is AuthState.Authenticated) {
-                    authViewModel.signOut() // Cerrar sesión
+                    authViewModel.signOut()
                 } else {
-                    navController.navigate(RutasNavegacion.InicioSesion.route) // Navegar a inicio de sesión
+                    navController.navigate(RutasNavegacion.InicioSesion.route) 
                 }
             },
             modifier = Modifier

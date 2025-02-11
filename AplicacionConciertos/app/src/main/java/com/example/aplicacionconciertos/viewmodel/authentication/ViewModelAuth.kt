@@ -27,18 +27,16 @@ class ViewModelAuth(
 
     fun login(email: String, password: String) {
         _authState.value = AuthState.Loading
-        Log.d("Auth", "Login iniciado con email: $email")
 
-        viewModelScope.launch(Dispatchers.IO) {  // Ejecuta en el hilo de fondo
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val result = authRepository.login(email, password)
-                Log.d("Auth", "Resultado del login: $result")
 
                 withContext(Dispatchers.Main) {
                     if (result.isSuccess) {
                         val loginResponse = result.getOrNull()
                         if (loginResponse != null) {
-                            Log.d("Auth", "Login exitoso. AccessToken: ${loginResponse.accessToken}")
+
                             DataStoreManager.saveCredentials(
                                 appContext,
                                 loginResponse.accessToken,
@@ -50,14 +48,13 @@ class ViewModelAuth(
                                 loginResponse.refreshToken,
                                 email
                             )
-                            Log.d("Auth", "Credenciales guardadas y usuario autenticado.")
+
                         } else {
-                            Log.e("Auth", "Respuesta inesperada del servidor durante el login.")
-                            _authState.value = AuthState.Error("Unexpected response from server.")
+
+                            _authState.value = AuthState.Error("Error en el servidor.")
                         }
                     } else {
-                        val errorMessage = result.exceptionOrNull()?.message ?: "Login failed."
-                        Log.e("Auth", "Error en login: $errorMessage")
+                        val errorMessage = result.exceptionOrNull()?.message ?: "Login fallido."
                         _authState.value = AuthState.Error(errorMessage)
                     }
                 }
@@ -74,19 +71,17 @@ class ViewModelAuth(
 
     fun signUp(email: String, password: String) {
         _authState.value = AuthState.Loading
-        Log.d("Auth", "SignUp iniciado con email: $email")
 
         viewModelScope.launch(Dispatchers.IO) {
             val result = authRepository.signUp(email, password)
-            Log.d("Auth", "Resultado del signUp: $result")
 
             withContext(Dispatchers.Main) {
                 if (result.isSuccess) {
-                    Log.d("Auth", "Registro exitoso")
+
                     _authState.value = AuthState.Success("User registered successfully.")
                 } else {
                     val errorMessage = result.exceptionOrNull()?.message ?: "Registration failed."
-                    Log.e("Auth", "Error en signUp: $errorMessage")
+
                     _authState.value = AuthState.Error(errorMessage)
                 }
             }
