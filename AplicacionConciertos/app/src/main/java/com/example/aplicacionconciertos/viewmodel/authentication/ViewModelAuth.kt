@@ -14,10 +14,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class ViewModelAuth(
-    private val authRepository: AuthRepository,
-    private val context: Context
-) : ViewModel() {
+class ViewModelAuth(private val authRepository: AuthRepository, private val context: Context) : ViewModel() {
 
     private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
     val authState: StateFlow<AuthState> = _authState

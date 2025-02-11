@@ -17,7 +17,6 @@ import com.example.aplicacionconciertos.ui.NavigationDrawer
 import com.example.aplicacionconciertos.ui.theme.AppConciertosTheme
 import com.example.aplicacionconciertos.viewmodel.TareasViewModel
 import com.example.aplicacionconciertos.viewmodel.authentication.ViewModelAuth
-import com.example.aplicacionconciertos.viewmodel.authentication.ViewModelAuthFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,10 +27,7 @@ class MainActivity : ComponentActivity() {
             val contenedor = ContenedorMisTareas(context)
             val tareasViewModel = TareasViewModel(contenedor.repositorioMisTareas)
 
-            // Crear ViewModelAuth usando ViewModelProvider
-            val authViewModel: ViewModelAuth = viewModel(
-                factory = ViewModelAuthFactory(AuthRepository(), context)
-            )
+            val authViewModel: ViewModelAuth = viewModel { ViewModelAuth(AuthRepository(), context) }
 
             // Refrescar el token de acceso al iniciar la aplicación
             LaunchedEffect(Unit) {
