@@ -11,13 +11,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class ViewModelAuth(private val authRepository: AuthRepository, private val context: Context) : ViewModel() {
+class ViewModelAuth(
+    private val authRepository: AuthRepository,
+    context: Context
+) : ViewModel() {
 
     private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
     val authState: StateFlow<AuthState> = _authState
+
+    private val appContext = context.applicationContext
 
     fun login(email: String, password: String) {
         _authState.value = AuthState.Loading
@@ -34,7 +40,7 @@ class ViewModelAuth(private val authRepository: AuthRepository, private val cont
                         if (loginResponse != null) {
                             Log.d("Auth", "Login exitoso. AccessToken: ${loginResponse.accessToken}")
                             DataStoreManager.saveCredentials(
-                                context,
+                                appContext,
                                 loginResponse.accessToken,
                                 loginResponse.refreshToken,
                                 email
@@ -89,36 +95,48 @@ class ViewModelAuth(private val authRepository: AuthRepository, private val cont
 
     fun signOut() {
         viewModelScope.launch {
-            DataStoreManager.clearCredentials(context)
+            DataStoreManager.clearCredentials(appContext)
             _authState.value = AuthState.SignedOut
         }
     }
 
     fun refreshAndSaveToken() {
-        viewModelScope.launch {
-            val refreshToken = DataStoreManager.getRefreshToken(context).first()
-            if (refreshToken != null) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val refreshToken = DataStoreManager.getRefreshToken(appContext).firstOrNull()
+
+            if (!refreshToken.isNullOrEmpty()) {
                 val result = authRepository.refreshToken(refreshToken)
                 if (result.isSuccess) {
                     val newAccessToken = result.getOrNull()?.token
                     if (newAccessToken != null) {
-                        DataStoreManager.saveCredentials(context, newAccessToken, refreshToken, "")
-                        _authState.value = AuthState.Authenticated(newAccessToken, refreshToken, "")
+                        DataStoreManager.saveCredentials(appContext, newAccessToken, refreshToken, "")
+                        withContext(Dispatchers.Main) {
+                            _authState.value = AuthState.Authenticated(newAccessToken, refreshToken, "")
+                        }
                     } else {
-                        _authState.value = AuthState.Error("Failed to refresh token.")
+                        withContext(Dispatchers.Main) {
+                            _authState.value = AuthState.Error("Failed to refresh token.")
+                        }
                     }
                 } else {
-                    _authState.value = AuthState.Error(result.exceptionOrNull()?.message ?: "Token refresh failed.")
+                    withContext(Dispatchers.Main) {
+                        _authState.value = AuthState.Error(result.exceptionOrNull()?.message ?: "Token refresh failed.")
+                    }
+                }
+            } else {
+                withContext(Dispatchers.Main) {
+                    _authState.value = AuthState.SignedOut
                 }
             }
         }
     }
 
+
     fun loadCredentials() {
         viewModelScope.launch {
-            val accessToken = DataStoreManager.getAccessToken(context).first()
-            val refreshToken = DataStoreManager.getRefreshToken(context).first()
-            val email = DataStoreManager.getEmail(context).first()
+            val accessToken = DataStoreManager.getAccessToken(appContext).first()
+            val refreshToken = DataStoreManager.getRefreshToken(appContext).first()
+            val email = DataStoreManager.getEmail(appContext).first()
             if (accessToken != null && refreshToken != null && email != null) {
                 _authState.value = AuthState.Authenticated(accessToken, refreshToken, email)
             } else {
