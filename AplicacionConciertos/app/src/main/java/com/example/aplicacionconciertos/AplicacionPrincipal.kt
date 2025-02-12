@@ -1,4 +1,5 @@
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -43,6 +44,7 @@ import com.example.aplicacionconciertos.model.RutasNavegacion
 import com.example.aplicacionconciertos.viewmodel.authentication.AuthState
 import com.example.aplicacionconciertos.viewmodel.authentication.ViewModelAuth
 import com.example.aplicacionconciertos.viewmodel.TareasViewModel
+import com.example.aplicacionconciertos.viewmodel.authentication.DataStoreManager
 
 @Composable
 fun AplicacionPrincipal(
@@ -53,9 +55,14 @@ fun AplicacionPrincipal(
     var showDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val authState by authViewModel.authState.collectAsState()
-    // que el launchedeffect dependa del token de refresco
-    LaunchedEffect(Unit) {
-        authViewModel.refreshAndSaveToken()
+
+    val refreshToken by DataStoreManager.getRefreshToken(context).collectAsState(initial = null)
+
+    LaunchedEffect(refreshToken) {
+        Log.d("TokenRefresh", "Ejecutando LaunchedEffect con refreshToken: $refreshToken")
+        if (!refreshToken.isNullOrEmpty()) {
+            authViewModel.refreshAndSaveToken()
+        }
     }
 
 
