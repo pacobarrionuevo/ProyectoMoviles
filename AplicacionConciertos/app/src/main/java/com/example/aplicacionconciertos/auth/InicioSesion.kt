@@ -59,6 +59,7 @@ fun InicioSesion(viewModelAuth: ViewModelAuth, navController: NavController) {
             is AuthState.Error -> {
                 Toast.makeText(context, (authState as AuthState.Error).message, Toast.LENGTH_SHORT).show()
             }
+            // tras mostrar el toast, volver a estado de authentication
             else -> Unit
         }
     }

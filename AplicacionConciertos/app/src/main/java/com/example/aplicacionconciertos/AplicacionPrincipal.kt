@@ -53,7 +53,10 @@ fun AplicacionPrincipal(
     var showDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val authState by authViewModel.authState.collectAsState()
-
+    // que el launchedeffect dependa del token de refresco
+    LaunchedEffect(Unit) {
+        authViewModel.refreshAndSaveToken()
+    }
 
 
     Scaffold { paddingValues ->
@@ -174,7 +177,7 @@ fun UserActionButton(navController: NavHostController, authViewModel: ViewModelA
                 if (authState is AuthState.Authenticated) {
                     authViewModel.signOut()
                 } else {
-                    navController.navigate(RutasNavegacion.InicioSesion.route) 
+                    navController.navigate(RutasNavegacion.InicioSesion.route)
                 }
             },
             modifier = Modifier
@@ -185,6 +188,7 @@ fun UserActionButton(navController: NavHostController, authViewModel: ViewModelA
                 imageVector = if (authState is AuthState.Authenticated)
                     Icons.Default.ExitToApp
                 else
+                    // dar mas evidencia
                     Icons.Default.AccountCircle,
                 contentDescription = if (authState is AuthState.Authenticated)
                     stringResource(R.string.CierraSesion)

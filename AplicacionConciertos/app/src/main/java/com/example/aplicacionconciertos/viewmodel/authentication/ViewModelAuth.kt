@@ -1,6 +1,4 @@
 package com.example.aplicacionconciertos.viewmodel.authentication
-
-
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -77,7 +75,7 @@ class ViewModelAuth(
 
             withContext(Dispatchers.Main) {
                 if (result.isSuccess) {
-
+                    login(email, password)
                     _authState.value = AuthState.Success("User registered successfully.")
                 } else {
                     val errorMessage = result.exceptionOrNull()?.message ?: "Registration failed."
@@ -91,9 +89,12 @@ class ViewModelAuth(
     fun signOut() {
         viewModelScope.launch {
             DataStoreManager.clearCredentials(appContext)
+            // echarle un ojo
             _authState.value = AuthState.SignedOut
         }
     }
+
+    // get user
 
     fun refreshAndSaveToken() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -110,6 +111,7 @@ class ViewModelAuth(
                         }
                     } else {
                         withContext(Dispatchers.Main) {
+                            // funcion para devolver mensajes de error personalizados
                             _authState.value = AuthState.Error("Failed to refresh token.")
                         }
                     }
