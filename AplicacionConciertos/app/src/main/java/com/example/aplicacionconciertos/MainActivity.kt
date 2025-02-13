@@ -29,8 +29,7 @@ class MainActivity : ComponentActivity() {
 
             val authViewModel: ViewModelAuth = viewModel { ViewModelAuth(AuthRepository(), context) }
 
-            // Refrescar el token de acceso al iniciar la aplicación
-            LaunchedEffect(Unit) {
+            LaunchedEffect(authViewModel.authState.collectAsState().value) {
                 authViewModel.refreshAndSaveToken()
             }
 
