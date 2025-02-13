@@ -69,4 +69,6 @@
     <string name="ErrorRegistro">Error al registrarse. Inténtalo de nuevo.</string>
     <string name="ErrorTokenRefresh">Error al refrescar el token. Inicia sesión nuevamente.</string>
     <string name="ErrorUserData">Error al obtener los datos del usuario.</string>
+    <string name="BienvenidaAppPrincipal">¡Bienvenido a Ticket Premium,</string>
+    <string name="BienvenidoSinIniciaSesion">Inicia sesión para no perderte ninguna novedad de nuestra página</string>
 </resources>

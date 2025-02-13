@@ -8,7 +8,7 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface AuthClient {
-
+    //
     @POST("/api/auth")
     fun login(@Body authRequest: AuthRequest): Call<LoginResponse>
 

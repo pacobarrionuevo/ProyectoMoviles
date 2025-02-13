@@ -10,8 +10,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material3.AlertDialog
@@ -45,6 +47,8 @@ import com.example.aplicacionconciertos.viewmodel.authentication.AuthState
 import com.example.aplicacionconciertos.viewmodel.authentication.ViewModelAuth
 import com.example.aplicacionconciertos.viewmodel.TareasViewModel
 import com.example.aplicacionconciertos.viewmodel.authentication.DataStoreManager
+import com.example.aplicacionconciertos.viewmodel.authentication.dataStoreAuth
+import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun AplicacionPrincipal(
@@ -55,6 +59,7 @@ fun AplicacionPrincipal(
     var showDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val authState by authViewModel.authState.collectAsState()
+    val userDetails by authViewModel.userDetails.collectAsState()
 
     val refreshToken by DataStoreManager.getRefreshToken(context).collectAsState(initial = null)
 
@@ -62,6 +67,7 @@ fun AplicacionPrincipal(
         Log.d("TokenRefresh", "Ejecutando LaunchedEffect con refreshToken: $refreshToken")
         if (!refreshToken.isNullOrEmpty()) {
             authViewModel.refreshAndSaveToken()
+            authViewModel.getUserDetails()
         }
     }
 
@@ -88,6 +94,21 @@ fun AplicacionPrincipal(
             }
 
             Spacer(modifier = Modifier.height(40.dp))
+
+
+            Text(
+                text = if (authState is AuthState.Authenticated) {
+                    "${stringResource(id = R.string.BienvenidaAppPrincipal)} ${userDetails?.email ?: ""} !"
+                } else {
+                    stringResource(id = R.string.BienvenidoSinIniciaSesion)
+                } ,
+                style = MaterialTheme.typography.displayMedium,
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+
+
+
+            Spacer(modifier = Modifier.height(20.dp))
 
             Image(
                 painter = painterResource(id = R.drawable.concierto),
@@ -144,7 +165,6 @@ fun AplicacionPrincipal(
                     }
                 )
             }
-
             UserActionButton(navController, authViewModel)
         }
     }
@@ -177,9 +197,10 @@ fun UserActionButton(navController: NavHostController, authViewModel: ViewModelA
     val authState by authViewModel.authState.collectAsState()
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
-        IconButton(
+        Button(
             onClick = {
                 if (authState is AuthState.Authenticated) {
                     authViewModel.signOut()
@@ -188,16 +209,22 @@ fun UserActionButton(navController: NavHostController, authViewModel: ViewModelA
                 }
             },
             modifier = Modifier
-                .align(Alignment.TopEnd)
                 .padding(16.dp)
         ) {
             Icon(
                 imageVector = if (authState is AuthState.Authenticated)
-                    Icons.Default.ExitToApp
+                    Icons.AutoMirrored.Filled.ExitToApp
                 else
-                    // dar mas evidencia
                     Icons.Default.AccountCircle,
                 contentDescription = if (authState is AuthState.Authenticated)
+                    stringResource(R.string.CierraSesion)
+                else
+                    stringResource(R.string.IniciaSesion),
+                modifier = Modifier.requiredSize(80.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(
+                text = if (authState is AuthState.Authenticated)
                     stringResource(R.string.CierraSesion)
                 else
                     stringResource(R.string.IniciaSesion)

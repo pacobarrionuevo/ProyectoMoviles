@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.aplicacionconciertos.model.authentication.AuthRepository
 import com.example.aplicacionconciertos.model.authentication.AuthRequest
+import com.example.aplicacionconciertos.model.authentication.SignUpResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,6 +21,9 @@ class ViewModelAuth(
 
     private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
     val authState: StateFlow<AuthState> = _authState
+
+    private val _userDetails = MutableStateFlow<SignUpResponse?>(null)
+    val userDetails: StateFlow<SignUpResponse?> = _userDetails
 
     private val appContext = context.applicationContext
 
@@ -94,7 +98,22 @@ class ViewModelAuth(
         }
     }
 
-    // get user
+    fun getUserDetails() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val accessToken = DataStoreManager.getAccessToken(appContext).firstOrNull()
+            if (!accessToken.isNullOrEmpty()) {
+                val result = authRepository.getUserDetails(accessToken)
+                withContext(Dispatchers.Main) {
+                    if (result.isSuccess) {
+                        _userDetails.value = result.getOrNull()
+                    } else {
+                        Log.e("Auth", "Error obteniendo detalles del usuario: ${result.exceptionOrNull()?.message}")
+                        _userDetails.value = null
+                    }
+                }
+            }
+        }
+    }
 
     fun refreshAndSaveToken() {
         viewModelScope.launch(Dispatchers.IO) {
