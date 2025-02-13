@@ -147,6 +147,11 @@ class ViewModelAuth(
         }
     }
 
+    fun resetAuthState() {
+        _authState.value = AuthState.Idle
+    }
+
+
 
     fun loadCredentials() {
         viewModelScope.launch {

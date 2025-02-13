@@ -53,6 +53,7 @@ fun Registro(viewModelAuth: ViewModelAuth, navController: NavController) {
             is AuthState.Authenticated -> navController.navigate(RutasNavegacion.Home.route)
             is AuthState.Error -> {
                 Toast.makeText(context, (authState as AuthState.Error).message, Toast.LENGTH_SHORT).show()
+                viewModelAuth.resetAuthState()
             }
             else -> Unit
         }

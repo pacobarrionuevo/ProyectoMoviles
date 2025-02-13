@@ -1,5 +1,6 @@
 package com.example.aplicacionconciertos.auth
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -58,8 +59,9 @@ fun InicioSesion(viewModelAuth: ViewModelAuth, navController: NavController) {
             is AuthState.Authenticated -> navController.navigate(RutasNavegacion.Home.route)
             is AuthState.Error -> {
                 Toast.makeText(context, (authState as AuthState.Error).message, Toast.LENGTH_SHORT).show()
+                viewModelAuth.resetAuthState()
+                Log.d("AuthState", "Reiniciado")
             }
-            // tras mostrar el toast, volver a estado de authentication
             else -> Unit
         }
     }
