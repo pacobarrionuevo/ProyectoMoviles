@@ -129,42 +129,6 @@ fun AplicacionPrincipal(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-
-            Button(
-                onClick = { showDialog = true },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.error,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                )
-            ) {
-                Text(stringResource(id = R.string.Salir))
-            }
-
-            if (showDialog) {
-                AlertDialog(
-                    onDismissRequest = { showDialog = false },
-                    title = { Text(text = stringResource(id = R.string.ConfirmarSalida)) },
-                    text = { Text(text = stringResource(id = R.string.Salir)) },
-                    confirmButton = {
-                        TextButton(
-                            onClick = {
-                                showDialog = false
-                                exitApp(context)
-                            }
-                        ) {
-                            Text(stringResource(id = R.string.Aceptar))
-                        }
-                    },
-                    dismissButton = {
-                        TextButton(
-                            onClick = { showDialog = false }
-                        ) {
-                            Text(stringResource(id = R.string.Cancelar))
-                        }
-                    }
-                )
-            }
             UserActionButton(navController, authViewModel)
         }
     }
@@ -183,12 +147,6 @@ fun NavigationButton(text: String, onClick: () -> Unit) {
         )
     ) {
         Text(text)
-    }
-}
-
-fun exitApp(context: Context) {
-    if (context is android.app.Activity) {
-        ActivityCompat.finishAffinity(context)
     }
 }
 
