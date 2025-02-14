@@ -24,14 +24,14 @@ class ViewModelActivities(
     val userActivities: StateFlow<List<ParticipationResponse>> = _userActivities
 
     private val appContext = context.applicationContext
-    private var accessToken: String? = null
+    var accessToken: String? = null
     private var userId: String? = null
 
     init {
         loadCredentials()
     }
 
-    private fun loadCredentials() {
+    fun loadCredentials() {
         viewModelScope.launch {
             accessToken = DataStoreManager.getAccessToken(appContext).first()
             userId = DataStoreManager.getEmail(appContext).first()
