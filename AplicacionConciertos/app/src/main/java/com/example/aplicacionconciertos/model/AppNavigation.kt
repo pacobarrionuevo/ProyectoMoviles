@@ -44,6 +44,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.dp
+import com.example.aplicacionconciertos.ActividadesScreen
+import com.example.aplicacionconciertos.viewmodel.activities.ViewModelActivities
 
 @Composable
 fun AppNavigation(navController: NavHostController, authState: AuthState, authViewModel: ViewModelAuth) {
@@ -53,6 +55,7 @@ fun AppNavigation(navController: NavHostController, authState: AuthState, authVi
     val tareasViewModel: TareasViewModel = viewModel {
         TareasViewModel(contenedor.repositorioMisTareas)
     }
+    val actividadesViewModel: ViewModelActivities = viewModel()
     val artistasViewModel: ViewModelArtistas = viewModel()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -151,6 +154,9 @@ fun AppNavigation(navController: NavHostController, authState: AuthState, authVi
             }
             composable(RutasNavegacion.AcercaDe.route) {
                 AcercaDe(navController)
+            }
+            composable(RutasNavegacion.Actividades.route) {
+                ActividadesScreen(navController, actividadesViewModel)
             }
         }
     }

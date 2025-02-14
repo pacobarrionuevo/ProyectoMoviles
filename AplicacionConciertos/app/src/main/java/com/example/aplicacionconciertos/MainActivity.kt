@@ -16,6 +16,7 @@ import com.example.aplicacionconciertos.model.tareas.ContenedorMisTareas
 import com.example.aplicacionconciertos.ui.NavigationDrawer
 import com.example.aplicacionconciertos.ui.theme.AppConciertosTheme
 import com.example.aplicacionconciertos.viewmodel.TareasViewModel
+import com.example.aplicacionconciertos.viewmodel.activities.ViewModelActivities
 import com.example.aplicacionconciertos.viewmodel.authentication.ViewModelAuth
 
 class MainActivity : ComponentActivity() {
@@ -28,6 +29,8 @@ class MainActivity : ComponentActivity() {
             val tareasViewModel = TareasViewModel(contenedor.repositorioMisTareas)
 
             val authViewModel: ViewModelAuth = viewModel { ViewModelAuth(AuthRepository(), context) }
+
+            val actividadesViewModel: ViewModelActivities = viewModel()
 
             LaunchedEffect(authViewModel.authState.collectAsState().value) {
                 authViewModel.refreshAndSaveToken()

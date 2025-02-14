@@ -9,4 +9,5 @@ sealed class RutasNavegacion(val route: String) {
     object InicioSesion :RutasNavegacion("InicioSesion")
     object Registro: RutasNavegacion("Registro")
     object Tareas: RutasNavegacion("Tareas")
+    object Actividades: RutasNavegacion("Actividades")
 }

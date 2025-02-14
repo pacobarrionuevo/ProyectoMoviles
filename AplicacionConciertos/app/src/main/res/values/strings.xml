@@ -71,4 +71,5 @@
     <string name="ErrorUserData">Error al obtener los datos del usuario.</string>
     <string name="BienvenidaAppPrincipal">¡Bienvenido a Ticket Premium,</string>
     <string name="BienvenidoSinIniciaSesion">Inicia sesión para no perderte ninguna novedad de nuestra página</string>
+    <string name="Actividades">Actividades</string>
 </resources>

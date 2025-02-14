@@ -125,6 +125,12 @@ fun NavigationDrawer(
             selectedIcon = Icons.Filled.Task,
             unselectedIcon = Icons.Outlined.Task,
             route = RutasNavegacion.Tareas.route
+        ),
+        NavigationItems(
+            title = stringResource(id = R.string.Actividades),
+            selectedIcon = Icons.Filled.Task,
+            unselectedIcon = Icons.Outlined.Task,
+            route = RutasNavegacion.Tareas.route
         )
     )
 

@@ -72,5 +72,6 @@
     <string name="ErrorUserData">Failed to retrieve user data.</string>
     <string name="BienvenidaAppPrincipal">Welcome to Ticket Premium,</string>
     <string name="BienvenidoSinIniciaSesion">Login to not miss any news about our site!</string>
+    <string name="Actividades">Activities</string>
 
 </resources>
