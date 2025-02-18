@@ -25,6 +25,7 @@ import com.example.aplicacionconciertos.model.activities.RetrofitInstance
 import com.example.aplicacionconciertos.viewmodel.activities.ViewModelActivities
 import kotlinx.coroutines.launch
 import com.example.aplicacionconciertos.model.activities.CreateActivityDialog
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ActividadesScreen(navController: NavController) {
@@ -32,7 +33,7 @@ fun ActividadesScreen(navController: NavController) {
     val pagerState = rememberPagerState(initialPage = 0, pageCount = { 2 })
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
-
+    val  accessToken: String
     // Repositorio de actividades
     val activitiesRepository = remember { ActivitiesRepository(RetrofitInstance.api) }
     // ViewModel
@@ -45,9 +46,9 @@ fun ActividadesScreen(navController: NavController) {
     var showCreateDialog by remember { mutableStateOf(false) }
 
     // Cargar credenciales y datos al iniciar la pantalla
-    LaunchedEffect(Unit) {
+    LaunchedEffect(Unit, accessToken) {
         viewModel.loadCredentials(context)
-        viewModel.getAllActivities(activitiesRepository)
+        viewModel.getAllActivities(activitiesRepository,"Bearer ${accessToken}")
         viewModel.getUserActivities(activitiesRepository)
         loading = false
     }

@@ -29,9 +29,9 @@ class ViewModelActivities : ViewModel() {
         }
     }
 
-    fun getAllActivities(activitiesRepository: ActivitiesRepository) {
+    fun getAllActivities(activitiesRepository: ActivitiesRepository, accessToken: String) {
         viewModelScope.launch {
-            val result = activitiesRepository.getAllActivities()
+            val result = activitiesRepository.getAllActivities("Bearer $accessToken")
             _activities.value = result
         }
     }
