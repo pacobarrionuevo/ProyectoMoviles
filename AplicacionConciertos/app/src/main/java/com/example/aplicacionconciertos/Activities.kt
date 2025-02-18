@@ -28,41 +28,50 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.aplicacionconciertos.model.activities.ActivitiesRepository
 import com.example.aplicacionconciertos.model.activities.ActivityResponse
 import com.example.aplicacionconciertos.model.activities.ParticipationResponse
+import com.example.aplicacionconciertos.model.activities.RetrofitInstance
 import com.example.aplicacionconciertos.viewmodel.activities.ViewModelActivities
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ActividadesScreen(navController: NavController, viewModel: ViewModelActivities = viewModel()) {
+fun ActividadesScreen(navController: NavController) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(
         initialPage = 0,
-        pageCount = {10}
+        pageCount = { 2 }
     )
     val snackbarHostState = remember { SnackbarHostState() }
 
+    // Obtener el contexto
+    val context = LocalContext.current
+
+    // Crear el repositorio
+    val activitiesRepository = remember { ActivitiesRepository(RetrofitInstance.api) }
+
+    // Obtener el ViewModel
+    val viewModel: ViewModelActivities = viewModel()
+
+    // Estados para las actividades
     val actividades by viewModel.activities.collectAsState()
     val userActividades by viewModel.userActivities.collectAsState()
 
+    // Estado de carga
     val (loading, setLoading) = remember { mutableStateOf(true) }
 
-    // Comprobar autenticación
+    // Cargar credenciales y datos al iniciar la pantalla
     LaunchedEffect(Unit) {
-        viewModel.loadCredentials()
-        delay(500)  // Simulación de carga
-        if (viewModel.accessToken.isNullOrEmpty()) {
-            navController.navigate("login")
-        } else {
-            viewModel.getAllActivities()
-            viewModel.getUserActivities()
-            setLoading(false)
-        }
+        viewModel.loadCredentials(context) // Cargar credenciales
+        viewModel.getAllActivities(activitiesRepository) // Obtener todas las actividades
+        viewModel.getUserActivities(activitiesRepository) // Obtener actividades del usuario
+        setLoading(false) // Desactivar el estado de carga
     }
 
     Scaffold(
@@ -72,11 +81,13 @@ fun ActividadesScreen(navController: NavController, viewModel: ViewModelActiviti
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
+            // Definir las pestañas
             val tabs = listOf(
                 TabItem("Todas", Icons.Filled.List),
                 TabItem("Mis Actividades", Icons.Filled.Person)
             )
 
+            // Mostrar las pestañas
             TabRow(selectedTabIndex = pagerState.currentPage) {
                 tabs.forEachIndexed { index, tab ->
                     Tab(
@@ -88,6 +99,7 @@ fun ActividadesScreen(navController: NavController, viewModel: ViewModelActiviti
                 }
             }
 
+            // Mostrar el contenido de la pestaña seleccionada
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.fillMaxSize()
@@ -97,8 +109,8 @@ fun ActividadesScreen(navController: NavController, viewModel: ViewModelActiviti
                         actividades = actividades,
                         loading = loading,
                         onParticipate = { activityId ->
-                            viewModel.createParticipation(activityId)
                             scope.launch {
+                                viewModel.createParticipation(activitiesRepository, activityId)
                                 snackbarHostState.showSnackbar("Te has apuntado a la actividad")
                             }
                         }
@@ -107,16 +119,14 @@ fun ActividadesScreen(navController: NavController, viewModel: ViewModelActiviti
                         actividades = userActividades,
                         loading = loading,
                         onRemove = { participationId ->
-                            viewModel.deleteParticipation(participationId)
                             scope.launch {
+                                viewModel.deleteParticipation(activitiesRepository, participationId)
                                 snackbarHostState.showSnackbar("Te has borrado de la actividad")
                             }
                         }
                     )
                 }
             }
-
-
         }
     }
 }

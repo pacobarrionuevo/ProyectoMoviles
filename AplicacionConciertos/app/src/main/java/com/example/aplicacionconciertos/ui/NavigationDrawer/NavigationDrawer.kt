@@ -130,7 +130,7 @@ fun NavigationDrawer(
             title = stringResource(id = R.string.Actividades),
             selectedIcon = Icons.Filled.Task,
             unselectedIcon = Icons.Outlined.Task,
-            route = RutasNavegacion.Tareas.route
+            route = RutasNavegacion.Actividades.route
         )
     )
 

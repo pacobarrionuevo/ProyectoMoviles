@@ -12,10 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-class ViewModelActivities(
-    private val activitiesRepository: ActivitiesRepository,
-    context: Context
-) : ViewModel() {
+class ViewModelActivities : ViewModel() {
 
     private val _activities = MutableStateFlow<List<ActivityResponse>>(emptyList())
     val activities: StateFlow<List<ActivityResponse>> = _activities
@@ -23,29 +20,24 @@ class ViewModelActivities(
     private val _userActivities = MutableStateFlow<List<ParticipationResponse>>(emptyList())
     val userActivities: StateFlow<List<ParticipationResponse>> = _userActivities
 
-    private val appContext = context.applicationContext
     var accessToken: String? = null
     private var userId: String? = null
 
-    init {
-        loadCredentials()
-    }
-
-    fun loadCredentials() {
+    fun loadCredentials(context: Context) {
         viewModelScope.launch {
-            accessToken = DataStoreManager.getAccessToken(appContext).first()
-            userId = DataStoreManager.getEmail(appContext).first()
+            accessToken = DataStoreManager.getAccessToken(context).first()
+            userId = DataStoreManager.getEmail(context).first()
         }
     }
 
-    fun getAllActivities() {
+    fun getAllActivities(activitiesRepository: ActivitiesRepository) {
         viewModelScope.launch {
             val result = activitiesRepository.getAllActivities()
             _activities.value = result
         }
     }
 
-    fun getUserActivities() {
+    fun getUserActivities(activitiesRepository: ActivitiesRepository) {
         viewModelScope.launch {
             userId?.let {
                 val result = activitiesRepository.getUserParticipations(it)
@@ -54,7 +46,7 @@ class ViewModelActivities(
         }
     }
 
-    fun createParticipation(activityId: Long) {
+    fun createParticipation(activitiesRepository: ActivitiesRepository, activityId: Long) {
         viewModelScope.launch {
             userId?.let {
                 val result = activitiesRepository.createParticipation(it, activityId)
@@ -63,7 +55,7 @@ class ViewModelActivities(
         }
     }
 
-    fun deleteParticipation(participationId: Long) {
+    fun deleteParticipation(activitiesRepository: ActivitiesRepository, participationId: Long) {
         viewModelScope.launch {
             val success = activitiesRepository.deleteParticipation(participationId)
             if (success) {

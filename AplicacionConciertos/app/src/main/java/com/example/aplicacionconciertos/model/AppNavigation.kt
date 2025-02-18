@@ -49,13 +49,11 @@ import com.example.aplicacionconciertos.viewmodel.activities.ViewModelActivities
 
 @Composable
 fun AppNavigation(navController: NavHostController, authState: AuthState, authViewModel: ViewModelAuth) {
-    val authViewModel: ViewModelAuth = viewModel()
     val context = LocalContext.current
     val contenedor = remember { ContenedorMisTareas(context) }
     val tareasViewModel: TareasViewModel = viewModel {
         TareasViewModel(contenedor.repositorioMisTareas)
     }
-    val actividadesViewModel: ViewModelActivities = viewModel()
     val artistasViewModel: ViewModelArtistas = viewModel()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -65,7 +63,6 @@ fun AppNavigation(navController: NavHostController, authState: AuthState, authVi
         is AuthState.Authenticated -> RutasNavegacion.Home.route
         else -> RutasNavegacion.InicioSesion.route
     }
-
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -97,7 +94,6 @@ fun AppNavigation(navController: NavHostController, authState: AuthState, authVi
                     }
                 )
 
-
                 NavigationDrawerItem(
                     label = { Text("Conciertos") },
                     selected = currentRoute == "conciertos",
@@ -123,7 +119,6 @@ fun AppNavigation(navController: NavHostController, authState: AuthState, authVi
                         scope.launch { drawerState.close() }
                     }
                 )
-
             }
         }
     ) {
@@ -136,9 +131,6 @@ fun AppNavigation(navController: NavHostController, authState: AuthState, authVi
             }
             composable(RutasNavegacion.Tareas.route) {
                 Tareas(navController)
-            }
-            composable(RutasNavegacion.Artistas.route) {
-                ColeccionArtistas(viewModel(), navController)
             }
             composable(RutasNavegacion.Configuracion.route) {
                 Configuracion(navController)
@@ -156,7 +148,7 @@ fun AppNavigation(navController: NavHostController, authState: AuthState, authVi
                 AcercaDe(navController)
             }
             composable(RutasNavegacion.Actividades.route) {
-                ActividadesScreen(navController, actividadesViewModel)
+                ActividadesScreen(navController)
             }
         }
     }
