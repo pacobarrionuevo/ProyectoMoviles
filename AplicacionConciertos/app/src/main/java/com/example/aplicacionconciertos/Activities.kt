@@ -1,6 +1,5 @@
 package com.example.aplicacionconciertos
 
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.*
@@ -9,23 +8,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -33,61 +21,58 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.aplicacionconciertos.model.activities.ActivitiesRepository
-import com.example.aplicacionconciertos.model.activities.ActivityResponse
-import com.example.aplicacionconciertos.model.activities.ParticipationResponse
 import com.example.aplicacionconciertos.model.activities.RetrofitInstance
 import com.example.aplicacionconciertos.viewmodel.activities.ViewModelActivities
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.delay
-
+import com.example.aplicacionconciertos.model.activities.CreateActivityDialog
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ActividadesScreen(navController: NavController) {
     val scope = rememberCoroutineScope()
-    val pagerState = rememberPagerState(
-        initialPage = 0,
-        pageCount = { 2 }
-    )
+    val pagerState = rememberPagerState(initialPage = 0, pageCount = { 2 })
     val snackbarHostState = remember { SnackbarHostState() }
-
-    // Obtener el contexto
     val context = LocalContext.current
 
-    // Crear el repositorio
+    // Repositorio de actividades
     val activitiesRepository = remember { ActivitiesRepository(RetrofitInstance.api) }
-
-    // Obtener el ViewModel
+    // ViewModel
     val viewModel: ViewModelActivities = viewModel()
 
-    // Estados para las actividades
+    // Estados
     val actividades by viewModel.activities.collectAsState()
     val userActividades by viewModel.userActivities.collectAsState()
-
-    // Estado de carga
-    val (loading, setLoading) = remember { mutableStateOf(true) }
+    var loading by remember { mutableStateOf(true) }
+    var showCreateDialog by remember { mutableStateOf(false) }
 
     // Cargar credenciales y datos al iniciar la pantalla
     LaunchedEffect(Unit) {
-        viewModel.loadCredentials(context) // Cargar credenciales
-        viewModel.getAllActivities(activitiesRepository) // Obtener todas las actividades
-        viewModel.getUserActivities(activitiesRepository) // Obtener actividades del usuario
-        setLoading(false) // Desactivar el estado de carga
+        viewModel.loadCredentials(context)
+        viewModel.getAllActivities(activitiesRepository)
+        viewModel.getUserActivities(activitiesRepository)
+        loading = false
     }
 
     Scaffold(
         topBar = {
             TopAppBar(title = { Text("Actividades") })
         },
+        floatingActionButton = {
+            // Mostrar FAB en la pestaña "Todas" para crear actividad
+            if (pagerState.currentPage == 0) {
+                FloatingActionButton(onClick = { showCreateDialog = true }) {
+                    Icon(Icons.Filled.Add, contentDescription = "Crear actividad")
+                }
+            }
+        },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
-            // Definir las pestañas
+            // Pestañas
             val tabs = listOf(
                 TabItem("Todas", Icons.Filled.List),
                 TabItem("Mis Actividades", Icons.Filled.Person)
             )
 
-            // Mostrar las pestañas
             TabRow(selectedTabIndex = pagerState.currentPage) {
                 tabs.forEachIndexed { index, tab ->
                     Tab(
@@ -99,13 +84,13 @@ fun ActividadesScreen(navController: NavController) {
                 }
             }
 
-            // Mostrar el contenido de la pestaña seleccionada
+            // Contenido según pestaña
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.fillMaxSize()
             ) { page ->
                 when (page) {
-                    0 -> ActividadesLista(
+                    0 -> AllActivitiesList(
                         actividades = actividades,
                         loading = loading,
                         onParticipate = { activityId ->
@@ -113,9 +98,15 @@ fun ActividadesScreen(navController: NavController) {
                                 viewModel.createParticipation(activitiesRepository, activityId)
                                 snackbarHostState.showSnackbar("Te has apuntado a la actividad")
                             }
+                        },
+                        onDeleteActivity = { activityId ->
+                            scope.launch {
+                                viewModel.deleteActivity(activitiesRepository, activityId)
+                                snackbarHostState.showSnackbar("Actividad borrada")
+                            }
                         }
                     )
-                    1 -> MisActividadesLista(
+                    1 -> MyActivitiesList(
                         actividades = userActividades,
                         loading = loading,
                         onRemove = { participationId ->
@@ -129,16 +120,34 @@ fun ActividadesScreen(navController: NavController) {
             }
         }
     }
+
+    // Diálogo para crear una nueva actividad
+    if (showCreateDialog) {
+        CreateActivityDialog(
+            onDismiss = { showCreateDialog = false },
+            onCreate = { name, description, date, place, category ->
+                viewModel.createActivity(activitiesRepository, name, description, date, place, category)
+                showCreateDialog = false
+                scope.launch {
+                    snackbarHostState.showSnackbar("Actividad creada con éxito")
+                }
+            }
+        )
+    }
 }
 
-// Lista de todas las actividades con botón para apuntarse
 @Composable
-fun ActividadesLista(actividades: List<ActivityResponse>, loading: Boolean, onParticipate: (Long) -> Unit) {
+fun AllActivitiesList(
+    actividades: List<com.example.aplicacionconciertos.model.activities.ActivityResponse>,
+    loading: Boolean,
+    onParticipate: (Long) -> Unit,
+    onDeleteActivity: (Long) -> Unit
+) {
     if (loading) {
         CircularProgressIndicator(modifier = Modifier.fillMaxSize())
     } else {
         LazyColumn {
-            items(actividades) { actividad ->
+            items(actividades, key = { it.id }) { actividad ->
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -150,12 +159,17 @@ fun ActividadesLista(actividades: List<ActivityResponse>, loading: Boolean, onPa
                             .padding(16.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Column {
-                            Text(actividad.name)
-                            Text(actividad.description)
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(actividad.name, style = MaterialTheme.typography.titleMedium)
+                            Text(actividad.description, style = MaterialTheme.typography.bodyMedium)
                         }
+                        // Botón para apuntarse
                         IconButton(onClick = { onParticipate(actividad.id) }) {
                             Icon(Icons.Filled.Check, contentDescription = "Apuntarse")
+                        }
+                        // Botón para borrar la actividad
+                        IconButton(onClick = { onDeleteActivity(actividad.id) }) {
+                            Icon(Icons.Filled.Close, contentDescription = "Borrar actividad")
                         }
                     }
                 }
@@ -164,16 +178,19 @@ fun ActividadesLista(actividades: List<ActivityResponse>, loading: Boolean, onPa
     }
 }
 
+
 @Composable
-fun MisActividadesLista(actividades: List<ParticipationResponse>, loading: Boolean, onRemove: (Long) -> Unit) {
+fun MyActivitiesList(
+    actividades: List<com.example.aplicacionconciertos.model.activities.ParticipationResponse>,
+    loading: Boolean,
+    onRemove: (Long) -> Unit
+) {
     if (loading) {
         CircularProgressIndicator(modifier = Modifier.fillMaxSize())
     } else {
         LazyColumn {
-            items(actividades, key = { it.id }) { actividad ->
-
+            items(actividades, key = { it.id }) { participacion ->
                 var visible by remember { mutableStateOf(true) }
-
                 AnimatedVisibility(
                     visible = visible,
                     exit = fadeOut()
@@ -181,7 +198,7 @@ fun MisActividadesLista(actividades: List<ParticipationResponse>, loading: Boole
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(8.dp),
+                            .padding(8.dp)
                     ) {
                         Row(
                             modifier = Modifier
@@ -189,12 +206,10 @@ fun MisActividadesLista(actividades: List<ParticipationResponse>, loading: Boole
                                 .padding(16.dp),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Column {
-                                Text("actividad")
-                            }
+                            Text("Actividad ID: ${participacion.activityId}")
                             IconButton(onClick = {
                                 visible = false
-                                onRemove(actividad.id)
+                                onRemove(participacion.id)
                             }) {
                                 Icon(Icons.Filled.Close, contentDescription = "Borrarse")
                             }

@@ -20,12 +20,11 @@ class ViewModelActivities : ViewModel() {
     private val _userActivities = MutableStateFlow<List<ParticipationResponse>>(emptyList())
     val userActivities: StateFlow<List<ParticipationResponse>> = _userActivities
 
-    var accessToken: String? = null
     private var userId: String? = null
 
     fun loadCredentials(context: Context) {
         viewModelScope.launch {
-            accessToken = DataStoreManager.getAccessToken(context).first()
+            // Se usa el email como identificador del usuario
             userId = DataStoreManager.getEmail(context).first()
         }
     }
@@ -50,7 +49,9 @@ class ViewModelActivities : ViewModel() {
         viewModelScope.launch {
             userId?.let {
                 val result = activitiesRepository.createParticipation(it, activityId)
-                result?.let { _userActivities.value = _userActivities.value + it }
+                result?.let { participation ->
+                    _userActivities.value = _userActivities.value + participation
+                }
             }
         }
     }
@@ -60,6 +61,34 @@ class ViewModelActivities : ViewModel() {
             val success = activitiesRepository.deleteParticipation(participationId)
             if (success) {
                 _userActivities.value = _userActivities.value.filterNot { it.id == participationId }
+            }
+        }
+    }
+
+    // Función para crear una actividad (evento)
+    fun createActivity(
+        activitiesRepository: ActivitiesRepository,
+        name: String,
+        description: String,
+        date: String,
+        place: String,
+        category: String
+    ) {
+        viewModelScope.launch {
+            val result = activitiesRepository.createActivity(name, description, date, place, category)
+            result?.let { newActivity ->
+                // Se agrega la nueva actividad a la lista de todas
+                _activities.value = _activities.value + newActivity
+            }
+        }
+    }
+
+    // Función para borrar una actividad
+    fun deleteActivity(activitiesRepository: ActivitiesRepository, activityId: Long) {
+        viewModelScope.launch {
+            val success = activitiesRepository.deleteActivity(activityId)
+            if (success) {
+                _activities.value = _activities.value.filterNot { it.id == activityId }
             }
         }
     }

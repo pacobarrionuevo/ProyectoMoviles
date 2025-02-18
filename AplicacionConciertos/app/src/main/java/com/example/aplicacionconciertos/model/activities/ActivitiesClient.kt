@@ -20,4 +20,16 @@ interface ActivitiesClient {
 
     @DELETE("/api/participations/{id}")
     fun deleteParticipation(@Path("id") participationId: Long): Call<Void>
+
+    // Nuevo endpoint para crear una actividad. Se usa un Map para evitar crear un ActivityRequest.
+    @POST("/api/activities")
+    fun createActivity(
+        @Body activityData: Map<String, Any>
+    ): Call<ActivityResponse>
+
+    // Nuevo endpoint para borrar una actividad.
+    @DELETE("/api/activities/{id}")
+    fun deleteActivity(
+        @Path("id") activityId: Long
+    ): Call<Void>
 }
