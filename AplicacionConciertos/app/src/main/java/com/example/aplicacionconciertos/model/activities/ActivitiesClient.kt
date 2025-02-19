@@ -11,8 +11,11 @@ interface ActivitiesClient {
     ): Call<List<ActivityResponse>>
 
 
-    @GET("/api/participations/user/{userId}")
-    fun getUserParticipations(@Path("userId") userId: String): Call<List<ParticipationResponse>>
+    @GET("/api/participations/userId={userId}")
+    fun getUserParticipations(
+        @Path("userId") userId: String,
+        @Query("activityId") activityId: Long? = null
+    ): Call<List<ParticipationResponse>>
 
     @POST("/api/participations")
     @FormUrlEncoded

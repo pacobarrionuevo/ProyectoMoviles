@@ -37,6 +37,8 @@ class ActivitiesRepository(private val activitiesClient: ActivitiesClient) {
     suspend fun getUserParticipations(userId: String): List<ParticipationResponse> {
         return withContext(Dispatchers.IO) {
             try {
+                Log.d("ActivitiesRepository", "userId antes de llamada: '$userId'") // Asegúrate de que aquí sea correcto
+
                 val response = activitiesClient.getUserParticipations(userId).execute()
                 if (response.isSuccessful) {
                     response.body() ?: emptyList()
@@ -50,6 +52,7 @@ class ActivitiesRepository(private val activitiesClient: ActivitiesClient) {
             }
         }
     }
+
 
     // 3. Crear una nueva participación (apuntarse a una actividad)
     suspend fun createParticipation(userId: String, activityId: Long): ParticipationResponse? {
@@ -131,4 +134,5 @@ class ActivitiesRepository(private val activitiesClient: ActivitiesClient) {
             }
         }
     }
+
 }

@@ -1,6 +1,7 @@
 package com.example.aplicacionconciertos.viewmodel.activities
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.aplicacionconciertos.model.activities.ActivitiesRepository
@@ -28,6 +29,7 @@ class ViewModelActivities : ViewModel() {
         viewModelScope.launch {
             _accessToken.value = DataStoreManager.getAccessToken(context).first() ?: ""
             userId = DataStoreManager.getEmail(context).first()
+            Log.d("ViewModelActivities", "userId: $userId")
         }
     }
 

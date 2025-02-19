@@ -50,6 +50,7 @@ import com.example.aplicacionconciertos.viewmodel.authentication.ViewModelAuth
 fun InicioSesion(viewModelAuth: ViewModelAuth, navController: NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var user_id by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     val authState by viewModelAuth.authState.collectAsState()
     val context = LocalContext.current
@@ -108,7 +109,7 @@ fun InicioSesion(viewModelAuth: ViewModelAuth, navController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { viewModelAuth.login(email, password) },
+            onClick = { viewModelAuth.login(email, password, user_id ) },
             enabled = authState != AuthState.Loading,
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.onPrimaryContainer,

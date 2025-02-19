@@ -27,7 +27,7 @@ class ViewModelAuth(
 
     private val appContext = context.applicationContext
 
-    fun login(email: String, password: String) {
+    fun login(email: String, password: String, user_id: String) {
         _authState.value = AuthState.Loading
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -43,7 +43,8 @@ class ViewModelAuth(
                                 appContext,
                                 loginResponse.accessToken,
                                 loginResponse.refreshToken,
-                                email
+                                email,
+                                user_id
                             )
                             _authState.value = AuthState.Authenticated(
                                 loginResponse.accessToken,
@@ -71,7 +72,7 @@ class ViewModelAuth(
 
 
 
-    fun signUp(email: String, password: String) {
+    fun signUp(email: String, password: String, user_id: String) {
         _authState.value = AuthState.Loading
 
         viewModelScope.launch(Dispatchers.IO) {
@@ -79,7 +80,7 @@ class ViewModelAuth(
 
             withContext(Dispatchers.Main) {
                 if (result.isSuccess) {
-                    login(email, password)
+                    login(email, password, user_id )
                     _authState.value = AuthState.Success("User registered successfully.")
                 } else {
                     val errorMessage = result.exceptionOrNull()?.message ?: "Registration failed."
@@ -124,7 +125,7 @@ class ViewModelAuth(
                 if (result.isSuccess) {
                     val newAccessToken = result.getOrNull()?.token
                     if (newAccessToken != null) {
-                        DataStoreManager.saveCredentials(appContext, newAccessToken, refreshToken, "")
+                        DataStoreManager.saveCredentials(appContext, newAccessToken, refreshToken, "","")
                         withContext(Dispatchers.Main) {
                             _authState.value = AuthState.Authenticated(newAccessToken, refreshToken, "")
                         }
