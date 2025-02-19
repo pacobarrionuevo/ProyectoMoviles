@@ -6,14 +6,23 @@ import android.util.Log
 
 class ActivitiesRepository(private val activitiesClient: ActivitiesClient) {
 
-    suspend fun getAllActivities(accessToken: String): List<ActivityResponse> {
+    // Variable para almacenar el token (sin el prefijo "Bearer ", se añadirá en las llamadas)
+    private var accessToken: String = ""
+
+    // Función para asignar el token desde el ViewModel
+    fun setAccessToken(token: String) {
+        accessToken = token
+    }
+
+    // 1. Obtener todas las actividades (usa el token almacenado)
+    suspend fun getAllActivities(): List<ActivityResponse> {
         return withContext(Dispatchers.IO) {
             try {
                 val response = activitiesClient.getAllActivities("Bearer $accessToken").execute()
                 if (response.isSuccessful) {
                     response.body() ?: emptyList()
                 } else {
-                    Log.e("ActivitiesRepository", "Error code: ${response.code()}, body: ${response.errorBody()?.string()}")
+                    Log.e("ActivitiesRepository", "Error getAllActivities: ${response.code()}, body: ${response.errorBody()?.string()}")
                     emptyList()
                 }
             } catch (e: Exception) {
@@ -23,8 +32,8 @@ class ActivitiesRepository(private val activitiesClient: ActivitiesClient) {
         }
     }
 
-
     // 2. Obtener participaciones de un usuario por su ID
+    // (Nota: este endpoint en tu implementación actual no usa token. Puedes agregarlo si lo requieres.)
     suspend fun getUserParticipations(userId: String): List<ParticipationResponse> {
         return withContext(Dispatchers.IO) {
             try {
@@ -32,7 +41,7 @@ class ActivitiesRepository(private val activitiesClient: ActivitiesClient) {
                 if (response.isSuccessful) {
                     response.body() ?: emptyList()
                 } else {
-                    Log.e("ActivitiesRepository", "Error code: ${response.code()}, body: ${response.errorBody()?.string()}")
+                    Log.e("ActivitiesRepository", "Error getUserParticipations: ${response.code()}, body: ${response.errorBody()?.string()}")
                     emptyList()
                 }
             } catch (e: Exception) {
@@ -50,7 +59,7 @@ class ActivitiesRepository(private val activitiesClient: ActivitiesClient) {
                 if (response.isSuccessful) {
                     response.body()
                 } else {
-                    Log.e("ActivitiesRepository", "Error code: ${response.code()}, body: ${response.errorBody()?.string()}")
+                    Log.e("ActivitiesRepository", "Error createParticipation: ${response.code()}, body: ${response.errorBody()?.string()}")
                     null
                 }
             } catch (e: Exception) {
@@ -66,7 +75,7 @@ class ActivitiesRepository(private val activitiesClient: ActivitiesClient) {
             try {
                 val response = activitiesClient.deleteParticipation(participationId).execute()
                 if (!response.isSuccessful) {
-                    Log.e("ActivitiesRepository", "Error code: ${response.code()}, body: ${response.errorBody()?.string()}")
+                    Log.e("ActivitiesRepository", "Error deleteParticipation: ${response.code()}, body: ${response.errorBody()?.string()}")
                 }
                 response.isSuccessful
             } catch (e: Exception) {
@@ -86,11 +95,10 @@ class ActivitiesRepository(private val activitiesClient: ActivitiesClient) {
     ): ActivityResponse? {
         return withContext(Dispatchers.IO) {
             try {
-                // Construimos un map sin necesidad de una clase Request
                 val activityData = mapOf(
                     "name" to name,
                     "description" to description,
-                    "date" to date,       // Formato "YYYY-MM-DD"
+                    "date" to date,       // "YYYY-MM-DD"
                     "place" to place,
                     "category" to category
                 )
@@ -98,7 +106,7 @@ class ActivitiesRepository(private val activitiesClient: ActivitiesClient) {
                 if (response.isSuccessful) {
                     response.body()
                 } else {
-                    Log.e("ActivitiesRepository", "Error code: ${response.code()}, body: ${response.errorBody()?.string()}")
+                    Log.e("ActivitiesRepository", "Error createActivity: ${response.code()}, body: ${response.errorBody()?.string()}")
                     null
                 }
             } catch (e: Exception) {
@@ -114,7 +122,7 @@ class ActivitiesRepository(private val activitiesClient: ActivitiesClient) {
             try {
                 val response = activitiesClient.deleteActivity(activityId).execute()
                 if (!response.isSuccessful) {
-                    Log.e("ActivitiesRepository", "Error code: ${response.code()}, body: ${response.errorBody()?.string()}")
+                    Log.e("ActivitiesRepository", "Error deleteActivity: ${response.code()}, body: ${response.errorBody()?.string()}")
                 }
                 response.isSuccessful
             } catch (e: Exception) {

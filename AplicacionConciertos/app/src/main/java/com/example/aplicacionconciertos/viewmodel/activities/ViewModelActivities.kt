@@ -13,6 +13,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class ViewModelActivities : ViewModel() {
+    private val _accessToken = MutableStateFlow<String>("")
+    val accessToken: StateFlow<String> = _accessToken
 
     private val _activities = MutableStateFlow<List<ActivityResponse>>(emptyList())
     val activities: StateFlow<List<ActivityResponse>> = _activities
@@ -24,14 +26,14 @@ class ViewModelActivities : ViewModel() {
 
     fun loadCredentials(context: Context) {
         viewModelScope.launch {
-            // Se usa el email como identificador del usuario
+            _accessToken.value = DataStoreManager.getAccessToken(context).first() ?: ""
             userId = DataStoreManager.getEmail(context).first()
         }
     }
 
-    fun getAllActivities(activitiesRepository: ActivitiesRepository, accessToken: String) {
+    fun getAllActivities(activitiesRepository: ActivitiesRepository) {
         viewModelScope.launch {
-            val result = activitiesRepository.getAllActivities("Bearer $accessToken")
+            val result = activitiesRepository.getAllActivities()
             _activities.value = result
         }
     }
@@ -77,7 +79,6 @@ class ViewModelActivities : ViewModel() {
         viewModelScope.launch {
             val result = activitiesRepository.createActivity(name, description, date, place, category)
             result?.let { newActivity ->
-                // Se agrega la nueva actividad a la lista de todas
                 _activities.value = _activities.value + newActivity
             }
         }

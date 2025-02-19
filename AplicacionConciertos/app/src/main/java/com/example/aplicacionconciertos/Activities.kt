@@ -33,11 +33,12 @@ fun ActividadesScreen(navController: NavController) {
     val pagerState = rememberPagerState(initialPage = 0, pageCount = { 2 })
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current
-    val  accessToken: String
+
     // Repositorio de actividades
     val activitiesRepository = remember { ActivitiesRepository(RetrofitInstance.api) }
     // ViewModel
     val viewModel: ViewModelActivities = viewModel()
+    val accessToken by viewModel.accessToken.collectAsState()
 
     // Estados
     val actividades by viewModel.activities.collectAsState()
@@ -48,9 +49,13 @@ fun ActividadesScreen(navController: NavController) {
     // Cargar credenciales y datos al iniciar la pantalla
     LaunchedEffect(Unit, accessToken) {
         viewModel.loadCredentials(context)
-        viewModel.getAllActivities(activitiesRepository,"Bearer ${accessToken}")
-        viewModel.getUserActivities(activitiesRepository)
-        loading = false
+        if (accessToken.isNotEmpty()) {
+            // Asignar el token al repository
+            activitiesRepository.setAccessToken(accessToken)
+            viewModel.getAllActivities(activitiesRepository)
+            viewModel.getUserActivities(activitiesRepository)
+            loading = false
+        }
     }
 
     Scaffold(
@@ -58,7 +63,6 @@ fun ActividadesScreen(navController: NavController) {
             TopAppBar(title = { Text("Actividades") })
         },
         floatingActionButton = {
-            // Mostrar FAB en la pestaña "Todas" para crear actividad
             if (pagerState.currentPage == 0) {
                 FloatingActionButton(onClick = { showCreateDialog = true }) {
                     Icon(Icons.Filled.Add, contentDescription = "Crear actividad")
@@ -68,7 +72,6 @@ fun ActividadesScreen(navController: NavController) {
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
-            // Pestañas
             val tabs = listOf(
                 TabItem("Todas", Icons.Filled.List),
                 TabItem("Mis Actividades", Icons.Filled.Person)
@@ -85,7 +88,6 @@ fun ActividadesScreen(navController: NavController) {
                 }
             }
 
-            // Contenido según pestaña
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.fillMaxSize()
@@ -122,7 +124,6 @@ fun ActividadesScreen(navController: NavController) {
         }
     }
 
-    // Diálogo para crear una nueva actividad
     if (showCreateDialog) {
         CreateActivityDialog(
             onDismiss = { showCreateDialog = false },
@@ -164,11 +165,9 @@ fun AllActivitiesList(
                             Text(actividad.name, style = MaterialTheme.typography.titleMedium)
                             Text(actividad.description, style = MaterialTheme.typography.bodyMedium)
                         }
-                        // Botón para apuntarse
                         IconButton(onClick = { onParticipate(actividad.id) }) {
                             Icon(Icons.Filled.Check, contentDescription = "Apuntarse")
                         }
-                        // Botón para borrar la actividad
                         IconButton(onClick = { onDeleteActivity(actividad.id) }) {
                             Icon(Icons.Filled.Close, contentDescription = "Borrar actividad")
                         }
@@ -178,7 +177,6 @@ fun AllActivitiesList(
         }
     }
 }
-
 
 @Composable
 fun MyActivitiesList(
