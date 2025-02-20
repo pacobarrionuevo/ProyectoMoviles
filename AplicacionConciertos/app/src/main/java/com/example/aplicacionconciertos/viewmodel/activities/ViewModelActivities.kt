@@ -7,8 +7,8 @@ import com.example.aplicacionconciertos.model.activities.ActivitiesRepository
 import com.example.aplicacionconciertos.model.activities.ActivityResponse
 import com.example.aplicacionconciertos.model.activities.ParticipationResponse
 import com.example.aplicacionconciertos.viewmodel.authentication.DataStoreManager
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class ViewModelActivities(
@@ -17,7 +17,6 @@ class ViewModelActivities(
 ) : ViewModel() {
 
     private val appContext = context.applicationContext
-    private val dataStoreManager = DataStoreManager()
 
     // Estado para almacenar las actividades
     private val _activities = MutableStateFlow<List<ActivityResponse>>(emptyList())
@@ -31,51 +30,50 @@ class ViewModelActivities(
     private val _message = MutableStateFlow<String?>(null)
     val message: StateFlow<String?> = _message
 
-    // Cargar el accessToken al inicializar el ViewModel
-    /*init {
-        viewModelScope.launch {
-            val token = DataStoreManager.getAccessToken(appContext)
+    // Cargar credenciales al inicializar el ViewModel
+    init {
+        loadCredentials()
+    }
+
+    private fun loadCredentials() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val token = DataStoreManager.getAccessTokenSync(appContext)
             if (!token.isNullOrEmpty()) {
                 activitiesRepository.setAccessToken(token)
             }
         }
     }
-    */
 
-    // Obtener todas las actividades
     fun getAllActivities() {
         viewModelScope.launch {
             _activities.value = activitiesRepository.getAllActivities()
         }
     }
 
-    // Obtener las actividades en las que el usuario participa
     fun getUserParticipations(userId: String) {
         viewModelScope.launch {
             _userParticipations.value = activitiesRepository.getUserParticipations(userId)
         }
     }
 
-    // Apuntarse a una actividad
     fun createParticipation(userId: String, activityId: Long) {
         viewModelScope.launch {
             val result = activitiesRepository.createParticipation(userId, activityId)
             if (result != null) {
                 _message.value = "Te has apuntado a la actividad"
-                getUserParticipations(userId) // Actualizar lista de participaciones
+                getUserParticipations(userId)
             } else {
                 _message.value = "Error al apuntarse a la actividad"
             }
         }
     }
 
-    // Borrarse de una actividad
     fun deleteParticipation(participationId: Long, userId: String) {
         viewModelScope.launch {
             val success = activitiesRepository.deleteParticipation(participationId)
             if (success) {
                 _message.value = "Te has borrado de la actividad"
-                getUserParticipations(userId) // Actualizar lista de participaciones
+                getUserParticipations(userId)
             } else {
                 _message.value = "Error al borrarse de la actividad"
             }

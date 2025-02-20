@@ -1,18 +1,18 @@
 package com.example.aplicacionconciertos
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.List
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.EventAvailable
+import androidx.compose.material.icons.filled.EventBusy
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -20,201 +20,152 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.aplicacionconciertos.model.activities.ActivitiesRepository
-import com.example.aplicacionconciertos.model.activities.RetrofitInstance
+import com.example.aplicacionconciertos.model.activities.ActivityResponse
 import com.example.aplicacionconciertos.viewmodel.activities.ViewModelActivities
+import com.example.aplicacionconciertos.viewmodel.authentication.DataStoreManager
 import kotlinx.coroutines.launch
-import com.example.aplicacionconciertos.model.activities.CreateActivityDialog
 
-@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun ActividadesScreen(navController: NavController) {
-    val scope = rememberCoroutineScope()
-    val pagerState = rememberPagerState(initialPage = 0, pageCount = { 2 })
-    val snackbarHostState = remember { SnackbarHostState() }
+fun ActivitiesScreen(viewModel: ViewModelActivities = viewModel(), navController: NavController) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
 
-    // Repositorio de actividades
-    val activitiesRepository = remember { ActivitiesRepository(RetrofitInstance.api) }
-    // ViewModel
-    val viewModel: ViewModelActivities = viewModel()
-    val accessToken by viewModel.accessToken.collectAsState()
-
-    // Estados
-    val actividades by viewModel.activities.collectAsState()
-    val userActividades by viewModel.userActivities.collectAsState()
-    var loading by remember { mutableStateOf(true) }
-    var showCreateDialog by remember { mutableStateOf(false) }
-
-    // Cargar credenciales y datos al iniciar la pantalla
-    LaunchedEffect(Unit, accessToken) {
-        viewModel.loadCredentials(context)
-        if (accessToken.isNotEmpty()) {
-            // Asignar el token al repository
-            activitiesRepository.setAccessToken(accessToken)
-            viewModel.getAllActivities(activitiesRepository)
-            viewModel.getUserActivities(activitiesRepository)
-            loading = false
+    var accessToken by remember { mutableStateOf<String?>(null) }
+    LaunchedEffect(Unit) {
+        accessToken = DataStoreManager.getAccessTokenSync(context)
+        if (accessToken.isNullOrEmpty()) {
+            Toast.makeText(context, "Debes iniciar sesión", Toast.LENGTH_LONG).show()
+            return@LaunchedEffect
         }
     }
+    
+    val tabItems = listOf(
+        TabItem("Todas", Icons.Default.EventAvailable),
+        TabItem("Apuntado", Icons.Default.EventBusy)
+    )
+    var selectedTabIndex by remember { mutableStateOf(0) }
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             TopAppBar(title = { Text("Actividades") })
-        },
-        floatingActionButton = {
-            if (pagerState.currentPage == 0) {
-                FloatingActionButton(onClick = { showCreateDialog = true }) {
-                    Icon(Icons.Filled.Add, contentDescription = "Crear actividad")
-                }
-            }
-        },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        }
     ) { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues)) {
-            val tabs = listOf(
-                TabItem("Todas", Icons.Filled.List),
-                TabItem("Mis Actividades", Icons.Filled.Person)
-            )
-
-            TabRow(selectedTabIndex = pagerState.currentPage) {
-                tabs.forEachIndexed { index, tab ->
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)) {
+            TabRow(selectedTabIndex = selectedTabIndex) {
+                tabItems.forEachIndexed { index, tabItem ->
                     Tab(
-                        selected = pagerState.currentPage == index,
-                        onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
-                        text = { Text(tab.title) },
-                        icon = { Icon(tab.icon, contentDescription = tab.title) }
+                        selected = selectedTabIndex == index,
+                        onClick = { selectedTabIndex = index },
+                        text = { Text(tabItem.title) },
+                        icon = { Icon(tabItem.icon, contentDescription = null) }
                     )
                 }
             }
 
-            HorizontalPager(
-                state = pagerState,
-                modifier = Modifier.fillMaxSize()
-            ) { page ->
-                when (page) {
-                    0 -> AllActivitiesList(
-                        actividades = actividades,
-                        loading = loading,
-                        onParticipate = { activityId ->
-                            scope.launch {
-                                viewModel.createParticipation(activitiesRepository, activityId)
-                                snackbarHostState.showSnackbar("Te has apuntado a la actividad")
-                            }
-                        },
-                        onDeleteActivity = { activityId ->
-                            scope.launch {
-                                viewModel.deleteActivity(activitiesRepository, activityId)
-                                snackbarHostState.showSnackbar("Actividad borrada")
-                            }
-                        }
-                    )
-                    1 -> MyActivitiesList(
-                        actividades = userActividades,
-                        loading = loading,
-                        onRemove = { participationId ->
-                            scope.launch {
-                                viewModel.deleteParticipation(activitiesRepository, participationId)
-                                snackbarHostState.showSnackbar("Te has borrado de la actividad")
-                            }
-                        }
-                    )
+            when (selectedTabIndex) {
+                0 -> AllActivitiesTab(viewModel, snackbarHostState)
+                1 -> UserActivitiesTab(viewModel, snackbarHostState)
+            }
+        }
+    }
+}
+
+@Composable
+fun AllActivitiesTab(viewModel: ViewModelActivities, snackbarHostState: SnackbarHostState) {
+    val activities by viewModel.activities.collectAsState()
+    val isLoading by remember { derivedStateOf { activities.isEmpty() } }
+
+    LaunchedEffect(Unit) {
+        viewModel.getAllActivities()
+    }
+
+    if (isLoading) {
+        CircularProgressIndicator(modifier = Modifier.padding(16.dp))
+    } else {
+        LazyColumn {
+            items(activities.size) { index ->
+                ActivityItem(
+                    activity = activities[index],
+                    buttonIcon = Icons.Default.Add,
+                    buttonAction = {
+                        viewModel.createParticipation("userId", activities[index].id)
+                    },
+                    snackbarHostState = snackbarHostState,
+                    message = "Te has apuntado"
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun UserActivitiesTab(viewModel: ViewModelActivities, snackbarHostState: SnackbarHostState) {
+    val userActivities by viewModel.userParticipations.collectAsState()
+    val allActivities by viewModel.activities.collectAsState()
+    val isLoading by remember { derivedStateOf { userActivities.isEmpty() } }
+    var visibleActivities by remember { mutableStateOf(userActivities) }
+
+    LaunchedEffect(Unit) {
+        viewModel.getUserParticipations("userId")
+    }
+
+    if (isLoading) {
+        CircularProgressIndicator(modifier = Modifier.padding(16.dp))
+    } else {
+        LazyColumn {
+            items(userActivities.size) { index ->
+                val participation = userActivities[index]
+                val activity = allActivities.find { it.id == participation.activityId }
+
+                if (activity != null) {
+                    AnimatedVisibility(
+                        visible = participation in visibleActivities,
+                        exit = slideOutHorizontally { it } + fadeOut()
+                    ) {
+                        ActivityItem(
+                            activity = activity,
+                            buttonIcon = Icons.Default.EventBusy,
+                            buttonAction = {
+                                viewModel.deleteParticipation(participation.id, "userId")
+                                visibleActivities = visibleActivities - participation
+                            },
+                            snackbarHostState = snackbarHostState,
+                            message = "Te has borrado de la actividad"
+                        )
+                    }
                 }
             }
         }
     }
+}
 
-    if (showCreateDialog) {
-        CreateActivityDialog(
-            onDismiss = { showCreateDialog = false },
-            onCreate = { name, description, date, place, category ->
-                viewModel.createActivity(activitiesRepository, name, description, date, place, category)
-                showCreateDialog = false
+
+@Composable
+fun ActivityItem(
+    activity: ActivityResponse,
+    buttonIcon: androidx.compose.ui.graphics.vector.ImageVector,
+    buttonAction: () -> Unit,
+    snackbarHostState: SnackbarHostState,
+    message: String
+) {
+    val scope = rememberCoroutineScope()
+
+    Card(modifier = Modifier.padding(8.dp).fillMaxWidth()) {
+        Row(modifier = Modifier.padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+            Text(activity.name)
+            IconButton(onClick = {
+                buttonAction()
                 scope.launch {
-                    snackbarHostState.showSnackbar("Actividad creada con éxito")
+                    snackbarHostState.showSnackbar(message)
                 }
-            }
-        )
-    }
-}
-
-@Composable
-fun AllActivitiesList(
-    actividades: List<com.example.aplicacionconciertos.model.activities.ActivityResponse>,
-    loading: Boolean,
-    onParticipate: (Long) -> Unit,
-    onDeleteActivity: (Long) -> Unit
-) {
-    if (loading) {
-        CircularProgressIndicator(modifier = Modifier.fillMaxSize())
-    } else {
-        LazyColumn {
-            items(actividades, key = { it.id }) { actividad ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(actividad.name, style = MaterialTheme.typography.titleMedium)
-                            Text(actividad.description, style = MaterialTheme.typography.bodyMedium)
-                        }
-                        IconButton(onClick = { onParticipate(actividad.id) }) {
-                            Icon(Icons.Filled.Check, contentDescription = "Apuntarse")
-                        }
-                        IconButton(onClick = { onDeleteActivity(actividad.id) }) {
-                            Icon(Icons.Filled.Close, contentDescription = "Borrar actividad")
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun MyActivitiesList(
-    actividades: List<com.example.aplicacionconciertos.model.activities.ParticipationResponse>,
-    loading: Boolean,
-    onRemove: (Long) -> Unit
-) {
-    if (loading) {
-        CircularProgressIndicator(modifier = Modifier.fillMaxSize())
-    } else {
-        LazyColumn {
-            items(actividades, key = { it.id }) { participacion ->
-                var visible by remember { mutableStateOf(true) }
-                AnimatedVisibility(
-                    visible = visible,
-                    exit = fadeOut()
-                ) {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text("Actividad ID: ${participacion.activityId}")
-                            IconButton(onClick = {
-                                visible = false
-                                onRemove(participacion.id)
-                            }) {
-                                Icon(Icons.Filled.Close, contentDescription = "Borrarse")
-                            }
-                        }
-                    }
-                }
+            }) {
+                Icon(buttonIcon, contentDescription = null)
             }
         }
     }
