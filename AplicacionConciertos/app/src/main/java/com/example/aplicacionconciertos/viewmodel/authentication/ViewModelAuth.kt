@@ -94,7 +94,6 @@ class ViewModelAuth(
     fun signOut() {
         viewModelScope.launch {
             DataStoreManager.clearCredentials(appContext)
-            // echarle un ojo
             _authState.value = AuthState.SignedOut
         }
     }
