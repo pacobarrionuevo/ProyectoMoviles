@@ -3,7 +3,7 @@ package com.example.aplicacionconciertos.model.activities
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import android.util.Log
-
+import com.example.aplicacionconciertos.model.authentication.LoginResponse
 class ActivitiesRepository(private val activitiesClient: ActivitiesClient) {
 
     // Variable para almacenar el token (sin el prefijo "Bearer ", se añadirá en las llamadas)
@@ -34,12 +34,12 @@ class ActivitiesRepository(private val activitiesClient: ActivitiesClient) {
 
     // 2. Obtener participaciones de un usuario por su ID
     // (Nota: este endpoint en tu implementación actual no usa token. Puedes agregarlo si lo requieres.)
-    suspend fun getUserParticipations(userId: String): List<ParticipationResponse> {
+    suspend fun getUserParticipations(Id: String): List<ParticipationResponse> {
         return withContext(Dispatchers.IO) {
             try {
-                Log.d("ActivitiesRepository", "userId antes de llamada: '$userId'") // Asegúrate de que aquí sea correcto
+                Log.d("ActivitiesRepository", "userId antes de llamada: '${Id}'") // Asegúrate de que aquí sea correcto
 
-                val response = activitiesClient.getUserParticipations(userId).execute()
+                val response = activitiesClient.getUserParticipations(Id).execute()
                 if (response.isSuccessful) {
                     response.body() ?: emptyList()
                 } else {
