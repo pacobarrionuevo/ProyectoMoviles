@@ -2,6 +2,7 @@ package com.example.aplicacionconciertos
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -46,18 +47,27 @@ fun ActivitiesScreen(navController: NavController, viewModelAuth: ViewModelAuth)
 
     val authState by viewModelAuth.authState.collectAsState()
 
+    val userDetails by viewModelAuth.userDetails.collectAsState()
+
     LaunchedEffect(authState) {
+        Log.d("ActivitiesScreen", "LaunchedEffect authState: $authState")
         when (authState) {
             is AuthState.Authenticated -> {
-                actividadesViewModel.refreshToken()
+                Log.d("ActivitiesScreen", "Usuario autenticado. Obteniendo detalles del usuario...")
+                viewModelAuth.getUserDetails()
             }
             is AuthState.SignedOut, is AuthState.Error, AuthState.Idle -> {
+                Log.w("ActivitiesScreen", "Estado de autenticación inválido: $authState. Navegando a Login")
                 Toast.makeText(context, "Debes iniciar sesión", Toast.LENGTH_LONG).show()
                 navController.navigate("Login")
             }
-            else -> {}
+            else -> {
+                Log.d("ActivitiesScreen", "Estado de autenticación desconocido: $authState")
+            }
         }
     }
+
+    val userId = userDetails?.id
 
     val tabItems = listOf(
         TabItem("Todas", Icons.Default.EventAvailable),
@@ -88,9 +98,30 @@ fun ActivitiesScreen(navController: NavController, viewModelAuth: ViewModelAuth)
             }
 
             when (selectedTabIndex) {
-                0 -> AllActivitiesTab(actividadesViewModel, snackbarHostState)
-                1 -> UserActivitiesTab(actividadesViewModel, snackbarHostState)
+                0 -> {
+                    if (userId != null) {
+                        AllActivitiesTab(
+                            viewModel = actividadesViewModel,
+                            snackbarHostState = snackbarHostState,
+                            userId = userId
+                        )
+                    } else {
+                        Text("Cargando usuario...")
+                    }
+                }
+                1 -> {
+                    if (userId != null) {
+                        UserActivitiesTab(
+                            viewModel = actividadesViewModel,
+                            snackbarHostState = snackbarHostState,
+                            userId = userId
+                        )
+                    } else {
+                        Text("Cargando usuario...")
+                    }
+                }
             }
+
         }
     }
 }
@@ -98,12 +129,17 @@ fun ActivitiesScreen(navController: NavController, viewModelAuth: ViewModelAuth)
 
 
 @Composable
-fun AllActivitiesTab(viewModel: ViewModelActivities, snackbarHostState: SnackbarHostState) {
+fun AllActivitiesTab(viewModel: ViewModelActivities, snackbarHostState: SnackbarHostState, userId: String) {
+    val context = LocalContext.current
     val activities by viewModel.activities.collectAsState()
     val isLoading by remember { derivedStateOf { activities.isEmpty() } }
 
+    val currentToken = DataStoreManager.getAccessToken(context).toString()
+
+    Log.d("Token", currentToken.toString())
+
     LaunchedEffect(Unit) {
-        viewModel.getAllActivities()
+        viewModel.getAllActivities(accessToken = currentToken)
     }
 
     if (isLoading) {
@@ -115,7 +151,7 @@ fun AllActivitiesTab(viewModel: ViewModelActivities, snackbarHostState: Snackbar
                     activity = activities[index],
                     buttonIcon = Icons.Default.Add,
                     buttonAction = {
-                        viewModel.createParticipation("userId", activities[index].id)
+                        viewModel.createParticipation(userId, activities[index].id)
                     },
                     snackbarHostState = snackbarHostState,
                     message = "Te has apuntado"
@@ -126,14 +162,14 @@ fun AllActivitiesTab(viewModel: ViewModelActivities, snackbarHostState: Snackbar
 }
 
 @Composable
-fun UserActivitiesTab(viewModel: ViewModelActivities, snackbarHostState: SnackbarHostState) {
+fun UserActivitiesTab(viewModel: ViewModelActivities, snackbarHostState: SnackbarHostState, userId: String) {
     val userActivities by viewModel.userParticipations.collectAsState()
     val allActivities by viewModel.activities.collectAsState()
     val isLoading by remember { derivedStateOf { userActivities.isEmpty() } }
     var visibleActivities by remember { mutableStateOf(userActivities) }
 
     LaunchedEffect(Unit) {
-        viewModel.getUserParticipations("userId")
+        viewModel.getUserParticipations(userId)
     }
 
     if (isLoading) {

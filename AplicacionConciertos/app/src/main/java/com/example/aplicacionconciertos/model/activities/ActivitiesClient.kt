@@ -6,17 +6,16 @@ import retrofit2.http.*
 
 interface ActivitiesClient {
 
-    @GET("/api/activities")
+    @GET("api/activities")
     suspend fun getAllActivities(
-        @Header("Authorization") token: String
+        @Header("Authorization") authHeader: String
     ): Response<List<ActivityResponse>>
 
 
 
-    @GET("/api/participations/userId={userId}")
+    @GET("/api/participations/user/{userId}")
     fun getUserParticipations(
         @Path("userId") userId: String,
-        @Query("activityId") activityId: Long? = null
     ): Call<List<ParticipationResponse>>
 
     @POST("/api/participations")

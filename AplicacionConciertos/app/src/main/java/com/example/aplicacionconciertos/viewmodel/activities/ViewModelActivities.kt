@@ -23,46 +23,32 @@ class ViewModelActivities(
     private val _activities = MutableStateFlow<List<ActivityResponse>>(emptyList())
     val activities: StateFlow<List<ActivityResponse>> = _activities
 
+    private val _isLoading = MutableStateFlow(true)
+    val isLoading: StateFlow<Boolean> = _isLoading
+
     private val _userParticipations = MutableStateFlow<List<ParticipationResponse>>(emptyList())
     val userParticipations: StateFlow<List<ParticipationResponse>> = _userParticipations
 
     private val _message = MutableStateFlow<String?>(null)
     val message: StateFlow<String?> = _message
 
-    private suspend fun loadCredentials() {
-        val token = DataStoreManager.getAccessTokenSync(appContext)
-        if (!token.isNullOrEmpty()) {
-            activitiesRepository.setAccessToken(token)
-        }
-    }
+    val currentToken = DataStoreManager.getAccessToken(appContext).toString()
 
     init {
         viewModelScope.launch {
-            loadCredentials()
-            getAllActivities()
+            val currentToken = DataStoreManager.getAccessToken(appContext).toString()
+            getAllActivities(currentToken)
         }
     }
 
 
-    fun refreshToken() {
-        viewModelScope.launch(Dispatchers.IO) {
-            viewModelAuth.refreshAndSaveToken()
-            // Después de refrescar, obtén el token actualizado
-            val newToken = DataStoreManager.getAccessTokenSync(appContext)
-            if (!newToken.isNullOrEmpty()) {
-                activitiesRepository.setAccessToken(newToken)
-            } else {
-                _message.value = "No se pudo actualizar el token."
-            }
-        }
-    }
-
-    fun getAllActivities() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val activitiesList = activitiesRepository.getAllActivities()
+    fun getAllActivities(accessToken: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            val activitiesList = activitiesRepository.getAllActivities(currentToken)
             _activities.emit(activitiesList)
+            _isLoading.value = false
         }
-
     }
 
     fun getUserParticipations(userId: String) {

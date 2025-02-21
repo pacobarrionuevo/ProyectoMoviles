@@ -3,18 +3,12 @@ package com.example.aplicacionconciertos.model.activities
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import android.util.Log
-import com.example.aplicacionconciertos.model.authentication.LoginResponse
+
 class ActivitiesRepository(private val activitiesClient: ActivitiesClient) {
 
-    private var accessToken: String = ""
-
-    fun setAccessToken(token: String) {
-        accessToken = token
-    }
-
-    suspend fun getAllActivities(): List<ActivityResponse> {
+    suspend fun getAllActivities(accessToken: String): List<ActivityResponse> {
         return try {
-            val response = activitiesClient.getAllActivities("Bearer $accessToken") // Sin `.execute()`
+            val response = activitiesClient.getAllActivities("Bearer $accessToken")
             if (response.isSuccessful) {
                 response.body() ?: emptyList()
             } else {
