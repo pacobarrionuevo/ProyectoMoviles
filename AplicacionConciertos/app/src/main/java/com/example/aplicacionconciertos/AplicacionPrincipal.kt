@@ -100,6 +100,7 @@ fun AplicacionPrincipal(
             Text(
                 text = if (authState is AuthState.Authenticated) {
                     "${stringResource(id = R.string.BienvenidaAppPrincipal)} ${userDetails?.email ?: ""} !"
+                    "${stringResource(id = R.string.BienvenidaAppPrincipal)} ${userDetails?.id ?: ""} !"
                 } else {
                     stringResource(id = R.string.BienvenidoSinIniciaSesion)
                 } ,
