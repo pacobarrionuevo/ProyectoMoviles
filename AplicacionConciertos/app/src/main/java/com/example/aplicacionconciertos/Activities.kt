@@ -136,17 +136,11 @@ fun AllActivitiesTab(viewModel: ViewModelActivities, snackbarHostState: Snackbar
 
     val currentToken by DataStoreManager.getAccessToken(context).collectAsState(initial = null)
 
-    LaunchedEffect(currentToken) {
-        Log.d("Token", "Token actual: $currentToken")
-    }
-
-
     LaunchedEffect(Unit) {
-        val activitiesList = activitiesRepository.getAllActivities(accessToken)
 
-
+        viewModel.getAllActivities(accessToken = currentToken.toString())
         Log.d("ViewModelActivities", "Llamando getAllActivities con token: '$currentToken'")
-        Log.d("ViewModelActivities", "Recibidas ${activitiesList.size} actividades")
+        Log.d("ViewModelActivities", "Recibidas ${viewModel.getAllActivities(accessToken = currentToken.toString())} actividades")
     }
 
     if (isLoading) {
@@ -158,7 +152,7 @@ fun AllActivitiesTab(viewModel: ViewModelActivities, snackbarHostState: Snackbar
                     activity = activities[index],
                     buttonIcon = Icons.Default.Add,
                     buttonAction = {
-                        viewModel.createParticipation(userId, activities[index].id)
+                        viewModel.createParticipation(userId, activities[index].id, currentToken.toString())
                     },
                     snackbarHostState = snackbarHostState,
                     message = "Te has apuntado"
@@ -174,9 +168,11 @@ fun UserActivitiesTab(viewModel: ViewModelActivities, snackbarHostState: Snackba
     val allActivities by viewModel.activities.collectAsState()
     val isLoading by remember { derivedStateOf { userActivities.isEmpty() } }
     var visibleActivities by remember { mutableStateOf(userActivities) }
+    val context = LocalContext.current
+    val currentToken by DataStoreManager.getAccessToken(context).collectAsState(initial = null)
 
     LaunchedEffect(Unit) {
-        viewModel.getUserParticipations(userId)
+        viewModel.getUserParticipations(userId, currentToken.toString())
     }
 
     if (isLoading) {
@@ -197,7 +193,7 @@ fun UserActivitiesTab(viewModel: ViewModelActivities, snackbarHostState: Snackba
                             activity = activity,
                             buttonIcon = Icons.Default.EventBusy,
                             buttonAction = {
-                                viewModel.deleteParticipation(participation.id, "userId")
+                                viewModel.deleteParticipation(participation.id, userId, currentToken.toString())
                                 visibleActivities = visibleActivities - participation
                             },
                             snackbarHostState = snackbarHostState,

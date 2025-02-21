@@ -44,7 +44,7 @@ class ViewModelActivities(
             DataStoreManager.getAccessToken(appContext).collectLatest { token ->
                 if (!token.isNullOrEmpty()) {
                     Log.d("ViewModelActivities", "Token obtenido: '$token'")
-                    getAllActivities(token)  // 📌 Pasamos el token correcto
+                    getAllActivities(token)
                 } else {
                     Log.e("ViewModelActivities", "Error: Token es nulo o vacío")
                 }
@@ -56,42 +56,38 @@ class ViewModelActivities(
 
     fun getAllActivities(accessToken: String) {
         viewModelScope.launch {
-
-
             _isLoading.value = true
             val activitiesList = activitiesRepository.getAllActivities(accessToken)
             _activities.emit(activitiesList)
-
-
             _isLoading.value = false
         }
     }
 
 
-    fun getUserParticipations(userId: String) {
+    fun getUserParticipations(userId: String, accessToken: String) {
         viewModelScope.launch {
-            _userParticipations.value = activitiesRepository.getUserParticipations(userId)
+            _userParticipations.value = activitiesRepository.getUserParticipations(userId, accessToken)
         }
     }
 
-    fun createParticipation(userId: String, activityId: Long) {
+    fun createParticipation(userId: String, activityId: Long, accessToken:String) {
         viewModelScope.launch {
             val result = activitiesRepository.createParticipation(userId, activityId)
             if (result != null) {
                 _message.value = "Te has apuntado a la actividad"
-                getUserParticipations(userId)
+                getUserParticipations(userId, accessToken)
             } else {
                 _message.value = "Error al apuntarse a la actividad"
             }
         }
     }
 
-    fun deleteParticipation(participationId: Long, userId: String) {
+    fun deleteParticipation(participationId: Long, userId: String, accessToken: String) {
         viewModelScope.launch {
             val success = activitiesRepository.deleteParticipation(participationId)
             if (success) {
                 _message.value = "Te has borrado de la actividad"
-                getUserParticipations(userId)
+                getUserParticipations(userId, accessToken)
             } else {
                 _message.value = "Error al borrarse de la actividad"
             }

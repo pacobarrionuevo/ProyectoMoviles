@@ -8,7 +8,7 @@ class ActivitiesRepository(private val activitiesClient: ActivitiesClient) {
 
     suspend fun getAllActivities(accessToken: String): List<ActivityResponse> {
         return try {
-            Log.d("ActivitiesRepository", "Token antes de llamada: '$accessToken'")  // 📌 Agregar este log
+            Log.d("ActivitiesRepository", "Token antes de llamada: '$accessToken'")
 
             val response = activitiesClient.getAllActivities("Bearer $accessToken")
             if (response.isSuccessful) {
@@ -25,12 +25,12 @@ class ActivitiesRepository(private val activitiesClient: ActivitiesClient) {
 
 
 
-    suspend fun getUserParticipations(Id: String): List<ParticipationResponse> {
+    suspend fun getUserParticipations(Id: String, accessToken: String): List<ParticipationResponse> {
         return withContext(Dispatchers.IO) {
             try {
                 Log.d("ActivitiesRepository", "userId antes de llamada: '${Id}'") // Asegúrate de que aquí sea correcto
 
-                val response = activitiesClient.getUserParticipations(Id).execute()
+                val response = activitiesClient.getUserParticipations(Id, accessToken).execute()
                 if (response.isSuccessful) {
                     response.body() ?: emptyList()
                 } else {

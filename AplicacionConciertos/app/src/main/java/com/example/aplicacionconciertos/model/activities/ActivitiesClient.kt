@@ -16,6 +16,7 @@ interface ActivitiesClient {
     @GET("/api/participations/user/{userId}")
     fun getUserParticipations(
         @Path("userId") userId: String,
+        @Header("Authorization") authHeader: String
     ): Call<List<ParticipationResponse>>
 
     @POST("/api/participations")
