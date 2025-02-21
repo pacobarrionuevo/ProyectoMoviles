@@ -7,30 +7,29 @@ import com.example.aplicacionconciertos.model.activities.ActivitiesRepository
 import com.example.aplicacionconciertos.model.activities.ActivityResponse
 import com.example.aplicacionconciertos.model.activities.ParticipationResponse
 import com.example.aplicacionconciertos.viewmodel.authentication.DataStoreManager
+import com.example.aplicacionconciertos.viewmodel.authentication.ViewModelAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class ViewModelActivities(
     private val activitiesRepository: ActivitiesRepository,
+    private val viewModelAuth: ViewModelAuth,
     context: Context
 ) : ViewModel() {
 
     private val appContext = context.applicationContext
 
-    // Estado para almacenar las actividades
     private val _activities = MutableStateFlow<List<ActivityResponse>>(emptyList())
     val activities: StateFlow<List<ActivityResponse>> = _activities
 
-    // Estado para almacenar actividades en las que el usuario participa
     private val _userParticipations = MutableStateFlow<List<ParticipationResponse>>(emptyList())
     val userParticipations: StateFlow<List<ParticipationResponse>> = _userParticipations
 
-    // Estado para manejar errores o mensajes
     private val _message = MutableStateFlow<String?>(null)
     val message: StateFlow<String?> = _message
 
-    // Cargar credenciales al inicializar el ViewModel
+    // En el init, puedes cargar el token inicialmente
     init {
         loadCredentials()
     }
@@ -40,6 +39,21 @@ class ViewModelActivities(
             val token = DataStoreManager.getAccessTokenSync(appContext)
             if (!token.isNullOrEmpty()) {
                 activitiesRepository.setAccessToken(token)
+            }
+        }
+    }
+
+    // Método para refrescar el token usando el método de ViewModelAuth
+    fun refreshToken() {
+        viewModelScope.launch(Dispatchers.IO) {
+            // Llama al método del ViewModelAuth para refrescar y guardar el token
+            viewModelAuth.refreshAndSaveToken()
+            // Después de refrescar, obtén el token actualizado
+            val newToken = DataStoreManager.getAccessTokenSync(appContext)
+            if (!newToken.isNullOrEmpty()) {
+                activitiesRepository.setAccessToken(newToken)
+            } else {
+                _message.value = "No se pudo actualizar el token."
             }
         }
     }

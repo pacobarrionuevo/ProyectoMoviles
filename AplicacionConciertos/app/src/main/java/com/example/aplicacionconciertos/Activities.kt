@@ -20,28 +20,48 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.aplicacionconciertos.model.activities.ActivitiesClient
+import com.example.aplicacionconciertos.model.activities.ActivitiesRepository
 import com.example.aplicacionconciertos.model.activities.ActivityResponse
+import com.example.aplicacionconciertos.model.activities.RetrofitInstance
 import com.example.aplicacionconciertos.viewmodel.activities.ViewModelActivities
+import com.example.aplicacionconciertos.viewmodel.authentication.AuthState
 import com.example.aplicacionconciertos.viewmodel.authentication.DataStoreManager
+import com.example.aplicacionconciertos.viewmodel.authentication.ViewModelAuth
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun ActivitiesScreen(viewModel: ViewModelActivities = viewModel(), navController: NavController) {
+fun ActivitiesScreen(navController: NavController, viewModelAuth: ViewModelAuth) {
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    var accessToken by remember { mutableStateOf<String?>(null) }
-    LaunchedEffect(Unit) {
-        accessToken = DataStoreManager.getAccessTokenSync(context)
-        if (accessToken.isNullOrEmpty()) {
-            Toast.makeText(context, "Debes iniciar sesión", Toast.LENGTH_LONG).show()
-            return@LaunchedEffect
+    // Inicializamos el repository de actividades
+    val activitiesClient = RetrofitInstance.api
+    val repository = ActivitiesRepository(activitiesClient)
+
+    // Inyectamos el viewModelAuth en el ViewModelActivities
+    val actividadesViewModel = remember { ViewModelActivities(repository, viewModelAuth, context) }
+
+    val authState by viewModelAuth.authState.collectAsState()
+
+    LaunchedEffect(authState) {
+        when (authState) {
+            is AuthState.Authenticated -> {
+                // Refresca el token y actualiza el repository en el viewModel de actividades
+                actividadesViewModel.refreshToken()
+            }
+            is AuthState.SignedOut, is AuthState.Error, AuthState.Idle -> {
+                Toast.makeText(context, "Debes iniciar sesión", Toast.LENGTH_LONG).show()
+                navController.navigate("loginScreen")
+            }
+            else -> { /* No se hace nada en otros estados */ }
         }
     }
-    
+
     val tabItems = listOf(
         TabItem("Todas", Icons.Default.EventAvailable),
         TabItem("Apuntado", Icons.Default.EventBusy)
@@ -54,9 +74,11 @@ fun ActivitiesScreen(viewModel: ViewModelActivities = viewModel(), navController
             TopAppBar(title = { Text("Actividades") })
         }
     ) { paddingValues ->
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues)) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
             TabRow(selectedTabIndex = selectedTabIndex) {
                 tabItems.forEachIndexed { index, tabItem ->
                     Tab(
@@ -69,12 +91,14 @@ fun ActivitiesScreen(viewModel: ViewModelActivities = viewModel(), navController
             }
 
             when (selectedTabIndex) {
-                0 -> AllActivitiesTab(viewModel, snackbarHostState)
-                1 -> UserActivitiesTab(viewModel, snackbarHostState)
+                0 -> AllActivitiesTab(actividadesViewModel, snackbarHostState)
+                1 -> UserActivitiesTab(actividadesViewModel, snackbarHostState)
             }
         }
     }
 }
+
+
 
 @Composable
 fun AllActivitiesTab(viewModel: ViewModelActivities, snackbarHostState: SnackbarHostState) {
@@ -124,8 +148,9 @@ fun UserActivitiesTab(viewModel: ViewModelActivities, snackbarHostState: Snackba
                 val activity = allActivities.find { it.id == participation.activityId }
 
                 if (activity != null) {
+                    val isVisible by remember { derivedStateOf { visibleActivities.contains(participation) } }
                     AnimatedVisibility(
-                        visible = participation in visibleActivities,
+                        visible = isVisible,
                         exit = slideOutHorizontally { it } + fadeOut()
                     ) {
                         ActivityItem(

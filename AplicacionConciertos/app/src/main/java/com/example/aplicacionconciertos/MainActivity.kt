@@ -38,7 +38,7 @@ class MainActivity : ComponentActivity() {
 
             AppConciertosTheme {
                 NavigationDrawer(navController, tareasViewModel) {
-                    AppNavigation(navController, authViewModel.authState.collectAsState().value, authViewModel)
+                    AppNavigation(navController, authViewModel.authState.collectAsState().value, authViewModel, actividadesViewModel)
                 }
             }
         }

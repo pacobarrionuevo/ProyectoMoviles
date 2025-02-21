@@ -46,6 +46,7 @@ import com.example.aplicacionconciertos.model.RutasNavegacion
 import com.example.aplicacionconciertos.viewmodel.authentication.AuthState
 import com.example.aplicacionconciertos.viewmodel.authentication.ViewModelAuth
 import com.example.aplicacionconciertos.viewmodel.TareasViewModel
+import com.example.aplicacionconciertos.viewmodel.activities.ViewModelActivities
 import com.example.aplicacionconciertos.viewmodel.authentication.DataStoreManager
 import com.example.aplicacionconciertos.viewmodel.authentication.dataStoreAuth
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -54,7 +55,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 fun AplicacionPrincipal(
     navController: NavHostController,
     authViewModel: ViewModelAuth,
-    tareasViewModel: TareasViewModel
+    tareasViewModel: TareasViewModel,
+    actividadesViewModel: ViewModelActivities
 ) {
     var showDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
