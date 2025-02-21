@@ -29,18 +29,20 @@ class ViewModelActivities(
     private val _message = MutableStateFlow<String?>(null)
     val message: StateFlow<String?> = _message
 
-    init {
-        loadCredentials()
-    }
-
-    private fun loadCredentials() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val token = DataStoreManager.getAccessTokenSync(appContext)
-            if (!token.isNullOrEmpty()) {
-                activitiesRepository.setAccessToken(token)
-            }
+    private suspend fun loadCredentials() {
+        val token = DataStoreManager.getAccessTokenSync(appContext)
+        if (!token.isNullOrEmpty()) {
+            activitiesRepository.setAccessToken(token)
         }
     }
+
+    init {
+        viewModelScope.launch {
+            loadCredentials()
+            getAllActivities()
+        }
+    }
+
 
     fun refreshToken() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -56,9 +58,11 @@ class ViewModelActivities(
     }
 
     fun getAllActivities() {
-        viewModelScope.launch {
-            _activities.value = activitiesRepository.getAllActivities()
+        viewModelScope.launch(Dispatchers.IO) {
+            val activitiesList = activitiesRepository.getAllActivities()
+            _activities.emit(activitiesList)
         }
+
     }
 
     fun getUserParticipations(userId: String) {

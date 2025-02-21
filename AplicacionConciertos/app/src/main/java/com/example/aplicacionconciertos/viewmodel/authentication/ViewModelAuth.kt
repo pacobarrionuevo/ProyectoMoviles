@@ -130,7 +130,6 @@ class ViewModelAuth(
                         }
                     } else {
                         withContext(Dispatchers.Main) {
-                            // funcion para devolver mensajes de error personalizados
                             _authState.value = AuthState.Error("Failed to refresh token.")
                         }
                     }

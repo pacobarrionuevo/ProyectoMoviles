@@ -6,34 +6,28 @@ import android.util.Log
 import com.example.aplicacionconciertos.model.authentication.LoginResponse
 class ActivitiesRepository(private val activitiesClient: ActivitiesClient) {
 
-    // Variable para almacenar el token (sin el prefijo "Bearer ", se añadirá en las llamadas)
     private var accessToken: String = ""
 
-    // Función para asignar el token desde el ViewModel
     fun setAccessToken(token: String) {
         accessToken = token
     }
 
-    // 1. Obtener todas las actividades (usa el token almacenado)
     suspend fun getAllActivities(): List<ActivityResponse> {
-        return withContext(Dispatchers.IO) {
-            try {
-                val response = activitiesClient.getAllActivities("Bearer $accessToken").execute()
-                if (response.isSuccessful) {
-                    response.body() ?: emptyList()
-                } else {
-                    Log.e("ActivitiesRepository", "Error getAllActivities: ${response.code()}, body: ${response.errorBody()?.string()}")
-                    emptyList()
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
+        return try {
+            val response = activitiesClient.getAllActivities("Bearer $accessToken") // Sin `.execute()`
+            if (response.isSuccessful) {
+                response.body() ?: emptyList()
+            } else {
+                Log.e("ActivitiesRepository", "Error getAllActivities: ${response.code()}, body: ${response.errorBody()?.string()}")
                 emptyList()
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList()
         }
     }
 
-    // 2. Obtener participaciones de un usuario por su ID
-    // (Nota: este endpoint en tu implementación actual no usa token. Puedes agregarlo si lo requieres.)
+
     suspend fun getUserParticipations(Id: String): List<ParticipationResponse> {
         return withContext(Dispatchers.IO) {
             try {
@@ -54,7 +48,6 @@ class ActivitiesRepository(private val activitiesClient: ActivitiesClient) {
     }
 
 
-    // 3. Crear una nueva participación (apuntarse a una actividad)
     suspend fun createParticipation(userId: String, activityId: Long): ParticipationResponse? {
         return withContext(Dispatchers.IO) {
             try {
@@ -72,7 +65,6 @@ class ActivitiesRepository(private val activitiesClient: ActivitiesClient) {
         }
     }
 
-    // 4. Eliminar una participación por su ID (borrarse de la actividad)
     suspend fun deleteParticipation(participationId: Long): Boolean {
         return withContext(Dispatchers.IO) {
             try {
@@ -88,7 +80,6 @@ class ActivitiesRepository(private val activitiesClient: ActivitiesClient) {
         }
     }
 
-    // 5. Crear una nueva actividad (evento)
     suspend fun createActivity(
         name: String,
         description: String,

@@ -39,11 +39,9 @@ fun ActivitiesScreen(navController: NavController, viewModelAuth: ViewModelAuth)
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
 
-    // Inicializamos el repository de actividades
     val activitiesClient = RetrofitInstance.api
     val repository = ActivitiesRepository(activitiesClient)
 
-    // Inyectamos el viewModelAuth en el ViewModelActivities
     val actividadesViewModel = remember { ViewModelActivities(repository, viewModelAuth, context) }
 
     val authState by viewModelAuth.authState.collectAsState()
@@ -51,14 +49,13 @@ fun ActivitiesScreen(navController: NavController, viewModelAuth: ViewModelAuth)
     LaunchedEffect(authState) {
         when (authState) {
             is AuthState.Authenticated -> {
-                // Refresca el token y actualiza el repository en el viewModel de actividades
                 actividadesViewModel.refreshToken()
             }
             is AuthState.SignedOut, is AuthState.Error, AuthState.Idle -> {
                 Toast.makeText(context, "Debes iniciar sesión", Toast.LENGTH_LONG).show()
-                navController.navigate("loginScreen")
+                navController.navigate("Login")
             }
-            else -> { /* No se hace nada en otros estados */ }
+            else -> {}
         }
     }
 

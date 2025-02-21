@@ -1,14 +1,16 @@
 package com.example.aplicacionconciertos.model.activities
 
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.*
 
 interface ActivitiesClient {
 
     @GET("/api/activities")
-    fun getAllActivities(
+    suspend fun getAllActivities(
         @Header("Authorization") token: String
-    ): Call<List<ActivityResponse>>
+    ): Response<List<ActivityResponse>>
+
 
 
     @GET("/api/participations/userId={userId}")
