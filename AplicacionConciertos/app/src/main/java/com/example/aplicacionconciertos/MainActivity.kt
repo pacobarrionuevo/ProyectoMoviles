@@ -30,15 +30,13 @@ class MainActivity : ComponentActivity() {
 
             val authViewModel: ViewModelAuth = viewModel { ViewModelAuth(AuthRepository(), context) }
 
-            val actividadesViewModel: ViewModelActivities = viewModel()
-
             LaunchedEffect(authViewModel.authState.collectAsState().value) {
                 authViewModel.refreshAndSaveToken()
             }
 
             AppConciertosTheme {
                 NavigationDrawer(navController, tareasViewModel) {
-                    AppNavigation(navController, authViewModel.authState.collectAsState().value, authViewModel, actividadesViewModel)
+                    AppNavigation(navController, authViewModel.authState.collectAsState().value, authViewModel)
                 }
             }
         }

@@ -45,7 +45,7 @@ import com.example.aplicacionconciertos.viewmodel.activities.ViewModelActivities
 
 
 @Composable
-fun AppNavigation(navController: NavHostController, authState: AuthState, authViewModel: ViewModelAuth, actividadesViewModel: ViewModelActivities) {
+fun AppNavigation(navController: NavHostController, authState: AuthState, authViewModel: ViewModelAuth) {
     val context = LocalContext.current
     val contenedor = remember { ContenedorMisTareas(context) }
     val tareasViewModel: TareasViewModel = viewModel {
@@ -122,7 +122,7 @@ fun AppNavigation(navController: NavHostController, authState: AuthState, authVi
     ) {
         NavHost(navController = navController, startDestination = startDestination) {
             composable(RutasNavegacion.Home.route) {
-                AplicacionPrincipal(navController, authViewModel, tareasViewModel, actividadesViewModel)
+                AplicacionPrincipal(navController, authViewModel, tareasViewModel)
             }
             composable(RutasNavegacion.Artistas.route) {
                 ColeccionArtistas(artistasViewModel, navController)
@@ -146,7 +146,6 @@ fun AppNavigation(navController: NavHostController, authState: AuthState, authVi
                 AcercaDe(navController)
             }
             composable(RutasNavegacion.Actividades.route) {
-                val activitiesViewModel: ViewModelActivities = viewModel()
                 ActivitiesScreen(navController, authViewModel)
             }
         }

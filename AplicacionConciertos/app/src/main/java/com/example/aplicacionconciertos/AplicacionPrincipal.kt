@@ -55,8 +55,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 fun AplicacionPrincipal(
     navController: NavHostController,
     authViewModel: ViewModelAuth,
-    tareasViewModel: TareasViewModel,
-    actividadesViewModel: ViewModelActivities
+    tareasViewModel: TareasViewModel
 ) {
     var showDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current

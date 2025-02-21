@@ -29,7 +29,6 @@ class ViewModelActivities(
     private val _message = MutableStateFlow<String?>(null)
     val message: StateFlow<String?> = _message
 
-    // En el init, puedes cargar el token inicialmente
     init {
         loadCredentials()
     }
@@ -43,10 +42,8 @@ class ViewModelActivities(
         }
     }
 
-    // Método para refrescar el token usando el método de ViewModelAuth
     fun refreshToken() {
         viewModelScope.launch(Dispatchers.IO) {
-            // Llama al método del ViewModelAuth para refrescar y guardar el token
             viewModelAuth.refreshAndSaveToken()
             // Después de refrescar, obtén el token actualizado
             val newToken = DataStoreManager.getAccessTokenSync(appContext)
