@@ -134,12 +134,19 @@ fun AllActivitiesTab(viewModel: ViewModelActivities, snackbarHostState: Snackbar
     val activities by viewModel.activities.collectAsState()
     val isLoading by remember { derivedStateOf { activities.isEmpty() } }
 
-    val currentToken = DataStoreManager.getAccessToken(context).toString()
+    val currentToken by DataStoreManager.getAccessToken(context).collectAsState(initial = null)
 
-    Log.d("Token", currentToken.toString())
+    LaunchedEffect(currentToken) {
+        Log.d("Token", "Token actual: $currentToken")
+    }
+
 
     LaunchedEffect(Unit) {
-        viewModel.getAllActivities(accessToken = currentToken)
+        val activitiesList = activitiesRepository.getAllActivities(accessToken)
+
+
+        Log.d("ViewModelActivities", "Llamando getAllActivities con token: '$currentToken'")
+        Log.d("ViewModelActivities", "Recibidas ${activitiesList.size} actividades")
     }
 
     if (isLoading) {

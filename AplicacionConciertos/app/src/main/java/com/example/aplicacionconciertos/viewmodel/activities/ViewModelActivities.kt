@@ -1,8 +1,12 @@
 package com.example.aplicacionconciertos.viewmodel.activities
 
 import android.content.Context
+import android.util.Log
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+
 import com.example.aplicacionconciertos.model.activities.ActivitiesRepository
 import com.example.aplicacionconciertos.model.activities.ActivityResponse
 import com.example.aplicacionconciertos.model.activities.ParticipationResponse
@@ -32,24 +36,37 @@ class ViewModelActivities(
     private val _message = MutableStateFlow<String?>(null)
     val message: StateFlow<String?> = _message
 
-    val currentToken = DataStoreManager.getAccessToken(appContext).toString()
+    val currentToken: StateFlow<String?> = DataStoreManager.getAccessToken(context)
+        .stateIn(viewModelScope, SharingStarted.Lazily, null)
 
     init {
         viewModelScope.launch {
-            val currentToken = DataStoreManager.getAccessToken(appContext).toString()
-            getAllActivities(currentToken)
+            DataStoreManager.getAccessToken(appContext).collectLatest { token ->
+                if (!token.isNullOrEmpty()) {
+                    Log.d("ViewModelActivities", "Token obtenido: '$token'")
+                    getAllActivities(token)  // 📌 Pasamos el token correcto
+                } else {
+                    Log.e("ViewModelActivities", "Error: Token es nulo o vacío")
+                }
+            }
         }
     }
+
 
 
     fun getAllActivities(accessToken: String) {
         viewModelScope.launch {
+
+
             _isLoading.value = true
-            val activitiesList = activitiesRepository.getAllActivities(currentToken)
+            val activitiesList = activitiesRepository.getAllActivities(accessToken)
             _activities.emit(activitiesList)
+
+
             _isLoading.value = false
         }
     }
+
 
     fun getUserParticipations(userId: String) {
         viewModelScope.launch {
