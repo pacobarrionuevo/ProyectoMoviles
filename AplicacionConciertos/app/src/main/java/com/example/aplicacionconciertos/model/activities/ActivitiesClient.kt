@@ -17,15 +17,16 @@ interface ActivitiesClient {
     fun getUserParticipations(
         @Path("userId") userId: String,
         @Header("Authorization") authHeader: String
-        //Response
+
     ): Call<List<ParticipationResponse>>
 
-    @POST("/api/participations")
-    @FormUrlEncoded
-    fun createParticipation(
-        @Field("userId") userId: String,
-        @Field("activityId") activityId: Long
-    ): Call<ParticipationResponse>
+    @POST("api/participations")
+    suspend fun createParticipation(
+        @Query("userId") userId: String,
+        @Query("activityId") activityId: Long
+    ): Response<ParticipationResponse>
+
+
 
     @DELETE("/api/participations/{id}")
     fun deleteParticipation(@Path("id") participationId: Long): Call<Void>

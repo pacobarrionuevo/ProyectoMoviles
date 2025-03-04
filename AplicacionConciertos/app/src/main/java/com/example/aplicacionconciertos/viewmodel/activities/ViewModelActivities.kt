@@ -66,31 +66,43 @@ class ViewModelActivities(
 
     fun getUserParticipations(userId: String, accessToken: String) {
         viewModelScope.launch {
-            _userParticipations.value = activitiesRepository.getUserParticipations(userId, accessToken)
+            Log.d("ViewModelActivities", "Solicitando participaciones para userId: $userId")
+            val participations = activitiesRepository.getUserParticipations(userId, accessToken)
+            Log.d("ViewModelActivities", "Participaciones recibidas: ${participations.size}")
+            _userParticipations.value = participations
         }
     }
 
-    fun createParticipation(userId: String, activityId: Long, accessToken:String) {
+
+    fun createParticipation(userId: String, activityId: Long, accessToken: String) {
         viewModelScope.launch {
+            Log.d("ViewModelActivities", "Intentando crear participación para userId: $userId en actividad: $activityId")
             val result = activitiesRepository.createParticipation(userId, activityId)
             if (result != null) {
+                Log.d("ViewModelActivities", "Participación creada: $result")
                 _message.value = "Te has apuntado a la actividad"
                 getUserParticipations(userId, accessToken)
             } else {
+                Log.e("ViewModelActivities", "Error al crear la participación")
                 _message.value = "Error al apuntarse a la actividad"
             }
         }
     }
 
+
     fun deleteParticipation(participationId: Long, userId: String, accessToken: String) {
         viewModelScope.launch {
+            Log.d("ViewModelActivities", "Intentando borrar participación con id: $participationId para userId: $userId")
             val success = activitiesRepository.deleteParticipation(participationId)
             if (success) {
+                Log.d("ViewModelActivities", "Participación borrada correctamente")
                 _message.value = "Te has borrado de la actividad"
                 getUserParticipations(userId, accessToken)
             } else {
+                Log.e("ViewModelActivities", "Error al borrar la participación")
                 _message.value = "Error al borrarse de la actividad"
             }
         }
     }
+
 }

@@ -29,101 +29,72 @@ class ActivitiesRepository(private val activitiesClient: ActivitiesClient) {
 
 
 
-    suspend fun getUserParticipations(Id: String, accessToken: String): List<ParticipationResponse> {
+    suspend fun getUserParticipations(userId: String, accessToken: String): List<ParticipationResponse> {
         return withContext(Dispatchers.IO) {
             try {
-                Log.d("ActivitiesRepository", "userId antes de llamada: '${Id}'") // Asegúrate de que aquí sea correcto
-
-                val response = activitiesClient.getUserParticipations(Id, accessToken).execute()
+                Log.d("ActivitiesRepository", "Llamando getUserParticipations para userId: $userId")
+                val response = activitiesClient.getUserParticipations(userId, "Bearer $accessToken").execute()
                 if (response.isSuccessful) {
-                    response.body() ?: emptyList()
+                    val participations = response.body() ?: emptyList()
+                    Log.d("ActivitiesRepository", "getUserParticipations exitosa: ${participations.size} participaciones recibidas")
+                    participations
                 } else {
-                    Log.e("ActivitiesRepository", "Error getUserParticipations: ${response.code()}, body: ${response.errorBody()?.string()}")
+                    val error = response.errorBody()?.string()
+                    Log.e("ActivitiesRepository", "Error getUserParticipations: ${response.code()} - $error")
                     emptyList()
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
+                Log.e("ActivitiesRepository", "Excepción en getUserParticipations", e)
                 emptyList()
             }
         }
     }
 
 
+
     suspend fun createParticipation(userId: String, activityId: Long): ParticipationResponse? {
         return withContext(Dispatchers.IO) {
             try {
-                val response = activitiesClient.createParticipation(userId, activityId).execute()
+                Log.d("ActivitiesRepository", "Llamando createParticipation para userId: $userId, activityId: $activityId")
+                val response = activitiesClient.createParticipation(userId, activityId)
                 if (response.isSuccessful) {
-                    response.body()
+                    val participation = response.body()
+                    Log.d("ActivitiesRepository", "createParticipation exitosa: $participation")
+                    participation
                 } else {
-                    Log.e("ActivitiesRepository", "Error createParticipation: ${response.code()}, body: ${response.errorBody()?.string()}")
+                    val error = response.errorBody()?.string()
+                    Log.e("ActivitiesRepository", "Error createParticipation: ${response.code()} - $error")
                     null
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
+                Log.e("ActivitiesRepository", "Excepción en createParticipation", e)
                 null
             }
         }
     }
+
 
     suspend fun deleteParticipation(participationId: Long): Boolean {
         return withContext(Dispatchers.IO) {
             try {
+                Log.d("ActivitiesRepository", "Llamando deleteParticipation para participationId: $participationId")
                 val response = activitiesClient.deleteParticipation(participationId).execute()
-                if (!response.isSuccessful) {
-                    Log.e("ActivitiesRepository", "Error deleteParticipation: ${response.code()}, body: ${response.errorBody()?.string()}")
-                }
-                response.isSuccessful
-            } catch (e: Exception) {
-                e.printStackTrace()
-                false
-            }
-        }
-    }
-
-    suspend fun createActivity(
-        name: String,
-        description: String,
-        date: String,
-        place: String,
-        category: String
-    ): ActivityResponse? {
-        return withContext(Dispatchers.IO) {
-            try {
-                val activityData = mapOf(
-                    "name" to name,
-                    "description" to description,
-                    "date" to date,       // "YYYY-MM-DD"
-                    "place" to place,
-                    "category" to category
-                )
-                val response = activitiesClient.createActivity(activityData).execute()
                 if (response.isSuccessful) {
-                    response.body()
+                    Log.d("ActivitiesRepository", "deleteParticipation exitosa")
                 } else {
-                    Log.e("ActivitiesRepository", "Error createActivity: ${response.code()}, body: ${response.errorBody()?.string()}")
-                    null
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                null
-            }
-        }
-    }
-
-    suspend fun deleteActivity(activityId: Long): Boolean {
-        return withContext(Dispatchers.IO) {
-            try {
-                val response = activitiesClient.deleteActivity(activityId).execute()
-                if (!response.isSuccessful) {
-                    Log.e("ActivitiesRepository", "Error deleteActivity: ${response.code()}, body: ${response.errorBody()?.string()}")
+                    val error = response.errorBody()?.string()
+                    Log.e("ActivitiesRepository", "Error deleteParticipation: ${response.code()} - $error")
                 }
                 response.isSuccessful
             } catch (e: Exception) {
-                e.printStackTrace()
+                Log.e("ActivitiesRepository", "Excepción en deleteParticipation", e)
                 false
             }
         }
     }
+
+
+
+
 
 }

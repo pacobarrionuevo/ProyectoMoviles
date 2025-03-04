@@ -164,6 +164,7 @@ fun AllActivitiesTab(viewModel: ViewModelActivities, snackbarHostState: Snackbar
 }
 
 @Composable
+
 fun UserActivitiesTab(viewModel: ViewModelActivities, snackbarHostState: SnackbarHostState, userId: String) {
     val userActivities by viewModel.userParticipations.collectAsState()
     val allActivities by viewModel.activities.collectAsState()
@@ -171,6 +172,12 @@ fun UserActivitiesTab(viewModel: ViewModelActivities, snackbarHostState: Snackba
     var visibleActivities by remember { mutableStateOf(userActivities) }
     val context = LocalContext.current
     val currentToken by DataStoreManager.getAccessToken(context).collectAsState(initial = null)
+
+    // Actualiza visibleActivities cuando cambie userActivities
+    LaunchedEffect(userActivities) {
+        visibleActivities = userActivities
+        Log.d("UserActivitiesTab", "La lista de participaciones cambió: ${userActivities.size} elementos")
+    }
 
     LaunchedEffect(Unit) {
         viewModel.getUserParticipations(userId, currentToken.toString())
@@ -182,9 +189,11 @@ fun UserActivitiesTab(viewModel: ViewModelActivities, snackbarHostState: Snackba
         LazyColumn {
             items(userActivities.size) { index ->
                 val participation = userActivities[index]
+                // Busca la actividad correspondiente
                 val activity = allActivities.find { it.id == participation.activityId }
 
                 if (activity != null) {
+                    Log.d("UserActivitiesTab", "Mostrando participación: id=${participation.id}, activityId=${participation.activityId} -> ${activity.name}")
                     val isVisible by remember { derivedStateOf { visibleActivities.contains(participation) } }
                     AnimatedVisibility(
                         visible = isVisible,
@@ -194,6 +203,7 @@ fun UserActivitiesTab(viewModel: ViewModelActivities, snackbarHostState: Snackba
                             activity = activity,
                             buttonIcon = Icons.Default.EventBusy,
                             buttonAction = {
+                                Log.d("UserActivitiesTab", "Eliminando participación: id=${participation.id}")
                                 viewModel.deleteParticipation(participation.id, userId, currentToken.toString())
                                 visibleActivities = visibleActivities - participation
                             },
@@ -201,11 +211,17 @@ fun UserActivitiesTab(viewModel: ViewModelActivities, snackbarHostState: Snackba
                             message = "Te has borrado de la actividad"
                         )
                     }
+                } else {
+                    Log.e("UserActivitiesTab", "No se encontró actividad para participación: id=${participation.id} con activityId=${participation.activityId}")
                 }
             }
         }
     }
 }
+
+
+
+
 
 
 @Composable
