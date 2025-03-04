@@ -189,7 +189,6 @@ fun UserActivitiesTab(viewModel: ViewModelActivities, snackbarHostState: Snackba
         LazyColumn {
             items(userActivities.size) { index ->
                 val participation = userActivities[index]
-                // Busca la actividad correspondiente
                 val activity = allActivities.find { it.id == participation.activityId }
 
                 if (activity != null) {
@@ -203,8 +202,11 @@ fun UserActivitiesTab(viewModel: ViewModelActivities, snackbarHostState: Snackba
                             activity = activity,
                             buttonIcon = Icons.Default.EventBusy,
                             buttonAction = {
-                                Log.d("UserActivitiesTab", "Eliminando participación: id=${participation.id}")
-                                viewModel.deleteParticipation(participation.id, userId, currentToken.toString())
+                                viewModel.deleteParticipation(
+                                    participation.userId,
+                                    participation.activityId,
+                                    currentToken.toString()
+                                )
                                 visibleActivities = visibleActivities - participation
                             },
                             snackbarHostState = snackbarHostState,

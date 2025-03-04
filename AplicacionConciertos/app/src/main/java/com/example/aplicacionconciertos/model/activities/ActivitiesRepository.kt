@@ -52,11 +52,11 @@ class ActivitiesRepository(private val activitiesClient: ActivitiesClient) {
 
 
 
-    suspend fun createParticipation(userId: String, activityId: Long): ParticipationResponse? {
+    suspend fun createParticipation(userId: String, activityId: Long, accessToken: String): ParticipationResponse? {
         return withContext(Dispatchers.IO) {
             try {
                 Log.d("ActivitiesRepository", "Llamando createParticipation para userId: $userId, activityId: $activityId")
-                val response = activitiesClient.createParticipation(userId, activityId)
+                val response = activitiesClient.createParticipation("Bearer $accessToken", userId, activityId)
                 if (response.isSuccessful) {
                     val participation = response.body()
                     Log.d("ActivitiesRepository", "createParticipation exitosa: $participation")
@@ -74,11 +74,20 @@ class ActivitiesRepository(private val activitiesClient: ActivitiesClient) {
     }
 
 
-    suspend fun deleteParticipation(participationId: Long): Boolean {
+
+    suspend fun deleteParticipation(
+        userId: String,
+        activityId: Long,
+        accessToken: String
+    ): Boolean {
         return withContext(Dispatchers.IO) {
             try {
-                Log.d("ActivitiesRepository", "Llamando deleteParticipation para participationId: $participationId")
-                val response = activitiesClient.deleteParticipation(participationId).execute()
+                Log.d("ActivitiesRepository", "Eliminando participación para userId: $userId, activityId: $activityId")
+                val response = activitiesClient.deleteParticipation(
+                    userId,
+                    activityId,
+                    "Bearer $accessToken"
+                ).execute()
                 if (response.isSuccessful) {
                     Log.d("ActivitiesRepository", "deleteParticipation exitosa")
                 } else {

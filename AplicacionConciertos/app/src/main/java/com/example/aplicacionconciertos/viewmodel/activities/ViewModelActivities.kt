@@ -77,7 +77,7 @@ class ViewModelActivities(
     fun createParticipation(userId: String, activityId: Long, accessToken: String) {
         viewModelScope.launch {
             Log.d("ViewModelActivities", "Intentando crear participación para userId: $userId en actividad: $activityId")
-            val result = activitiesRepository.createParticipation(userId, activityId)
+            val result = activitiesRepository.createParticipation(userId, activityId, accessToken)
             if (result != null) {
                 Log.d("ViewModelActivities", "Participación creada: $result")
                 _message.value = "Te has apuntado a la actividad"
@@ -90,10 +90,16 @@ class ViewModelActivities(
     }
 
 
-    fun deleteParticipation(participationId: Long, userId: String, accessToken: String) {
+
+
+    fun deleteParticipation(
+        userId: String,
+        activityId: Long,
+        accessToken: String
+    ) {
         viewModelScope.launch {
-            Log.d("ViewModelActivities", "Intentando borrar participación con id: $participationId para userId: $userId")
-            val success = activitiesRepository.deleteParticipation(participationId)
+            Log.d("ViewModelActivities", "Intentando borrar participación para userId: $userId, activityId: $activityId")
+            val success = activitiesRepository.deleteParticipation(userId, activityId, accessToken)
             if (success) {
                 Log.d("ViewModelActivities", "Participación borrada correctamente")
                 _message.value = "Te has borrado de la actividad"

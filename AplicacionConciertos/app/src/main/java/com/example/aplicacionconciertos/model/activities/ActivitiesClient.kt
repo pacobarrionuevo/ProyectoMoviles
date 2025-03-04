@@ -22,13 +22,18 @@ interface ActivitiesClient {
 
     @POST("api/participations")
     suspend fun createParticipation(
+        @Header("Authorization") authHeader: String,
         @Query("userId") userId: String,
         @Query("activityId") activityId: Long
     ): Response<ParticipationResponse>
 
 
 
-    @DELETE("/api/participations/{id}")
-    fun deleteParticipation(@Path("id") participationId: Long): Call<Void>
+    @DELETE("/api/participations/{userId}/{activityId}")
+    fun deleteParticipation(
+        @Path("userId") userId: String,
+        @Path("activityId") activityId: Long,
+        @Header("Authorization") authHeader: String
+    ): Call<Void>
 
 }
