@@ -18,6 +18,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -70,15 +71,15 @@ fun ActivitiesScreen(navController: NavController, viewModelAuth: ViewModelAuth)
     val userId = userDetails?.id
 
     val tabItems = listOf(
-        TabItem("Todas", Icons.Default.EventAvailable),
-        TabItem("Apuntado", Icons.Default.EventBusy)
+        TabItem(stringResource(id = R.string.TodosConciertos), Icons.Default.EventAvailable),
+        TabItem(stringResource(id = R.string.MisConciertos), Icons.Default.EventBusy)
     )
     var selectedTabIndex by remember { mutableStateOf(0) }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
-            TopAppBar(title = { Text("Actividades") })
+            TopAppBar(title = { Text(stringResource(id = R.string.Conciertos)) })
         }
     ) { paddingValues ->
         Column(
@@ -106,7 +107,7 @@ fun ActivitiesScreen(navController: NavController, viewModelAuth: ViewModelAuth)
                             userId = userId
                         )
                     } else {
-                        Text("Cargando usuario...")
+                        Text(stringResource(id = R.string.Cargando))
                     }
                 }
                 1 -> {
@@ -117,7 +118,7 @@ fun ActivitiesScreen(navController: NavController, viewModelAuth: ViewModelAuth)
                             userId = userId
                         )
                     } else {
-                        Text("Cargando usuario...")
+                        Text(stringResource(id = R.string.Cargando))
                     }
                 }
             }
@@ -132,7 +133,7 @@ fun ActivitiesScreen(navController: NavController, viewModelAuth: ViewModelAuth)
 fun AllActivitiesTab(viewModel: ViewModelActivities, snackbarHostState: SnackbarHostState, userId: String) {
     val context = LocalContext.current
     val activities by viewModel.activities.collectAsState()
-    val isLoading by remember { derivedStateOf { activities.isEmpty() } }
+    val isLoading = activities.isEmpty()
 
     val currentToken by DataStoreManager.getAccessToken(context).collectAsState(initial = null)
 
@@ -155,7 +156,7 @@ fun AllActivitiesTab(viewModel: ViewModelActivities, snackbarHostState: Snackbar
                         viewModel.createParticipation(userId, activities[index].id, currentToken.toString())
                     },
                     snackbarHostState = snackbarHostState,
-                    message = "Te has apuntado"
+                    message = stringResource(id = R.string.ConciertoAñadido)
                 )
             }
         }

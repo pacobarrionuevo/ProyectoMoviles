@@ -9,19 +9,23 @@ class ActivitiesRepository(private val activitiesClient: ActivitiesClient) {
     suspend fun getAllActivities(accessToken: String): List<ActivityResponse> {
         return try {
             Log.d("ActivitiesRepository", "Token antes de llamada: '$accessToken'")
-
             val response = activitiesClient.getAllActivities("Bearer $accessToken")
+            Log.d("ActivitiesRepository", "Código de respuesta: ${response.code()}")
+
             if (response.isSuccessful) {
-                response.body() ?: emptyList()
+                val body = response.body()
+                Log.d("ActivitiesRepository", "Cuerpo de respuesta: $body")
+                body ?: emptyList()
             } else {
-                Log.e("ActivitiesRepository", "Error getAllActivities: ${response.code()}, body: ${response.errorBody()?.string()}")
+                Log.e("ActivitiesRepository", "Error en getAllActivities: ${response.errorBody()?.string()}")
                 emptyList()
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e("ActivitiesRepository", "Excepción en getAllActivities", e)
             emptyList()
         }
     }
+
 
 
 
@@ -107,7 +111,6 @@ class ActivitiesRepository(private val activitiesClient: ActivitiesClient) {
         }
     }
 
-    // 6. Borrar una actividad por su ID
     suspend fun deleteActivity(activityId: Long): Boolean {
         return withContext(Dispatchers.IO) {
             try {

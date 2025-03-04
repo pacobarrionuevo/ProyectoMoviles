@@ -71,5 +71,8 @@
     <string name="ErrorUserData">Error al obtener los datos del usuario.</string>
     <string name="BienvenidaAppPrincipal">¡Bienvenido a Ticket Premium,</string>
     <string name="BienvenidoSinIniciaSesion">Inicia sesión para no perderte ninguna novedad de nuestra página</string>
-    <string name="Actividades">Actividades</string>
+    <string name="Conciertos">Conciertos</string>
+    <string name="TodosConciertos">Próximos Conciertos</string>
+    <string name="MisConciertos">Mis Conciertos</string>
+    <string name="ConciertoAñadido">¡Nuevo Concierto Añadido A Tu Lista!</string>
 </resources>

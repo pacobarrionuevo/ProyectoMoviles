@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
-import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LibraryMusic
@@ -28,7 +27,6 @@ import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Task
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Badge
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -127,7 +125,7 @@ fun NavigationDrawer(
             route = RutasNavegacion.Tareas.route
         ),
         NavigationItems(
-            title = stringResource(id = R.string.Actividades),
+            title = stringResource(id = R.string.Conciertos),
             selectedIcon = Icons.Filled.Task,
             unselectedIcon = Icons.Outlined.Task,
             route = RutasNavegacion.Actividades.route
